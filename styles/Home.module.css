@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-content: center;
-  font-family: 'Atkinson Hyperlegible';
+  font-family: var(--atkinson-font);
 }
 
 .main {
@@ -67,5 +67,6 @@
 
   .linkButton:hover {
     color: black;
+    background: hsla(192, 80%, 55%, .35);
   }
 }

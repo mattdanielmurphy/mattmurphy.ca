@@ -5,7 +5,7 @@ import styles from '@/styles/Home.module.css'
 
 const atkinson = Atkinson_Hyperlegible({
 	subsets: ['latin'],
-	variable: '--atkinson',
+	variable: '--atkinson-font',
 	weight: ['700', '400'],
 })
 
@@ -18,32 +18,34 @@ export default function Home() {
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-			<div className={styles.container}>
-				<main className={styles.main}>
-					<h1 className={styles.h1}>
-						👋 &nbsp; I&apos;m{' '}
-						<span className={styles.name}>Matthew Daniel Murphy</span>.
-					</h1>
-					<ul className={styles.list}>
-						<li>
-							I&apos;m a <strong>developer</strong>.
-						</li>
-						<li>
-							I&apos;m a <strong>musician</strong>.
-						</li>
-						<li>
-							I&apos;m a <strong>lot of other things</strong>.
-						</li>
-					</ul>
-					<p className={styles.buttons}>
-						<a
-							className={styles.linkButton}
-							href='https://www.instagram.com/matthewdanielmurphy'
-						>
-							Instagram
-						</a>
-					</p>
-				</main>
+			<div className={atkinson.variable}>
+				<div className={styles.container}>
+					<main className={styles.main}>
+						<h1 className={styles.h1}>
+							👋 &nbsp; I&apos;m{' '}
+							<span className={styles.name}>Matthew Daniel Murphy</span>.
+						</h1>
+						<ul className={styles.list}>
+							<li>
+								I&apos;m a <strong>developer</strong>.
+							</li>
+							<li>
+								I&apos;m a <strong>musician</strong>.
+							</li>
+							<li>
+								I&apos;m a <strong>lot of other things</strong>.
+							</li>
+						</ul>
+						<p className={styles.buttons}>
+							<a
+								className={styles.linkButton}
+								href='https://www.instagram.com/matthewdanielmurphy'
+							>
+								Instagram
+							</a>
+						</p>
+					</main>
+				</div>
 			</div>
 		</>
 	)
