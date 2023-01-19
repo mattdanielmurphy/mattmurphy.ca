@@ -17,18 +17,18 @@ export default function Home() {
 			<div className={styles.container}>
 				<main className={styles.main}>
 					<h1>
-						👋 &nbsp;&nbsp; I'm{' '}
+						👋 &nbsp;&nbsp; Iapos;m{' '}
 						<span className={styles.name}>Matthew Daniel Murphy</span>.
 					</h1>
 					<ul className={styles.list}>
 						<li>
-							I'm a <strong>developer</strong>.
+							Iapos;m a <strong>developer</strong>.
 						</li>
 						<li>
-							I'm a <strong>musician</strong>.
+							Iapos;m a <strong>musician</strong>.
 						</li>
 						<li>
-							I'm a <strong>lot of other things</strong>.
+							Iapos;m a <strong>lot of other things</strong>.
 						</li>
 					</ul>
 					<p className={styles.buttons}>
