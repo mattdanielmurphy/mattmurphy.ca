@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-content: center;
+  font-family: 'Atkinson Hyperlegible';
 }
 
 .main {
@@ -13,39 +14,44 @@
   max-width: 60rem;
 }
 
+.h1 {
+  margin-left: -4.5rem;
+}
+
 .name {
   color: coral;
 }
 
 .list {
-  margin-left: 4.5rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
+  margin-left: .2rem;
 }
 
 .list li {
   list-style-type: "→";
-  padding-left: .5rem;
-  margin-bottom: .3rem;
+  padding-left: .3rem;
+  margin-bottom: .5rem;
 }
 
 .buttons {
-  margin-left: 4.5rem;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
+  text-transform: lowercase;
 }
 
 .linkButton,
 .linkButton:visited {
   color: white;
-  border: 4px solid hsl(192, 80%, 55%);
+  border: 3px solid hsl(192, 80%, 55%);
   background-color: hsl(192, 80%, 55%);
   padding: .6rem 1rem;
+  font-family: 'Atkinson Hyperlegible';
   font-weight: bold;
   border-radius: 4px;
   transition: .15s ease-in-out;
 }
 
 .linkButton:hover {
-  background: none;
+  background: hsla(192, 80%, 55%, .5);
 }
 
 .linkButton:active {

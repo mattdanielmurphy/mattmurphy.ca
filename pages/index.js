@@ -1,9 +1,13 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Inter } from '@next/font/google'
+import { Atkinson_Hyperlegible } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const atkinson = Atkinson_Hyperlegible({
+	subsets: ['latin'],
+	variable: '--atkinson',
+	weight: ['700', '400'],
+})
 
 export default function Home() {
 	return (
@@ -16,19 +20,19 @@ export default function Home() {
 			</Head>
 			<div className={styles.container}>
 				<main className={styles.main}>
-					<h1>
-						👋 &nbsp;&nbsp; Iapos;m{' '}
+					<h1 className={styles.h1}>
+						👋 &nbsp; I&apos;m{' '}
 						<span className={styles.name}>Matthew Daniel Murphy</span>.
 					</h1>
 					<ul className={styles.list}>
 						<li>
-							Iapos;m a <strong>developer</strong>.
+							I&apos;m a <strong>developer</strong>.
 						</li>
 						<li>
-							Iapos;m a <strong>musician</strong>.
+							I&apos;m a <strong>musician</strong>.
 						</li>
 						<li>
-							Iapos;m a <strong>lot of other things</strong>.
+							I&apos;m a <strong>lot of other things</strong>.
 						</li>
 					</ul>
 					<p className={styles.buttons}>
@@ -36,7 +40,7 @@ export default function Home() {
 							className={styles.linkButton}
 							href='https://www.instagram.com/matthewdanielmurphy'
 						>
-							My Instagram
+							Instagram
 						</a>
 					</p>
 				</main>
