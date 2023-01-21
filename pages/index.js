@@ -29,17 +29,17 @@ export default function Home() {
 						<ul className={styles.list}>
 							<li className={styles.developer}>developer</li>
 							<li className={styles.musician}>musician</li>
-							<li className={styles.etc}>et cetera</li>
+							<li className={styles.etc}>other things</li>
 						</ul>
-						<p className={styles.buttons}>
-							<a
-								className={styles.linkButton}
-								href='https://www.instagram.com/matthewdanielmurphy'
-							>
-								my instagram
-							</a>
-						</p>
 					</main>
+					<p className={styles.buttons}>
+						<a
+							className={styles.linkButton}
+							href='https://www.instagram.com/matthewdanielmurphy'
+						>
+							my instagram
+						</a>
+					</p>
 				</div>
 			</div>
 		</>

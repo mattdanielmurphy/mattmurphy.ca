@@ -1,32 +1,37 @@
 .container {
   display: flex;
+  width: 100%;
   justify-content: center;
-  align-content: center;
+  align-items: center;
+  gap: 5rem;
+  flex-direction: column;
+  text-align: center;
+  --height: 40vh;
+  margin-top: calc(40vh - calc(var(--height)/2));
+  /* ^ vertically center */
+  --padding: 4rem;
+  padding: var(--padding);
 }
 
 .main {
   display: inline-flex;
-  justify-content: center;
   gap: 2rem;
   flex-direction: column;
-  --height: 50vh;
-  height: var(--height);
-  margin-top: calc(50vh - calc(var(--height)/2));
-  /* ^ vertically center */
-  --padding: 2rem;
-  padding: var(--padding);
-  padding-bottom: calc(var(--padding) * .8);
-  max-width: 60rem;
-  /* border: 1px solid hsl(262, 100%, 70%); */
-  /* background: hsl(262, 51%, 15%); */
+  max-width: 40rem;
+  /* height: var(--height); */
+  padding: calc(var(--padding));
+  padding-bottom: calc(var(--padding) * .9);
+  border: .1rem solid hsl(262, 55%, 45%);
+  /* background: hsl(262, 40%, 15%); */
 }
 
 .h1 {
+  text-align: center;
   margin: 0;
   font-size: 1.8rem;
   line-height: .9em;
   /* color: hsl(313, 90%, 60%); */
-  color: hsl(262, 40%, 40%);
+  color: #bbb;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -41,9 +46,9 @@
   /* margin-top: calc(-5vh + 2rem); */
   display: inline-flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: .4rem;
   --indent: 1rem;
-  margin: 0 calc(var(--indent)*2);
+  margin: 0 calc(var(--indent)*6) 0 0;
 }
 
 .list li {
@@ -51,17 +56,17 @@
 }
 
 .list li.developer {
-  color: hsl(51, 100%, 58%);
+  color: hsl(51, 100%, 64%);
 }
 
 .list li.musician {
   margin-left: calc(var(--indent)*2);
-  color: hsl(21, 100%, 58%);
+  color: hsl(109, 100%, 58%);
 }
 
 .list li.etc {
-  margin-left: calc(var(--indent)*4);
-  color: hsl(71, 100%, 58%);
+  margin-left: calc(var(--indent)*6);
+  color: hsl(298, 90%, 62%);
 }
 
 .list li::before {
@@ -80,25 +85,21 @@
 .linkButton,
 .linkButton:visited {
 
-  color: hsl(200, 100%, 71%);
+  color: hsl(200, 100%, 58%);
   border: .08rem solid transparent;
-  border-bottom: .05rem solid hsl(200, 100%, 71%);
+  border-bottom: .05rem solid hsl(200, 100%, 58%);
   padding: .4rem .4rem .3rem .4rem;
   background: none;
   transition: .15s ease-in-out;
-  position: absolute;
-  left: calc(50vw - 3.8rem);
 }
 
 .linkButton:hover {
   padding: .4rem .75rem .4rem .75rem;
 
-  border: .08rem solid hsl(200, 100%, 71%);
+  border: .08rem solid hsl(200, 100%, 58%);
   /* background: hsl(200, 60%, 40%); */
-  color: hsl(200, 100%, 71%);
+  color: hsl(200, 100%, 58%);
   font-size: 1.05em;
-  margin-top: .02rem;
-  left: calc(50vw - 4.3rem);
 }
 
 .linkButton:active {
