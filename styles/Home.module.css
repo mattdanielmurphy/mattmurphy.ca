@@ -2,71 +2,113 @@
   display: flex;
   justify-content: center;
   align-content: center;
-  font-family: var(--atkinson-font);
 }
 
 .main {
   display: inline-flex;
   justify-content: center;
+  gap: 2rem;
   flex-direction: column;
-  padding: 6rem;
-  min-height: 100vh;
+  --height: 50vh;
+  height: var(--height);
+  margin-top: calc(50vh - calc(var(--height)/2));
+  /* ^ vertically center */
+  --padding: 2rem;
+  padding: var(--padding);
+  padding-bottom: calc(var(--padding) * .8);
   max-width: 60rem;
+  /* border: 1px solid hsl(262, 100%, 70%); */
+  /* background: hsl(262, 51%, 15%); */
 }
 
 .h1 {
-  margin-left: -4.5rem;
+  margin: 0;
+  font-size: 1.8rem;
+  line-height: .9em;
+  /* color: hsl(313, 90%, 60%); */
+  color: hsl(262, 40%, 40%);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.name {
-  color: coral;
+.h1 span {
+  font-weight: 400;
+  margin-left: -.125rem;
 }
 
 .list {
-  margin-top: 1rem;
-  margin-left: .2rem;
+  /* margin-top: calc(-5vh + 2rem); */
+  display: inline-flex;
+  flex-direction: column;
+  gap: .5rem;
+  --indent: 1rem;
+  margin: 0 calc(var(--indent)*2);
 }
 
 .list li {
-  list-style-type: "→";
-  padding-left: .3rem;
-  margin-bottom: .5rem;
+  list-style-type: none;
+}
+
+.list li.developer {
+  color: hsl(51, 100%, 58%);
+}
+
+.list li.musician {
+  margin-left: calc(var(--indent)*2);
+  color: hsl(21, 100%, 58%);
+}
+
+.list li.etc {
+  margin-left: calc(var(--indent)*4);
+  color: hsl(71, 100%, 58%);
+}
+
+.list li::before {
+  content: '•';
+  margin-right: .5rem;
+  position: relative;
+  top: -.12em;
+  font-size: .8em;
 }
 
 .buttons {
-  margin-top: 2.5rem;
   text-transform: lowercase;
+  text-align: center;
 }
 
 .linkButton,
 .linkButton:visited {
-  color: white;
-  border: 3px solid hsl(192, 80%, 55%);
-  background-color: hsl(192, 80%, 55%);
-  padding: .6rem 1rem;
-  font-family: 'Atkinson Hyperlegible';
-  font-weight: bold;
-  border-radius: 4px;
+
+  color: hsl(200, 100%, 71%);
+  border: .08rem solid transparent;
+  border-bottom: .05rem solid hsl(200, 100%, 71%);
+  padding: .4rem .4rem .3rem .4rem;
+  background: none;
   transition: .15s ease-in-out;
+  position: absolute;
+  left: calc(50vw - 3.8rem);
 }
 
 .linkButton:hover {
-  background: hsla(192, 80%, 55%, .5);
+  padding: .4rem .75rem .4rem .75rem;
+
+  border: .08rem solid hsl(200, 100%, 71%);
+  /* background: hsl(200, 60%, 40%); */
+  color: hsl(200, 100%, 71%);
+  font-size: 1.05em;
+  margin-top: .02rem;
+  left: calc(50vw - 4.3rem);
 }
 
 .linkButton:active {
   background: none;
-  color: hsl(192, 80%, 55%);
   transition: 0s;
 }
 
 @media(prefers-color-scheme: light) {
-  .name {
-    color: hsl(16, 100%, 47%);
-  }
-
   .linkButton:hover {
     color: black;
-    background: hsla(192, 80%, 55%, .35);
+    background: hsl(0, 0%, 85%);
   }
 }
