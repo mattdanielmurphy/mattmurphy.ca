@@ -37,7 +37,7 @@ export default function Home() {
 							className={styles.linkButton}
 							href='https://www.instagram.com/matthewdanielmurphy'
 						>
-							my instagram
+							instagram
 						</a>
 					</p>
 				</div>

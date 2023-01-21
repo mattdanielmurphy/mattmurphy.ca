@@ -21,7 +21,7 @@
   /* height: var(--height); */
   padding: calc(var(--padding));
   padding-bottom: calc(var(--padding) * .9);
-  border: .1rem solid hsl(262, 55%, 45%);
+  border: .01rem solid rgb(var(--foreground-rgb));
   /* background: hsl(262, 40%, 15%); */
 }
 
@@ -30,8 +30,7 @@
   margin: 0;
   font-size: 1.8rem;
   line-height: .9em;
-  /* color: hsl(313, 90%, 60%); */
-  color: #bbb;
+  color: hsl(var(--title-color-hsl));
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -39,34 +38,37 @@
 
 .h1 span {
   font-weight: 400;
-  margin-left: -.125rem;
 }
 
 .list {
   /* margin-top: calc(-5vh + 2rem); */
   display: inline-flex;
   flex-direction: column;
+  align-items: center;
   gap: .4rem;
   --indent: 1rem;
-  margin: 0 calc(var(--indent)*6) 0 0;
+  /* text-align: center; */
+  /* margin: 0 calc(var(--indent)*2) 0 0; */
 }
 
 .list li {
   list-style-type: none;
+  text-align: left;
+  width: 10rem;
 }
 
 .list li.developer {
-  color: hsl(51, 100%, 64%);
+  color: hsl(10, 100%, 66%);
 }
 
 .list li.musician {
   margin-left: calc(var(--indent)*2);
-  color: hsl(109, 100%, 58%);
+  color: hsl(50, 100%, 68%);
 }
 
 .list li.etc {
-  margin-left: calc(var(--indent)*6);
-  color: hsl(298, 90%, 62%);
+  margin-left: calc(var(--indent)*4);
+  color: hsl(100, 88%, 64%);
 }
 
 .list li::before {
@@ -87,7 +89,7 @@
 
   color: hsl(200, 100%, 58%);
   border: .08rem solid transparent;
-  border-bottom: .05rem solid hsl(200, 100%, 58%);
+  border-bottom: .08rem solid hsl(200, 100%, 55%);
   padding: .4rem .4rem .3rem .4rem;
   background: none;
   transition: .15s ease-in-out;
@@ -95,9 +97,7 @@
 
 .linkButton:hover {
   padding: .4rem .75rem .4rem .75rem;
-
-  border: .08rem solid hsl(200, 100%, 58%);
-  /* background: hsl(200, 60%, 40%); */
+  border: .08rem solid hsl(200, 100%, 55%);
   color: hsl(200, 100%, 58%);
   font-size: 1.05em;
 }
@@ -107,9 +107,24 @@
   transition: 0s;
 }
 
+@media(max-width: 480px) {
+  .list {
+    --indent: 0;
+  }
+
+  .list li {
+    text-align: left;
+  }
+}
+
+@media(max-width: 800px) {
+  .container {
+    padding: var(--padding) 5vw;
+  }
+}
+
 @media(prefers-color-scheme: light) {
-  .linkButton:hover {
-    color: black;
-    background: hsl(0, 0%, 85%);
+  .main {
+    background: rgb(var(--foreground-rgb));
   }
 }
