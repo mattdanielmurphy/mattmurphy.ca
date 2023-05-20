@@ -26,7 +26,6 @@ export default function Home() {
 					<h2>
 						<a
 							href='https://www.instagram.com/matthewdanielmurphy'
-							class='glitch-hover'
 							text='Instagram'
 						>
 							Instagram
@@ -38,7 +37,6 @@ export default function Home() {
 					<h2>
 						<a
 							href='https://typery.mattmurphy.ca'
-							class='glitch-hover'
 							text='Typery'
 						>
 							Typery
