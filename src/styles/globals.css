@@ -32,11 +32,6 @@ body {
     --link-color: #dd00ff;
     --link-hover-color: #fff;
   }
-
-  a.glitch-hover:hover {
-    background: rgba(56, 209, 255, 0.5);
-  }
-
 }
 
 * {
@@ -63,103 +58,6 @@ a {
 
 a:hover {
   color: var(--link-hover-color);
-}
-
-a.glitch-hover {
-  border: none;
-  z-index: 1;
-  clear: none;
-  position: absolute;
-  color: transparent;
-}
-
-a.glitch-hover::before {
-  /* content: attr(text);
-  position: absolute;
-  clear: none;
-  color: white;
-  z-index: 0;
-  border: none; */
-}
-
-a.glitch-hover {
-  /* ? show ::after instead of text inside element */
-  content: attr(text);
-  position: relative;
-  clear: none;
-  color: black;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  border: none;
-  animation: none;
-  --displacement: .08em;
-  padding: .6em;
-  border-radius: .6em;
-}
-
-a.glitch-hover:hover {
-  /* font-weight: normal; */
-  letter-spacing: .1rem;
-  /* --static-left: .5rem; */
-}
-
-a.glitch-hover:hover {
-  animation: .2s cubic-bezier(0.47, 0, 0.745, 0.715) infinite slidein;
-  background: rgba(61, 210, 255, 0.373);
-}
-
-@keyframes slidein {
-
-  0% {
-    left: calc(var(--static-left) - var(--displacement)/2);
-    top: calc(0px - var(--displacement)/2);
-  }
-
-  5% {
-    left: calc(var(--static-left) - var(--displacement));
-    top: calc(0px - var(--displacement));
-  }
-
-  30% {
-    left: calc(var(--static-left) + var(--displacement));
-    top: calc(0px + var(--displacement));
-  }
-
-  25% {
-    left: calc(var(--static-left) - var(--displacement));
-    top: var(--displacement);
-  }
-
-  35% {
-    left: calc(var(--static-left) - var(--displacement)/2);
-    top: calc(0px - var(--displacement)/2);
-  }
-
-  100% {
-    left: calc(var(--static-left) - var(--displacement)/2);
-    top: calc(0px + var(--displacement)/2);
-  }
-
-  /* 50% {
-    top: 0;
-    bottom: var(--displacement);
-  }
-
-  75% {
-    bottom: 0;
-    left: - var(--displacement);
-  }
-
-  100% {
-    left: calc(-50% + --displacement);
-
-  } */
-}
-
-animation a.glitch-hover:hover {
-  border: none;
-  transform: translate(10px 10px);
 }
 
 main {
