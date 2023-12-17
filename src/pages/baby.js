@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 export default function Baby() {
 	redirect('https://montessori-beginnings.vercel.app/')
 	return (
