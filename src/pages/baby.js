@@ -1,3 +1,5 @@
+"use client"
+
 import { redirect } from 'next/navigation'
 export default function Baby() {
 	window.location.replace('https://montessori-beginnings.vercel.app/')
