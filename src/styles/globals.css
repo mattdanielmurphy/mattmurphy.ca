@@ -96,3 +96,20 @@ h2 {
   text-transform: uppercase;
   letter-spacing: .08em;
 }
+
+:root {
+  --modal-bg-color-light: #fff;
+  --modal-text-color-light: #000;
+  --modal-bg-color-dark: #333;
+  --modal-text-color-dark: #fff;
+}
+
+[data-theme='light'] {
+  --modal-bg-color: var(--modal-bg-color-light);
+  --modal-text-color: var(--modal-text-color-light);
+}
+
+[data-theme='dark'] {
+  --modal-bg-color: var(--modal-bg-color-dark);
+  --modal-text-color: var(--modal-text-color-dark);
+}

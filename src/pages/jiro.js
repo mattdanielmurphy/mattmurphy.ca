@@ -1,26 +1,10 @@
 import Image from 'next/image'
 
 export default function JiroDreamsOfSushi() {
-	// useEffect(() => {
-	// 	window.location.replace(
-	// 		'https://6ycdj3-my.sharepoint.com/:v:/g/personal/matt_6ycdj3_onmicrosoft_com/Ecrlz6TDnrJCmJbv79nDSjIBt4bZEqsxC_k2lW00vJTybg?e=lfg9KV',
-	// 	)
-	// })
 	const handleDownload = () => {
-		const downloadUrl =
-			'https://6ycdj3-my.sharepoint.com/personal/matt_6ycdj3_onmicrosoft_com/_layouts/15/download.aspx?UniqueId=a4cfe5ca-9ec3-42b2-9896-efefd9c34a32'
-
-		// Create a temporary anchor element
-		const link = document.createElement('a')
-		link.href = downloadUrl
-
-		// Set the download attribute to suggest a filename (optional)
-		link.download = 'video.mp4' // Replace with your desired filename
-
-		// Append to the body, click, and remove
-		document.body.appendChild(link)
-		link.click()
-		document.body.removeChild(link)
+		window.location.replace(
+			'https://drive.usercontent.google.com/download?id=1tC83R_ygINpYwd38InoSiAmCvjnXi3Oe&export=download&authuser=0',
+		)
 	}
 
 	return (
@@ -29,9 +13,8 @@ export default function JiroDreamsOfSushi() {
 				<Image
 					src='/jiro-poster.jpg'
 					alt='Jiro Dreams of Sushi Movie Poster'
-					width={500}
-					height={750}
-					layout='responsive'
+					width={250}
+					height={375}
 					priority
 				/>
 				<button onClick={handleDownload} style={styles.button}>
@@ -40,12 +23,11 @@ export default function JiroDreamsOfSushi() {
 			</div>
 		</main>
 	)
-
-	// Some basic styles for the button
 }
+
 const styles = {
 	button: {
-		backgroundColor: '#000',
+		backgroundColor: '#444',
 		border: 'none',
 		color: 'white',
 		padding: '15px 32px',
