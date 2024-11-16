@@ -158,7 +158,7 @@ export default function Codes() {
 					</svg>
 				</div>
 				<div className='sc-c25633e2-3 isSzYv'>
-					<a style={{ border: "none" }} aria-label='Download on the App Store' className='sc-c25633e2-4 esHymA' href='https://wakingup.onelink.me/8fmX' target='_blank'>
+					<a style={{ border: "none" }} aria-label='Download on the App Store' className='sc-c25633e2-4 esHymA' href='https://wakingup.onelink.me/8fmX' rel='noreferrer' target='_blank'>
 						<svg fill='none' height='35.8974358974359' viewBox='0 0 117 40' width='105' xmlns='http://www.w3.org/2000/svg' color='#6f6f6f' className='sc-c25633e2-5 cKFrWc'>
 							<path
 								d='M.887 4.335c0-1.122 0-1.684.184-2.127A2.41 2.41 0 0 1 2.375.904C2.818.721 3.379.721 4.502.721h108.061c1.123 0 1.684 0 2.127.183.591.245 1.06.714 1.304 1.304.184.443.184 1.005.184 2.127v31.201c0 1.123 0 1.684-.184 2.127a2.406 2.406 0 0 1-1.304 1.304c-.443.184-1.004.184-2.127.184H4.502c-1.123 0-1.684 0-2.127-.184a2.41 2.41 0 0 1-1.304-1.304C.887 37.22.887 36.66.887 35.536v-31.2Z'
@@ -182,7 +182,7 @@ export default function Codes() {
 							></path>
 						</svg>
 					</a>
-					<a style={{ border: "none" }} aria-label='Get it on Google Play' className='sc-c25633e2-4 esHymA' href='https://wakingup.onelink.me/CA3I' target='_blank'>
+					<a style={{ border: "none" }} aria-label='Get it on Google Play' className='sc-c25633e2-4 esHymA' href='https://wakingup.onelink.me/CA3I' rel='noreferrer' target='_blank'>
 						<svg fill='none' height='35.07692307692308' viewBox='0 0 130 40' width='114' xmlns='http://www.w3.org/2000/svg' color='#6f6f6f' className='sc-c25633e2-6 jafuar'>
 							<path d='M.174 3.13A2.41 2.41 0 0 1 2.584.72h124.882a2.41 2.41 0 0 1 2.41 2.41v33.61a2.41 2.41 0 0 1-2.41 2.41H2.584a2.41 2.41 0 0 1-2.41-2.41V3.13Z' fill='currentColor'></path>
 							<path
