@@ -115,7 +115,7 @@ export default function Codes() {
 					overflow: "auto",
 				}}
 			>
-				<div style={{ margin: "0 auto" }}>
+				<div style={{ margin: "3rem auto 0 auto" }}>
 					{codes.length > 0 ? (
 						<>
 							<h3 style={{ textAlign: "left", fontSize: "2rem" }}>
