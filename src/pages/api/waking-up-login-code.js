@@ -4,8 +4,9 @@ export default function handler(req, res) {
 		// Extract query parameters from the request
 		const params = req.query
 
+		const loginCode = decodeURI(params.code).match(/\d*/)
 		// Send the parameters back in the response
-		res.status(200).json({ receivedParams: params })
+		res.status(200).json({ receivedParams: params, loginCode: loginCode })
 	} else {
 		// Handle any other HTTP method
 		res.setHeader("Allow", ["GET"])
