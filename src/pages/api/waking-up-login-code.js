@@ -6,18 +6,26 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export default async function handler(req, res) {
 	// Check if the request method is GET
 	if (req.method === "GET") {
-		const subject = req.query?.params?.subject
+		const { subject } = req.query
 		if (subject) {
-			const loginCode = decodeURI(subject).match(/\d*/)
+			const matches = decodeURI(subject).match(/\d+/)
+			console.log(matches)
+			console.log("hello?!")
+			const loginCode = matches[0]
+
 			if (loginCode) {
-				const { data, error } = await supabase.from("codes").insert([{ loginCode }]).select()
+				const { data, error } = await supabase
+					.from("codes")
+					.insert([{ code: loginCode }])
+					.select()
 				if (error) console.log(error)
 				console.log(data)
 				res.status(200).json({ data })
 			}
+			res.status(200)
 		} else {
 			const rows = await supabase.from("codes").select("*")
-			res.status(200).json({ rows })
+			res.status(200).json({ data: rows.data })
 		}
 	} else {
 		// Handle any other HTTP method

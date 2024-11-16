@@ -25,6 +25,18 @@ body {
   background: rgb(var(--background-rgb));
 }
 
+button {
+  background: none;
+  border: none;
+  color: rgb(var(--foreground-rgb));
+  font-size: large;
+  padding: .5rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     --foreground-rgb: 255, 255, 255;
@@ -78,7 +90,7 @@ h1 {
 }
 
 p {
-  color: #aaa;
+  color: grey;
 }
 
 main div {
