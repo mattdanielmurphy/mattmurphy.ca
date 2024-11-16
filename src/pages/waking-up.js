@@ -115,17 +115,17 @@ export default function Codes() {
 					overflow: "auto",
 				}}
 			>
-				<p style={{ marginBottom: "20px" }}>(This page updates automatically as new codes are added&mdash;no need to refresh)</p>
-				{connectionError && <p style={{ color: "red" }}>Warning: Connection to the database has been lost. Please check your connection.</p>}
 				<div style={{ margin: "0 auto" }}>
 					{codes.length > 0 ? (
 						<>
 							<h3 style={{ textAlign: "left", fontSize: "2rem" }}>
 								{codes[0].code} <span style={{ color: "grey", fontWeight: "300" }}>{timeAgo(codes[0].createdAt)}</span>
 							</h3>
-							<button onClick={toggleShowAll} style={{ margin: "10px 0" }}>
-								{showAll ? "Hide" : "Show"} older codes
-							</button>
+							{codes.length > 1 && (
+								<button onClick={toggleShowAll} style={{ margin: "10px 0" }}>
+									{showAll ? "Hide" : "Show"} older codes
+								</button>
+							)}
 							{showAll &&
 								codes.slice(1).map((code, index) => (
 									<h3 key={index} style={{ textAlign: "left", fontSize: "1.5rem" }}>
@@ -134,7 +134,7 @@ export default function Codes() {
 								))}
 						</>
 					) : (
-						<h1>Loading...</h1>
+						<h2>Loading codes...</h2>
 					)}
 				</div>
 			</div>
@@ -203,6 +203,8 @@ export default function Codes() {
 							></path>
 						</svg>
 					</a>
+					<p style={{ marginTop: "20px" }}>(This page updates automatically as new codes are added&mdash;no need to refresh)</p>
+					{connectionError && <p style={{ color: "red" }}>Warning: Connection to the database has been lost. Please check your connection.</p>}
 				</div>
 			</footer>
 		</div>
