@@ -6,7 +6,7 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export default async function handler(req, res) {
 	// Check if the request method is GET
 	if (req.method === "GET") {
-		const { subject } = req.query.params
+		const subject = req.query?.params?.subject
 		if (subject) {
 			const loginCode = decodeURI(subject).match(/\d*/)
 			if (loginCode) {
