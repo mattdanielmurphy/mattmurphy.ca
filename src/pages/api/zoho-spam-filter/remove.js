@@ -19,5 +19,5 @@ export default async function handler(req, res) {
 		res.status(500).json({ error })
 	}
 	console.log(`Removed ${address} from zoho spam filter`)
-	res.status(200)
+	res.status(200).end()
 }

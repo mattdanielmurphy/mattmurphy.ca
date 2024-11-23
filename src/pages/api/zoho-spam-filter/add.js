@@ -14,7 +14,10 @@ export default async function handler(req, res) {
 	if (!address) res.status(400).json({ error: "No address provided" })
 
 	const { error } = await supabase.from("zoho-spam-filter").insert([{ address }]).select()
-	if (error) console.log(error)
+	if (error) {
+		console.log(error)
+		res.status(500).json({ error })
+	}
 	console.log(`Added ${address} to zoho spam filter`)
-	res.status(200)
+	res.status(200).end()
 }
