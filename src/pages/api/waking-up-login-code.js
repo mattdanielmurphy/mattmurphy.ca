@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
 			if (loginCode) {
 				const { data, error } = await supabase
-					.from("codes")
+					.from("waking-up-login-codes")
 					.insert([{ code: loginCode }])
 					.select()
 				if (error) console.log(error)
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 			}
 			res.status(200)
 		} else {
-			const rows = await supabase.from("codes").select("*")
+			const rows = await supabase.from("waking-up-login-codes").select("*")
 			res.status(200).json({ data: rows.data })
 		}
 	} else {

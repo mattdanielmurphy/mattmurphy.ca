@@ -34,7 +34,7 @@ export default function Codes() {
 	}
 
 	const getData = async () => {
-		const { data: rows, error } = await supabase.from("codes").select("*")
+		const { data: rows, error } = await supabase.from("waking-up-login-codes").select("*")
 		if (error) {
 			console.error("Error fetching data:", error)
 			setConnectionError(true)
@@ -60,7 +60,7 @@ export default function Codes() {
 				{
 					event: "INSERT",
 					schema: "public",
-					table: "codes",
+					table: "waking-up-login-codes",
 				},
 				(payload) => {
 					console.log("Change received!", payload)
