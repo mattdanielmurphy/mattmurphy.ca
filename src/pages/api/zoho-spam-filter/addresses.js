@@ -16,5 +16,5 @@ export default async function handler(req, res) {
 		res.status(500).json({ error })
 	}
 	const addresses = data.map((row) => row.address)
-	res.status(200).json(addresses)
+	res.status(200).json({ addresses })
 }
