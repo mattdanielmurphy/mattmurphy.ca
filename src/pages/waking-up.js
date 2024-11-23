@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { createClient } from "@supabase/supabase-js"
 
@@ -33,7 +33,7 @@ export default function Codes() {
 		return String(code).padStart(4, "0")
 	}
 
-	const getData = async () => {
+	const getData = useCallback(async () => {
 		const { data: rows, error } = await supabase.from("waking-up-login-codes").select("*")
 		if (error) {
 			console.error("Error fetching data:", error)
@@ -48,7 +48,7 @@ export default function Codes() {
 
 		setCodes(formattedData)
 		setConnectionError(false)
-	}
+	}, [])
 
 	useEffect(() => {
 		getData()
