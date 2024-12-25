@@ -1,9 +1,8 @@
 {
-	"redirects": [
+	"rewrites": [
 		{
 			"source": "/notion(.*)",
-			"destination": "https://polar-grease-827.notion.site$1",
-			"permanent": true
+			"destination": "https://polar-grease-827.notion.site$1"
 		}
 	]
 }
