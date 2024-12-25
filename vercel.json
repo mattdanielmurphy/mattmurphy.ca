@@ -1,8 +1,8 @@
 {
 	"redirects": [
 		{
-			"source": "https://notion.mattmurphy.ca/:path*",
-			"destination": "https://polar-grease-827.notion.site/:path*",
+			"source": "/notion(.*)",
+			"destination": "https://polar-grease-827.notion.site$1",
 			"permanent": true
 		}
 	]
