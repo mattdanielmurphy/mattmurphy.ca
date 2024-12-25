@@ -1,0 +1,9 @@
+{
+	"redirects": [
+		{
+			"source": "https://notion.mattmurphy.ca/:path*",
+			"destination": "polar-grease-827.notion.site",
+			"permanent": true
+		}
+	]
+}
