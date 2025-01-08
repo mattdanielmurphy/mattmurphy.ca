@@ -1,49 +1,13 @@
 :root {
   --app-height: 100%;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  height: var(--app-height);
-}
-
-body {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
   --link-color: #0B00FF;
   --link-hover-color: #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-}
-
-button {
-  background: none;
-  border: none;
-  color: rgb(var(--foreground-rgb));
-  font-size: large;
-  padding: .5rem;
-}
-
-button:hover {
-  cursor: pointer;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 0, 0, 0;
-    --link-color: #dd00ff;
-    --link-hover-color: #fff;
-  }
+  --modal-bg-color-light: #fff;
+  --modal-text-color-light: #000;
+  --modal-bg-color-dark: #333;
+  --modal-text-color-dark: #fff;
 }
 
 * {
@@ -54,66 +18,28 @@ button:hover {
 
 html,
 body {
+  padding: 0;
+  margin: 0;
   max-width: 100vw;
-  z-index: -10;
   overflow-x: hidden;
+  width: 100vw;
+  height: 100vh;
+  height: var(--app-height);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-a {
-  color: var(--link-color);
-  border-bottom: 1px dashed var(--link-color);
-  text-decoration: none;
-  padding: 0 .3rem .2rem .3rem;
-  transition: ease-in-out .3s;
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
 }
 
-a:hover {
-  color: var(--link-hover-color);
-}
-
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5vh;
-}
-
-h1 {
-  font-size: 1.4rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: .2em;
-  position: absolute;
-  top: 4rem;
-}
-
-p {
-  color: grey;
-}
-
-main div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2vh;
-  padding-bottom: 1rem;
-}
-
-h2 {
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-:root {
-  --modal-bg-color-light: #fff;
-  --modal-text-color-light: #000;
-  --modal-bg-color-dark: #333;
-  --modal-text-color-dark: #fff;
+@media (prefers-color-scheme: dark) {
+  body {
+    --foreground-rgb: 255, 255, 255;
+    --background-rgb: 0, 0, 0;
+    --link-color: #dd00ff;
+    --link-hover-color: #fff;
+  }
 }
 
 [data-theme='light'] {

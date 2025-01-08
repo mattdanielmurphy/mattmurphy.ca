@@ -1,15 +1,16 @@
-import Head from 'next/head'
-import { useEffect } from 'react'
+import Head from "next/head"
+import styles from "@/styles/Index.module.css"
+import { useEffect } from "react"
 
 export default function Home() {
 	useEffect(() => {
 		const appHeight = () => {
 			const doc = document.documentElement
-			doc.style.setProperty(' — app-height', `${window.innerHeight}px`)
+			doc.style.setProperty("--app-height", `${window.innerHeight}px`)
 		}
-		window.addEventListener('resize', appHeight)
+		window.addEventListener("resize", appHeight)
 		appHeight()
-		return () => window.removeEventListener('resize', appHeight)
+		return () => window.removeEventListener("resize", appHeight)
 	}, [])
 	return (
 		<>
@@ -19,26 +20,20 @@ export default function Home() {
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-			<main>
-				<h1>Matthew Daniel Murphy</h1>
-				<div>
-					<p>social media</p>
-					<h2>
-						<a
-							href='https://www.instagram.com/matthewdanielmurphy'
-							text='Instagram'
-						>
+			<main className={styles.main}>
+				<h1 className={styles.title}>Matthew Daniel Murphy</h1>
+				<div className={styles.container}>
+					<p className={styles.paragraph}>social media</p>
+					<h2 className={styles.heading}>
+						<a className={styles.link} href='https://www.instagram.com/matthewdanielmurphy' text='Instagram'>
 							Instagram
 						</a>
 					</h2>
 				</div>
-				<div>
-					<p>projects</p>
-					<h2>
-						<a
-							href='https://typery.mattmurphy.ca'
-							text='Typery'
-						>
+				<div className={styles.container}>
+					<p className={styles.paragraph}>projects</p>
+					<h2 className={styles.heading}>
+						<a className={styles.link} href='https://typery.mattmurphy.ca' text='Typery'>
 							Typery
 						</a>
 					</h2>
