@@ -1,0 +1,16 @@
+name: Scheduled Email Cron
+
+on:
+  schedule:
+    # Runs every 5 minutes
+    - cron: "*/5 * * * *"
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger email cron endpoint
+        run: |
+          curl -X GET \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          "${{ secrets.VERCEL_URL }}/api/cron/send-scheduled-emails"
