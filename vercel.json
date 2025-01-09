@@ -5,5 +5,11 @@
 			"destination": "https://polar-grease-827.notion.site$1",
 			"permanent": true
 		}
+	],
+	"crons": [
+		{
+			"path": "/api/cron/send-scheduled-emails",
+			"schedule": "* * * * *"
+		}
 	]
 }
