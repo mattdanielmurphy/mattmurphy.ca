@@ -3,18 +3,36 @@ import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+// Generate slug function
+const generateSlug = (str) => {
+	if (!str) return ''
+	str = str.replace(/^\s+|\s+$/g, '')
+	str = str.toLowerCase()
+	str = str
+		.replace(/[^a-z0-9 -]/g, '')
+		.replace(/\s+/g, '-')
+		.replace(/-+/g, '-')
+		.replace(/^-|-$/g, '')
+	return str
+}
+
 export default function RoadTrip() {
 	const [markdownContent, setMarkdownContent] = useState('')
 	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState(null)
 
 	useEffect(() => {
 		const loadMarkdown = async () => {
 			try {
 				const response = await fetch('/roadtrip.md')
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`)
+				}
 				const content = await response.text()
 				setMarkdownContent(content)
 			} catch (error) {
 				console.error('Error loading markdown:', error)
+				setError('Unable to load the road trip itinerary.')
 				setMarkdownContent('# Error loading content\n\nUnable to load the road trip itinerary.')
 			} finally {
 				setLoading(false)
@@ -22,6 +40,26 @@ export default function RoadTrip() {
 		}
 
 		loadMarkdown()
+	}, [])
+
+	// Handle anchor link clicks
+	useEffect(() => {
+		const handleAnchorClick = (e) => {
+			if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
+				e.preventDefault()
+				const targetId = e.target.getAttribute('href').substring(1)
+				const targetElement = document.getElementById(targetId)
+				if (targetElement) {
+					targetElement.scrollIntoView({ 
+						behavior: 'smooth',
+						block: 'start'
+					})
+				}
+			}
+		}
+
+		document.addEventListener('click', handleAnchorClick)
+		return () => document.removeEventListener('click', handleAnchorClick)
 	}, [])
 
 	if (loading) {
@@ -36,6 +74,25 @@ export default function RoadTrip() {
 							<div style={{ height: '1rem', backgroundColor: '#e0e0e0', borderRadius: '4px', width: '67%' }}></div>
 						</div>
 					</div>
+				</div>
+			</main>
+		)
+	}
+
+	if (error) {
+		return (
+			<main style={{ minHeight: '100vh', padding: '2rem 0', backgroundColor: '#f9f9f9' }}>
+				<div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1rem' }}>
+					<article style={{ 
+						backgroundColor: 'white', 
+						borderRadius: '12px', 
+						boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
+						padding: '2.5rem',
+						textAlign: 'center'
+					}}>
+						<h1 style={{ color: '#dc2626', marginBottom: '1rem' }}>Error Loading Content</h1>
+						<p style={{ color: '#6b7280' }}>{error}</p>
+					</article>
 				</div>
 			</main>
 		)
@@ -73,17 +130,43 @@ export default function RoadTrip() {
 								borderBottom: '2px solid #e5e7eb',
 								paddingBottom: '0.5rem'
 							}} {...props} />,
-							h3: ({node, ...props}) => <h3 style={{ 
-								fontSize: '1.25rem', 
-								fontWeight: '600', 
-								color: '#374151', 
-								marginBottom: '1rem', 
-								marginTop: '2rem',
-								backgroundColor: '#f3f4f6',
-								padding: '0.75rem 1rem',
-								borderRadius: '6px',
-								borderLeft: '4px solid #3b82f6'
-							}} {...props} />,
+							h3: ({node, children, ...props}) => {
+								// Handle children array properly
+								const childrenArray = Array.isArray(children) ? children : [children]
+								const heading = childrenArray
+									.flatMap((element) => {
+										if (typeof element === 'string') {
+											return element
+										}
+										if (element?.type !== undefined && typeof element.props?.children === 'string') {
+											return element.props.children
+										}
+										return []
+									})
+									.join('')
+								
+								const slug = generateSlug(heading)
+								
+								return (
+									<h3 
+										id={slug}
+										style={{ 
+											fontSize: '1.25rem', 
+											fontWeight: '600', 
+											color: '#374151', 
+											marginBottom: '1rem', 
+											marginTop: '2rem',
+											backgroundColor: '#f3f4f6',
+											padding: '0.75rem 1rem',
+											borderRadius: '6px',
+											borderLeft: '4px solid #3b82f6'
+										}} 
+										{...props}
+									>
+										{children}
+									</h3>
+								)
+							},
 							h4: ({node, ...props}) => <h4 style={{ 
 								fontSize: '1.125rem', 
 								fontWeight: '500', 
@@ -140,6 +223,15 @@ export default function RoadTrip() {
 								padding: '1rem',
 								borderRadius: '6px'
 							}} {...props} />,
+							a: ({node, ...props}) => <a style={{
+								color: '#3b82f6',
+								textDecoration: 'none',
+								borderBottom: '1px solid transparent',
+								transition: 'border-bottom-color 0.2s ease'
+							}} 
+							onMouseEnter={(e) => e.target.style.borderBottomColor = '#3b82f6'}
+							onMouseLeave={(e) => e.target.style.borderBottomColor = 'transparent'}
+							{...props} />,
 							table: ({node, ...props}) => <div style={{
 								overflowX: 'auto',
 								marginBottom: '2rem',
