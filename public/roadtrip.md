@@ -1,10 +1,9 @@
-# 🗺️ The Grand Circle Road Trip
+# 🔥 The Fifth Circle of Hell 🔥
 ## 🚗 A Relaxed 3-Month Adventure
 
 **Duration:** ~93 Days (July 28 - October 30)  
-**Distance:** ~8,000+ miles across North America
-
----
+**Distance:** ~8,000+ miles across North America  
+**Personnel:** *Top* men
 
 ## 📋 Trip Summary
 
@@ -21,8 +20,6 @@
 | 9   | [🗽 NYC → 🏙️ Chicago (via 🍁 Ontario)](#leg-9-nyc-chicago-via-southern-ontario) | 12 days  | 18-19 hrs  | Oct 8 - Oct 22  |
 | 10  | [🏙️ Chicago → 🏔️ Edmonton](#leg-10-chicago-edmonton-the-final-stretch)         | 10 days  | 34 hrs     | Oct 22 - Oct 30 |
 
----
-
 ## 🗺️ Detailed Itinerary
 
 ### Leg 1: 🏔️ Edmonton → 🌊 Vancouver
@@ -35,8 +32,6 @@
 - **Aug 1 - Aug 4:** 🌊 Vancouver stay  
   Rest and prepare for the US portion
 
----
-
 ### Leg 2: 🌊 Vancouver → 🌉 San Francisco  
 **Duration:** 13 days  
 **Drive Time:** 16-18 hours
@@ -47,7 +42,7 @@
 - **Aug 10 - Aug 16:** 🌉 San Francisco stay  
   6 nights to explore the Bay Area
 
----
+
 
 ### Leg 3: 🌉 San Francisco → 🌴 Los Angeles
 **Duration:** 4 days  
@@ -59,7 +54,7 @@
 - **Aug 16 - Aug 19:** 🛣️ Pacific Coast Highway  
   Leave SF on **Aug 16**. Take 3-4 days of short, scenic drives down Highway 1.
 
----
+
 
 ### Leg 4: 🌴 Los Angeles → 🎰 Las Vegas
 **Duration:** 11 days  
@@ -75,7 +70,7 @@
 - **Aug 27 - Aug 30:** 🎰 Las Vegas stay  
   3 nights is a great amount of time for Vegas.
 
----
+
 
 ### Leg 5: 🎰 Las Vegas → 🎸 Austin
 **Duration:** 12 days  
@@ -87,7 +82,7 @@
 - **Sep 6 - Sep 11:** 🎸 Austin stay  
   5 nights enjoying the music and food scene.
 
----
+
 
 ### Leg 6: 🎸 Austin → 🎭 New Orleans
 **Duration:** 6 days  
@@ -99,7 +94,7 @@
 - **Sep 13 - Sep 17:** 🎭 New Orleans stay  
   4 nights in the Big Easy.
 
----
+
 
 ### Leg 7: 🎭 New Orleans → 🏖️ Miami
 **Duration:** 8 days  
@@ -111,7 +106,7 @@
 - **Sep 21 - Sep 25:** 🏖️ Miami stay  
   4 nights to enjoy the beaches and culture.
 
----
+
 
 ### Leg 8: 🏖️ Miami → 🗽 New York City
 **Duration:** 13 days  
@@ -123,7 +118,7 @@
 - **Oct 2 - Oct 8:** 🗽 New York City stay  
   6 nights in NYC.
 
----
+
 
 ## 🏠 The Journey Home
 
@@ -149,7 +144,6 @@
 - **Oct 18 - Oct 22:** 🏙️ Chicago stay  
   4 nights in the Windy City.
 
----
 
 ### Leg 10: 🏙️ Chicago → 🏔️ Edmonton (The Final Stretch)
 **Duration:** 10 days  
@@ -168,8 +162,6 @@
   A ~5-6 hour drive. Take 2 easy days for the final part of your journey home.
 
 **🏠 ARRIVE HOME IN EDMONTON: ~OCTOBER 30th or 31st**
-
----
 
 ## 💡 Travel Tips
 
