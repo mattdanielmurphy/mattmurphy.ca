@@ -2,7 +2,7 @@
 	"redirects": [
 		{
 			"source": "/subtitles",
-			"destination": "https://netflix-subtitle-display-apozen8ch.vercel.app/",
+			"destination": "https://netflix-subtitle-display.vercel.app",
 			"permanent": true
 		}
 	]
