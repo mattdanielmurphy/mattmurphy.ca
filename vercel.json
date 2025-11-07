@@ -4,17 +4,6 @@
 			"source": "/subtitles",
 			"destination": "https://netflix-subtitle-display.vercel.app",
 			"permanent": true
-		},
-		{
-			"source": "/",
-			"has": [
-				{
-					"type": "host",
-					"value": "mc.mattmurphy.ca"
-				}
-			],
-			"destination": "75.158.208.18",
-			"permanent": true
 		}
 	]
 }
