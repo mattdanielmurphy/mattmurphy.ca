@@ -32,7 +32,7 @@ export default function Home() {
 					</h2>
 					<h2 className={styles.heading}>
 						<a className={styles.link} href='https://typery.mattmurphy.ca' text='Typery'>
-							Typery (abandoned)
+							Typery
 						</a>
 					</h2>
 				</div>
