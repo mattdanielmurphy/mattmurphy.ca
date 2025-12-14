@@ -52,7 +52,7 @@ export default function ContactForm() {
       
       {status === 'success' ? (
         <div className={styles.successMessage}>
-          Message sent! I'll get back to you soon.
+          Message sent! I&apos;ll get back to you soon.
         </div>
       ) : (
         <form onSubmit={handleFormSubmit} className={styles.form}>
