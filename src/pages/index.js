@@ -33,8 +33,13 @@ export default function Home() {
 				<div className={styles.container}>
 					<p className={styles.paragraph}>projects</p>
 					<h2 className={styles.heading}>
+						<a className={styles.link} href='/blocks' text='Blockdoku'>
+							Blockdoku
+						</a>
+					</h2>
+					<h2 className={styles.heading}>
 						<a className={styles.link} href='https://typery.mattmurphy.ca' text='Typery'>
-							Typery
+							Typery (abandoned)
 						</a>
 					</h2>
 				</div>
