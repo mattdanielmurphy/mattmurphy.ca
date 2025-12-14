@@ -45,7 +45,7 @@ export default function Home() {
 					</h2>
 				</div>
 				<div className={styles.container}>
-					<p className={styles.paragraph}>Contact</p>
+					<p className={styles.paragraph}>contact</p>
 					<ContactForm />
 				</div>
 			</main>
