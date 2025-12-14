@@ -1,0 +1,85 @@
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 2rem 0; /* Align left or center? User said minimalist. Usually centered is safe but left is more 'brutalist'/minimal sometimes. Let's stick to 2rem 0 to align with typical text flow left or use auto for center. The previous code had mx-auto. Let's use margin: 0 auto for center. */
+  margin: 0 auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(var(--foreground-rgb), 0.2);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 1px var(--link-color);
+}
+
+.button {
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  background-color: rgb(var(--foreground-rgb));
+  color: rgb(var(--background-rgb));
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  align-self: flex-start;
+}
+
+.button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  padding: 1rem;
+  border: 1px solid rgba(var(--foreground-rgb), 0.1);
+  background: rgba(var(--foreground-rgb), 0.03);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.errorMessage {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
