@@ -1,7 +1,7 @@
+import ContactForm from "@/components/ContactForm"
 import Head from "next/head"
 import styles from "@/styles/Index.module.css"
 import { useEffect } from "react"
-import ContactForm from "@/components/ContactForm"
 
 export default function Home() {
 	useEffect(() => {
