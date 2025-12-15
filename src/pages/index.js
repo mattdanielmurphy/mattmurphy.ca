@@ -1,6 +1,7 @@
 import Head from "next/head"
 import styles from "@/styles/Index.module.css"
 import { useEffect } from "react"
+import ContactForm from "@/components/ContactForm"
 
 export default function Home() {
 	useEffect(() => {
@@ -23,6 +24,19 @@ export default function Home() {
 			<main className={styles.main}>
 				<h1 className={styles.title}>Matthew Daniel Murphy</h1>
 				<div className={styles.container}>
+					<p className={styles.paragraph}>projects</p>
+					<h2 className={styles.heading}>
+						<a className={styles.link} href='/blocks' text='Blockdoku'>
+							Blockdoku
+						</a>
+					</h2>
+					<h2 className={styles.heading}>
+						<a className={styles.link} href='https://typery.mattmurphy.ca' text='Typery'>
+							Typery
+						</a>
+					</h2>
+				</div>
+				<div className={styles.container}>
 					<p className={styles.paragraph}>social media</p>
 					<h2 className={styles.heading}>
 						<a className={styles.link} href='https://www.instagram.com/matthewdanielmurphy' text='Instagram'>
@@ -31,12 +45,8 @@ export default function Home() {
 					</h2>
 				</div>
 				<div className={styles.container}>
-					<p className={styles.paragraph}>projects</p>
-					<h2 className={styles.heading}>
-						<a className={styles.link} href='https://typery.mattmurphy.ca' text='Typery'>
-							Typery
-						</a>
-					</h2>
+					<p className={styles.paragraph}>contact</p>
+					<ContactForm />
 				</div>
 			</main>
 		</>
