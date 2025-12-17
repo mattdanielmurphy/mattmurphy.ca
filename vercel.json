@@ -4,6 +4,11 @@
 			"source": "/subtitles",
 			"destination": "https://netflix-subtitle-display.vercel.app",
 			"permanent": true
+		},
+		{
+			"source": "/blocks",
+			"destination": "https://blockdoku.vercel.app",
+			"permanent": true
 		}
 	]
 }
