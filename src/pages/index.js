@@ -1,4 +1,5 @@
 import ContactForm from "@/components/ContactForm"
+import Divider from "@/components/Divider"
 import Layout from "@/components/Layout"
 import ProjectCard from "@/components/ProjectCard"
 import { projects } from "@/data/projects"
@@ -10,6 +11,7 @@ export default function Home() {
 			<section className={styles.hero}>
 				<div className={styles.heroContent}>
 					<h1 className={styles.title}>Matthew Daniel Murphy</h1>
+					<Divider className={styles.titleDivider} />
 					{/* <p className={styles.subtitle}>Drummer and computer guy.</p> */}
 				</div>
 			</section>

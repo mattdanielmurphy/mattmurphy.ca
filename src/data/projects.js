@@ -5,7 +5,7 @@ export const projects = [
 		description: "Online portfolio for musician Lost Fuzz and his studio, featuring several retro pseudo-emulator terminals.",
 		repo: "https://github.com/mattdanielmurphy/lost-fuzz-website",
 		live: "https://lostfuzz.vercel.app",
-		tags: ["Retro", "Website", "Portfolio"],
+		tags: ["Retro", "Portfolio"],
 	},
 	{
 		slug: "blockdoku",

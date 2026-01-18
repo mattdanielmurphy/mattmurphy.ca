@@ -9,7 +9,8 @@
   --subtle: #666;
   --accent: #ccc;
   --accent-secondary: #bbb;
-  --title: #rgb(31, 23, 23) --primary: #eee;
+  --title: #eee;
+  --primary: #eee;
   --primary-glow: rgba(0, 0, 0, 0.35);
   --code-bg: rgba(255, 255, 255, 0.1);
   --pre-bg: #1a1a1a;

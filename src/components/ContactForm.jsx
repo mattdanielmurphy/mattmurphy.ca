@@ -57,6 +57,7 @@ export default function ContactForm() {
 								id='email'
 								required
 								className={styles.input}
+								autocomplete='on'
 								placeholder='name@example.com'
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}

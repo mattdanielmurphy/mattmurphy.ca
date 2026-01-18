@@ -4,7 +4,7 @@
 	align-items: center;
 	padding: 1.2rem 1rem 1.5rem 1rem;
 	margin: 0 -1rem;
-	border: .5rem solid var(--background);
+	border: .5rem 0 .5rem 0 solid var(--background);
 	text-decoration: none;
 	/* border-bottom: 1px solid var(--card-border); */
 	transition: all 0.3s ease;
@@ -120,5 +120,20 @@
 
 	.seeProject {
 		display: none;
+	}
+
+	.tags {
+		gap: 0.35rem;
+	}
+}
+
+@media (max-width: 390px) {
+	.header {
+		display: block;
+	}
+
+	.tags {
+		margin-left: 25px;
+		padding: .5rem 0 .25rem 0;
 	}
 }
