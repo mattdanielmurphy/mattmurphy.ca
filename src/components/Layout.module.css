@@ -1,0 +1,19 @@
+.main {
+	min-height: 100vh;
+}
+
+.footer {
+	text-align: center;
+	padding: 4rem 2rem 4rem 2rem;
+	color: var(--subtle);
+	font-size: 0.8rem;
+	border-top: 1px solid var(--card-border);
+	/* background: var(--background); */
+}
+
+@media (max-width: 600px) {
+	.main {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+}

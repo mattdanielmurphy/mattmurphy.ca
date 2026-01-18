@@ -1,14 +1,13 @@
 .container {
-  width: 100%;
-  max-width: 500px;
-  margin: 2rem 0; /* Align left or center? User said minimalist. Usually centered is safe but left is more 'brutalist'/minimal sometimes. Let's stick to 2rem 0 to align with typical text flow left or use auto for center. The previous code had mx-auto. Let's use margin: 0 auto for center. */
-  margin: 0 auto;
+  margin: 0 auto 2rem auto;
+  max-width: 600px;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1.5rem 0;
 }
 
 .formGroup {
@@ -22,64 +21,123 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 600;
-  opacity: 0.7;
+  color: var(--muted);
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  animation: fadeInDown 0.2s ease-out;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 15px;
+  border: 5px solid transparent;
+  border-bottom-color: var(--foreground);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .input,
 .textarea {
   width: 100%;
-  padding: 0.8rem;
-  background: transparent;
-  border: 1px solid rgba(var(--foreground-rgb), 0.2);
-  border-radius: 4px;
+  padding: 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
-  color: inherit;
+  color: var(--foreground);
   transition: all 0.2s ease;
 }
 
 .input:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--link-color);
-  box-shadow: 0 0 0 1px var(--link-color);
+  border-color: var(--foreground);
+}
+
+.buttonWrapper {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  pointer-events: none;
 }
 
 .button {
-  margin-top: 1rem;
-  padding: 0.8rem 2rem;
-  background-color: rgb(var(--foreground-rgb));
-  color: rgb(var(--background-rgb));
-  border: none;
+  padding: 0.6rem 1.4rem;
+  background: var(--input-bg);
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  font-family: var(--font-lato), sans-serif;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
   align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .button:hover:not(:disabled) {
-  opacity: 0.8;
+  background: var(--card-border);
+  border-color: var(--foreground);
 }
 
 .button:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .successMessage {
-  padding: 1rem;
-  border: 1px solid rgba(var(--foreground-rgb), 0.1);
-  background: rgba(var(--foreground-rgb), 0.03);
+  padding: 1.5rem;
+  border: 1px solid var(--card-border);
   border-radius: 4px;
   text-align: center;
+  color: var(--muted);
 }
 
 .errorMessage {
-  color: #e53e3e;
+  color: var(--foreground);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }

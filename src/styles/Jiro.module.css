@@ -5,6 +5,7 @@
 	justify-content: center;
 	min-height: 100vh;
 	padding: 2rem;
+	background: var(--background);
 }
 
 .container {
@@ -16,21 +17,5 @@
 }
 
 .button {
-	background-color: #444;
-	border: none;
-	color: white;
-	padding: 15px 32px;
-	text-align: center;
-	text-transform: uppercase;
-	letter-spacing: .02em;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
 	margin: 4px 2px;
-	cursor: pointer;
-	border-radius: 4px;
-}
-
-.button:hover {
-	background-color: #333;
 }

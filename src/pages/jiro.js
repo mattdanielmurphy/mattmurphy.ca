@@ -10,7 +10,7 @@ export default function JiroDreamsOfSushi() {
 		<main className={styles.main}>
 			<div className={styles.container}>
 				<Image src='/jiro-poster.jpg' alt='Jiro Dreams of Sushi Movie Poster' width={250} height={375} priority />
-				<button onClick={handleDownload} className={styles.button}>
+				<button onClick={handleDownload} className={`${styles.button} btn`}>
 					Download
 				</button>
 			</div>
