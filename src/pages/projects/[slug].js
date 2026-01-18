@@ -17,7 +17,7 @@ export default function Project({ project, readmeContent }) {
 						</Link>
 						<div className={styles.titleWrapper}>
 							<h1 className={styles.title}>{project.title}</h1>
-							<Divider className={styles.titleDivider} />
+							{/* <Divider className={styles.titleDivider} /> */}
 							<div className={styles.tags}>
 								{project.tags.map((tag) => (
 									<span key={tag} className='tag-chip'>
@@ -94,7 +94,9 @@ export async function getStaticProps({ params }) {
 			const res = await fetch(apiUrl, { headers })
 
 			if (res.ok) {
-				readmeContent = await res.text()
+				const text = await res.text()
+				// Remove the first H1 header (e.g., # Project Title) to avoid redundancy with the page title
+				readmeContent = text.replace(/^#\s+.*$/m, "").trim()
 			} else {
 				console.warn(`Failed to fetch README for ${project.slug}: ${res.status} ${res.statusText}`)
 			}
