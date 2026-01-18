@@ -34,7 +34,12 @@
 	transition: color 0.2s;
 }
 
-.links a:hover,
+@media (hover: hover) {
+	.links a:hover {
+		color: var(--foreground);
+	}
+}
+
 .links a.active {
 	color: var(--foreground);
 }

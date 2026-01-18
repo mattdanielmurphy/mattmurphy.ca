@@ -44,8 +44,10 @@
 	padding: .5rem;
 }
 
-.button:hover {
-	cursor: pointer;
+@media (hover: hover) {
+	.button:hover {
+		cursor: pointer;
+	}
 }
 
 .link {
@@ -56,6 +58,8 @@
 	transition: ease-in-out .3s;
 }
 
-.link:hover {
-	color: var(--link-hover-color);
+@media (hover: hover) {
+	.link:hover {
+		color: var(--link-hover-color);
+	}
 }

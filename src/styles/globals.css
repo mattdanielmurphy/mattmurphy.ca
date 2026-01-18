@@ -77,9 +77,11 @@ a {
   letter-spacing: 0.1em;
 }
 
-.btn:hover:not(:disabled) {
-  background: var(--hover-bg);
-  border-color: var(--foreground);
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--foreground);
+  }
 }
 
 .btn:disabled {

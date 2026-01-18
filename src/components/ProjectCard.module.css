@@ -15,17 +15,19 @@
 	border-bottom: none;
 }
 
-.card:hover {
-	box-shadow: 0 0 2rem var(--primary-glow);
-	z-index: 10;
-}
+@media (hover: hover) {
+	.card:hover {
+		box-shadow: 0 0 2rem var(--primary-glow);
+		z-index: 10;
+	}
 
-.card:hover .title {
-	color: var(--primary);
-}
+	.card:hover .title {
+		color: var(--primary);
+	}
 
-.card:hover .tags {
-	color: var(--secondary);
+	.card:hover .tags {
+		color: var(--secondary);
+	}
 }
 
 .cardMain {
@@ -67,8 +69,10 @@
 	transition: color 0.3s ease;
 }
 
-.card:hover .description {
-	color: var(--accent);
+@media (hover: hover) {
+	.card:hover .description {
+		color: var(--accent);
+	}
 }
 
 .seeProject {
@@ -92,9 +96,11 @@
 	line-height: normal;
 }
 
-.card:hover .seeProject {
-	opacity: 1;
-	transform: translateY(0);
+@media (hover: hover) {
+	.card:hover .seeProject {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .arrow {
@@ -105,8 +111,10 @@
 	flex-shrink: 0;
 }
 
-.card:hover .arrow {
-	transform: translateX(3px);
+@media (hover: hover) {
+	.card:hover .arrow {
+		transform: translateX(3px);
+	}
 }
 
 @media (max-width: 420px) {

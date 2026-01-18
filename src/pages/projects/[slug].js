@@ -17,7 +17,7 @@ export default function Project({ project, readmeContent }) {
 						</Link>
 						<div className={styles.titleWrapper}>
 							<h1 className={styles.title}>{project.title}</h1>
-							{/* <Divider className={styles.titleDivider} /> */}
+							<Divider className={styles.titleDivider} />
 							<div className={styles.tags}>
 								{project.tags.map((tag) => (
 									<span key={tag} className='tag-chip'>

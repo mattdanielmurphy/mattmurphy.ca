@@ -124,9 +124,11 @@
   letter-spacing: 0.1em;
 }
 
-.button:hover:not(:disabled) {
-  background: var(--card-border);
-  border-color: var(--foreground);
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: var(--card-border);
+    border-color: var(--foreground);
+  }
 }
 
 .button:disabled {

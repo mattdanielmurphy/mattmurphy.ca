@@ -6,10 +6,6 @@
 	/* border-bottom: 1px solid var(--card-border); */
 }
 
-.heroContent {
-	max-width: 100%;
-}
-
 .title {
 	font-size: 3rem;
 	font-weight: 700;
@@ -19,7 +15,8 @@
 }
 
 .titleDivider {
-	width: 20rem;
+	max-width: 20rem;
+	/* max-width: 90vw; */
 	height: auto;
 	margin: 3rem auto 0 auto;
 	display: block;
@@ -66,6 +63,8 @@
 	padding: .5rem 1.2rem 1rem 1.2rem;
 }
 
+
+
 @media (max-width: 600px) {
 	.container {
 		padding-left: 0;
@@ -77,13 +76,24 @@
 	}
 
 	.title {
+		font-size: 2.5rem;
+	}
+}
+
+@media (max-width: 500px) {
+	.title {
+		font-size: 2.2rem;
+	}
+}
+
+@media (max-width: 420px) {
+	.title {
 		font-size: 2rem;
 	}
+}
 
-	.hero {
-		padding: 7rem 0 1rem 0;
-		padding-left: 0;
-		padding-right: 0;
-		border: none;
+@media (max-width: 390px) {
+	.title {
+		font-size: 1.8rem;
 	}
 }

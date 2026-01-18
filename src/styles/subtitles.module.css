@@ -38,8 +38,10 @@
     transition: background-color 0.2s ease;
 }
 
-.controls button:hover {
-    opacity: 0.8;
+@media (hover: hover) {
+    .controls button:hover {
+        opacity: 0.8;
+    }
 }
 
 .logContainer {
@@ -65,8 +67,10 @@
     cursor: pointer;
 }
 
-.logEntry:hover {
-    background-color: var(--input-bg);
+@media (hover: hover) {
+    .logEntry:hover {
+        background-color: var(--input-bg);
+    }
 }
 
 .logEntry.latest {
