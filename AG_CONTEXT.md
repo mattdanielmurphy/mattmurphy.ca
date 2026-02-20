@@ -17,6 +17,9 @@
 - `src/pages/_document.js`: Root document component.
 - `src/pages/index.js`: Home page.
 
+## Background Processes
+- Includes a Vercel cron job (`/api/cron/keep-alive`) to ping Supabase daily to keep the free-tier database active.
+
 ## Definition of Done
 - Code compiles without errors.
 - Spacing improvements are visually pleasing and responsive.
