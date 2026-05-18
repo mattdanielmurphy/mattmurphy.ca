@@ -48,7 +48,7 @@ export default function PhysicsLabsDirectory({ labs }) {
                             href={`/physics/${lab.slug}`}
                             className={styles.card}
                         >
-                            <h2>{lab.title}</h2>
+                            <h2>{lab.title.replace(/^PH\d+\s+U\d+[A-Z]?[:\s]+/, '')}</h2>
                             <p>{lab.unit}</p>
                         </Link>
                     ))}
