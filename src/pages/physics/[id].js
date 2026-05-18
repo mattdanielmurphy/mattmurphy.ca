@@ -1,58 +1,36 @@
-import Navbar from "@/components/Navbar"
 import Head from "next/head"
 import { useRouter } from "next/router"
-import Link from "next/link"
 import styles from "./physics.module.css"
 
 export default function PhysicsLabViewer() {
 	const router = useRouter()
 	const { id } = router.query
 
-	// Ensure we only load valid labs
-	const validLabs = ["collision-forensics", "coulombs-law"]
-	const isValid = validLabs.includes(id)
-
 	if (!id) return null
+
+	// Format title neatly
+	const title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
 	return (
 		<>
 			<Head>
-				<title>{isValid ? `${id.replace("-", " ")} Lab` : "Lab Not Found"} | Matt Murphy</title>
+				<title>{title} | Matt Murphy</title>
+				<style>{`
+					html, body {
+						margin: 0;
+						padding: 0;
+						height: 100%;
+						overflow: hidden; /* Prevent double scrollbars on the main window */
+					}
+				`}</style>
 			</Head>
-			<div className={styles.physicsNavbar}>
-				<Link href="/physics" className={styles.navLogo}>
-					Physics Labs
-				</Link>
-				<div className={styles.navLinks}>
-					<Link href="/physics/coulombs-law" className={id === 'coulombs-law' ? styles.active : ''}>
-						Coulomb's Law
-					</Link>
-					<Link href="/physics/collision-forensics" className={id === 'collision-forensics' ? styles.active : ''}>
-						Collision Forensics
-					</Link>
-				</div>
-			</div>
 			<div className={styles.viewerContainer}>
-				{isValid ? (
-					<iframe 
-						src={`/physics-labs/${id}.html`} 
-						className={styles.iframe}
-						title={`Physics Lab: ${id}`}
-						onLoad={(e) => {
-							const iframe = e.target;
-							try {
-								iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-							} catch (err) {
-								console.error("Iframe resize error:", err);
-							}
-						}}
-					/>
-				) : (
-					<div className={styles.notFound}>
-						<h2>Lab not found</h2>
-						<p>The requested physics lab could not be found.</p>
-					</div>
-				)}
+				<iframe 
+					src={`/physics-labs/${id}.html`} 
+					className={styles.iframe}
+					title={`Physics Lab: ${id}`}
+					style={{ height: '100vh', width: '100vw', display: 'block', border: 'none' }}
+				/>
 			</div>
 		</>
 	)

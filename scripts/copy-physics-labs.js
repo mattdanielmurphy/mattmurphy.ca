@@ -10,45 +10,47 @@ const IMAGES_DIR = path.join(PUBLIC_LABS_DIR, 'images');
 if (!fs.existsSync(PUBLIC_LABS_DIR)) fs.mkdirSync(PUBLIC_LABS_DIR, { recursive: true });
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
-const LABS = [
-  {
-    source: path.join(SCHOOL_DIR, 'physics-12/u1-review/Free-Fall-Lab/Physics 12 U1 Free-Fall Lab Assignment (2D Projectiles).preview.html'),
-    slug: 'free-fall'
-  },
-  {
-    source: path.join(SCHOOL_DIR, 'physics-12/u2-equilibrium-and-torque/Force Table Lab/Physics 12 Unit 2 Force Table Lab.preview.html'),
-    slug: 'force-table'
-  },
-  {
-    source: path.join(SCHOOL_DIR, 'physics-12/u3-centripetal/Lab/PH12 U3A Artificial Gravity Lab.preview.html'),
-    slug: 'artificial-gravity'
-  },
-  {
-    source: path.join(SCHOOL_DIR, 'physics-12/u4-momentum/PH12 U4 Lab/PH12 U4 Lab A - Collision Forensics.preview.html'),
-    slug: 'collision-forensics'
-  },
-  {
-    source: path.join(SCHOOL_DIR, 'physics-12/u5-electricity/u5-lab-colombs-law/PH12 U5: Coulomb’s Law Virtual Lab.preview.html'),
-    slug: 'coulombs-law'
+console.log('Finding and copying physics labs...');
+
+// Recursively find all .preview.html files in the physics-12 directory
+function findPreviews(dir, fileList = []) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    if (fs.statSync(filePath).isDirectory()) {
+      findPreviews(filePath, fileList);
+    } else if (file.endsWith('.preview.html')) {
+      fileList.push(filePath);
+    }
   }
-];
+  return fileList;
+}
 
-console.log('Copying physics labs and their images...');
+const previewFiles = findPreviews(path.join(SCHOOL_DIR, 'physics-12'));
+const manifest = [];
 
-for (const lab of LABS) {
-  if (!fs.existsSync(lab.source)) {
-    console.warn(`Warning: Could not find ${lab.source}`);
-    continue;
+previewFiles.forEach(source => {
+  const sourceDir = path.dirname(source);
+  const basename = path.basename(source, '.preview.html');
+  
+  // Create a clean slug from the filename
+  const slug = basename
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
+  let html = fs.readFileSync(source, 'utf8');
+
+  // Extract title (look for <title> or fallback)
+  let title = basename;
+  const titleMatch = html.match(/<title>(.*?)<\/title>/i);
+  if (titleMatch) {
+    title = titleMatch[1].replace(' - Physics Lab', '').trim();
   }
 
-  const sourceDir = path.dirname(lab.source);
-  let html = fs.readFileSync(lab.source, 'utf8');
-
-  // Find all images: <img src="..."> or similar
-  // HTML from pdf-exporter might have <img src="...">
+  // Extract images
   const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
   let match;
-
   while ((match = imgRegex.exec(html)) !== null) {
     const imgSrc = match[1];
     
@@ -57,34 +59,57 @@ for (const lab of LABS) {
       continue;
     }
 
-    // imgSrc is likely relative to sourceDir, e.g., "force-vs-distance.png"
-    // Wait, pdf-exporter sets <base href="file://${INPUT_DIR}/">
-    // So the browser resolves imgSrc relative to INPUT_DIR.
     const imagePath = path.resolve(sourceDir, imgSrc);
     
     if (fs.existsSync(imagePath)) {
-      const imageName = path.basename(imgSrc);
-      const newImageName = `${lab.slug}-${imageName}`;
+      const ext = path.extname(imagePath);
+      const originalName = path.basename(imagePath, ext);
+      const newImageName = `${slug}-${originalName}${ext}`.replace(/[^a-zA-Z0-9.-]/g, '-');
       const destImagePath = path.join(IMAGES_DIR, newImageName);
       
       fs.copyFileSync(imagePath, destImagePath);
-      
-      // Replace the src in HTML
-      // Since replace replaces the first occurrence, we can just replace `src="imgSrc"` or similar.
-      html = html.replace(`src="${imgSrc}"`, `src="/physics-labs/images/${newImageName}"`);
       console.log(`  Copied image: ${imgSrc} -> images/${newImageName}`);
+      
+      html = html.replace(`src="${imgSrc}"`, `src="/physics-labs/images/${newImageName}"`);
     } else {
       console.warn(`  Warning: Could not find image ${imagePath}`);
     }
   }
 
-  // Remove the <base> tag so that absolute paths like /physics-labs/images/... work correctly
+  // Remove <base> tag
   html = html.replace(/<base[^>]+>/i, '');
 
-  // Save the modified HTML
-  const destHtml = path.join(PUBLIC_LABS_DIR, `${lab.slug}.html`);
-  fs.writeFileSync(destHtml, html, 'utf8');
-  console.log(`✔ Copied ${lab.slug}`);
-}
+  // Inject the internal scrolling Navbar at the top of the body
+  const backButtonHtml = `
+  <div style="padding: 1.5rem 1.5rem 0 1.5rem; text-align: left; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+    <a href="/physics" target="_parent" style="color: #666; text-decoration: none; font-weight: 500; font-size: 1rem; border: 1px solid #ddd; padding: 0.5rem 1rem; border-radius: 6px; display: inline-block; background: #fff;">← Back to Physics Labs</a>
+  </div>
+  `;
+  html = html.replace(/<body[^>]*>/i, `$&${backButtonHtml}`);
 
-console.log('Done!');
+  // Save the modified HTML
+  const destHtml = path.join(PUBLIC_LABS_DIR, `${slug}.html`);
+  fs.writeFileSync(destHtml, html, 'utf8');
+
+  // Push to manifest
+  // Read unit from filename or directory if possible
+  let unit = "Other";
+  const unitMatch = source.match(/u(\d)/i) || source.match(/unit[\s-]?(\d)/i);
+  if (unitMatch) {
+    unit = `Unit ${unitMatch[1]}`;
+  }
+  
+  manifest.push({ slug, title, unit });
+  console.log(`✔ Processed ${slug} ("${title}")`);
+});
+
+// Sort manifest by unit
+manifest.sort((a, b) => a.unit.localeCompare(b.unit) || a.title.localeCompare(b.title));
+
+// Write manifest.json
+fs.writeFileSync(
+  path.join(PUBLIC_LABS_DIR, 'manifest.json'), 
+  JSON.stringify(manifest, null, 2)
+);
+
+console.log('Done! Generated manifest.json with', manifest.length, 'labs.');

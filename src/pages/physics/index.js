@@ -2,8 +2,29 @@ import Head from 'next/head'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
 import styles from './physics.module.css'
+import fs from 'fs'
+import path from 'path'
 
-export default function PhysicsLabsDirectory() {
+export async function getStaticProps() {
+    const manifestPath = path.join(process.cwd(), 'public', 'physics-labs', 'manifest.json');
+    let labs = [];
+    try {
+        if (fs.existsSync(manifestPath)) {
+            const data = fs.readFileSync(manifestPath, 'utf8');
+            labs = JSON.parse(data);
+        }
+    } catch (e) {
+        console.error("Error reading manifest:", e);
+    }
+    
+    return {
+        props: {
+            labs
+        }
+    }
+}
+
+export default function PhysicsLabsDirectory({ labs }) {
     return (
         <>
             <Head>
@@ -14,11 +35,11 @@ export default function PhysicsLabsDirectory() {
                     Physics Labs
                 </Link>
                 <div className={styles.navLinks}>
-                    <Link href="/physics/free-fall">Free Fall</Link>
-                    <Link href="/physics/force-table">Force Table</Link>
-                    <Link href="/physics/artificial-gravity">Artificial Gravity</Link>
-                    <Link href="/physics/collision-forensics">Collision Forensics</Link>
-                    <Link href="/physics/coulombs-law">Coulomb's Law</Link>
+                    {labs.map(lab => (
+                        <Link key={lab.slug} href={`/physics/${lab.slug}`}>
+                            {lab.title}
+                        </Link>
+                    ))}
                 </div>
             </div>
             <main className={styles.container}>
@@ -28,33 +49,15 @@ export default function PhysicsLabsDirectory() {
                 </p>
 
                 <div className={styles.grid}>
-                    <Link href="/physics/free-fall" className={styles.card}>
-                        <h2>Free-Fall Lab</h2>
-                        <p>Unit 1: Kinematics</p>
-                    </Link>
-
-                    <Link href="/physics/force-table" className={styles.card}>
-                        <h2>Force Table Lab</h2>
-                        <p>Unit 2: Equilibrium</p>
-                    </Link>
-
-                    <Link href="/physics/artificial-gravity" className={styles.card}>
-                        <h2>Artificial Gravity Lab</h2>
-                        <p>Unit 3: Centripetal Force</p>
-                    </Link>
-
-                    <Link
-                        href="/physics/collision-forensics"
-                        className={styles.card}
-                    >
-                        <h2>Collision Forensics</h2>
-                        <p>Unit 4: Momentum</p>
-                    </Link>
-
-                    <Link href="/physics/coulombs-law" className={styles.card}>
-                        <h2>Coulomb's Law Virtual Lab</h2>
-                        <p>Unit 5: Electricity</p>
-                    </Link>
+                    {labs.map(lab => (
+                        <Link key={lab.slug} href={`/physics/${lab.slug}`} className={styles.card}>
+                            <h2>{lab.title}</h2>
+                            <p>{lab.unit}</p>
+                        </Link>
+                    ))}
+                    {labs.length === 0 && (
+                        <p>No labs found. Please run the copy script.</p>
+                    )}
                 </div>
             </main>
         </>
