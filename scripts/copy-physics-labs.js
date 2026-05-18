@@ -66,6 +66,9 @@ for (const lab of LABS) {
     }
   }
 
+  // Remove the <base> tag so that absolute paths like /physics-labs/images/... work correctly
+  html = html.replace(/<base[^>]+>/i, '');
+
   // Save the modified HTML
   const destHtml = path.join(PUBLIC_LABS_DIR, `${lab.slug}.html`);
   fs.writeFileSync(destHtml, html, 'utf8');
