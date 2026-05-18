@@ -19,7 +19,7 @@ function findPreviews(dir, fileList = []) {
     const filePath = path.join(dir, file);
     if (fs.statSync(filePath).isDirectory()) {
       findPreviews(filePath, fileList);
-    } else if (file.endsWith('.preview.html')) {
+    } else if (file.endsWith('.preview.html') && file.toLowerCase().includes('lab')) {
       fileList.push(filePath);
     }
   }
@@ -111,5 +111,18 @@ fs.writeFileSync(
   path.join(PUBLIC_LABS_DIR, 'manifest.json'), 
   JSON.stringify(manifest, null, 2)
 );
+
+// Clean up obsolete HTML files in the destination directory
+const existingFiles = fs.readdirSync(PUBLIC_LABS_DIR);
+const activeSlugs = new Set(manifest.map(m => m.slug));
+existingFiles.forEach(file => {
+  if (file.endsWith('.html')) {
+    const slug = path.basename(file, '.html');
+    if (!activeSlugs.has(slug)) {
+      fs.unlinkSync(path.join(PUBLIC_LABS_DIR, file));
+      console.log(`🧹 Deleted obsolete HTML file: ${file}`);
+    }
+  }
+});
 
 console.log('Done! Generated manifest.json with', manifest.length, 'labs.');
