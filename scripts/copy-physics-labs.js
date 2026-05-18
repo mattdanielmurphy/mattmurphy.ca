@@ -12,6 +12,18 @@ if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
 const LABS = [
   {
+    source: path.join(SCHOOL_DIR, 'physics-12/u1-review/Free-Fall-Lab/Physics 12 U1 Free-Fall Lab Assignment (2D Projectiles).preview.html'),
+    slug: 'free-fall'
+  },
+  {
+    source: path.join(SCHOOL_DIR, 'physics-12/u2-equilibrium-and-torque/Force Table Lab/Physics 12 Unit 2 Force Table Lab.preview.html'),
+    slug: 'force-table'
+  },
+  {
+    source: path.join(SCHOOL_DIR, 'physics-12/u3-centripetal/Lab/PH12 U3A Artificial Gravity Lab.preview.html'),
+    slug: 'artificial-gravity'
+  },
+  {
     source: path.join(SCHOOL_DIR, 'physics-12/u4-momentum/PH12 U4 Lab/PH12 U4 Lab A - Collision Forensics.preview.html'),
     slug: 'collision-forensics'
   },

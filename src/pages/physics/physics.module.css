@@ -86,9 +86,7 @@
 .viewerContainer {
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 61px);
 	width: 100%;
-	overflow: hidden;
 }
 
 .navBar {
@@ -115,6 +113,7 @@
 .iframe {
 	flex: 1;
 	width: 100%;
+	min-height: 100vh;
 	border: none;
 	background: #f5f5f7; /* Match pdf-exporter.js html background */
 }

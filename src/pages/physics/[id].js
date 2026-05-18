@@ -38,6 +38,14 @@ export default function PhysicsLabViewer() {
 						src={`/physics-labs/${id}.html`} 
 						className={styles.iframe}
 						title={`Physics Lab: ${id}`}
+						onLoad={(e) => {
+							const iframe = e.target;
+							try {
+								iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+							} catch (err) {
+								console.error("Iframe resize error:", err);
+							}
+						}}
 					/>
 				) : (
 					<div className={styles.notFound}>

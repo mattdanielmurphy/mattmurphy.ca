@@ -79,14 +79,21 @@ body {
   flex-shrink: 0;
 }
 
-/* Constant Page Look */
+/* Constant Page Look (Mimics PDF scaling on zoom) */
 body {
   max-width: 8.5in;
-  margin: 0 auto;
-  padding: 1.5rem;
+  margin: 40px auto;
+  padding: 1in;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.05);
   border-radius: 4px;
   min-height: 11in;
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    margin: 10px auto;
+    padding: 1.5rem;
+  }
 }
 
 /* Print Specific */
