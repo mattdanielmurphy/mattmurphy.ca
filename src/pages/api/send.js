@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 				from,
 				to: [body.email],
 				subject: "Message Received - Matt Murphy",
-				text: `Hi there,\n\nThanks for reaching out! I've received your message and will get back to you shortly.\n\nHere is a copy of your message:\n\n---\n${body.message}\n---\n\nBest,\nMatt`,
+				text: `Hi there,\n\nThanks for reaching out! I've received your message and will get back to you shortly.\n\nHere is a copy of your message:\n\n---\n${body.message}\n---\n\nTake care,\n\nMatt`,
 			}),
 		])
 
