@@ -1,0 +1,149 @@
+.card {
+	display: flex;
+	justify-content: stretch;
+	align-items: center;
+	padding: 1.4rem .8rem 1.7rem .8rem;
+	margin: 0 -1rem;
+	border: .5rem 0 .5rem 0 solid var(--background);
+	text-decoration: none;
+	/* border-bottom: 1px solid var(--card-border); */
+	transition: all 0.3s ease;
+	border-radius: .6rem;
+}
+
+.card:last-child {
+	border-bottom: none;
+}
+
+@media (hover: hover) {
+	.card:hover {
+		box-shadow: 0 0 2rem var(--primary-glow);
+		z-index: 10;
+	}
+
+	.card:hover .title {
+		color: var(--primary);
+	}
+
+	.card:hover .tags {
+		color: var(--secondary);
+	}
+}
+
+.cardMain {
+	flex: 1;
+}
+
+.header {
+	display: flex;
+	align-items: baseline;
+	gap: 1rem;
+	margin-bottom: 0.5rem;
+	flex-wrap: nowrap;
+	margin-left: 25px;
+}
+
+.title {
+	font-size: 1.35rem;
+	margin: 0;
+	margin-left: -25px;
+	color: var(--accent);
+	font-weight: 700;
+	transition: color 0.3s ease;
+}
+
+.tags {
+	margin: 0;
+	display: flex;
+	color: var(--subtle);
+	gap: 0.75rem;
+	transition: color 0.3s ease;
+}
+
+.description {
+	color: var(--muted);
+	font-size: 0.9rem;
+	margin: 0;
+	margin-left: 25px;
+	max-width: 600px;
+	transition: color 0.3s ease;
+}
+
+@media (hover: hover) {
+	.card:hover .description {
+		color: var(--accent);
+	}
+}
+
+.seeProject {
+	opacity: 0;
+	transform: translateY(8px);
+	transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+	font-size: 1rem;
+	font-weight: 700;
+	font-family: var(--font-cormorant);
+	font-style: italic;
+	color: var(--accent);
+	white-space: nowrap;
+	margin-left: 2rem;
+	display: flex;
+	align-items: center;
+	padding: 0.25rem 0.6rem 0.3rem 0.6rem;
+	/* background: var(--card-border); */
+	border: 1px solid var(--subtle);
+	border-radius: 4px;
+	pointer-events: none;
+	line-height: normal;
+}
+
+@media (hover: hover) {
+	.card:hover .seeProject {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.arrow {
+	margin-left: 0.1rem;
+	margin-top: .1rem;
+	display: block;
+	transition: transform 0.3s ease;
+	flex-shrink: 0;
+}
+
+@media (hover: hover) {
+	.card:hover .arrow {
+		transform: translateX(3px);
+	}
+}
+
+@media (max-width: 420px) {
+	.header {
+		display: block;
+	}
+
+	.tags {
+		padding: .5rem 0 .25rem 0;
+	}
+}
+
+@media (max-width: 700px) {
+	.card {
+		flex-direction: column;
+		align-items: flex-start;
+		margin: 0;
+	}
+
+	.header {
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.seeProject {
+		display: none;
+	}
+
+	.tags {
+		gap: 0.35rem;
+	}
+}

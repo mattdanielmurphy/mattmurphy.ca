@@ -1,0 +1,151 @@
+.container {
+  margin: 0 auto 2rem auto;
+  max-width: 600px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  animation: fadeInDown 0.2s ease-out;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 15px;
+  border: 5px solid transparent;
+  border-bottom-color: var(--foreground);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--foreground);
+  transition: all 0.2s ease;
+}
+
+.input[type="email"] {
+  text-transform: lowercase;
+  padding-top: .95rem;
+  padding-bottom: 1.05rem;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--foreground);
+}
+
+.buttonWrapper {
+  margin-top: .5rem;
+  display: flex;
+}
+
+.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  pointer-events: none;
+}
+
+.button {
+  padding: 0.8rem 1.4rem;
+  background: var(--input-bg);
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-lato), sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: var(--card-border);
+    border-color: var(--foreground);
+  }
+}
+
+.button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  padding: 1.5rem;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.errorMessage {
+  color: var(--foreground);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}

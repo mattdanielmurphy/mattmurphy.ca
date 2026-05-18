@@ -1,0 +1,45 @@
+.nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: 1.5rem 0;
+	z-index: 100;
+	background: var(--background);
+	border-bottom: 1px solid var(--card-border);
+}
+
+.container {
+	max-width: var(--max-width);
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.logo {
+	font-weight: 600;
+	font-size: 1rem;
+	color: var(--foreground);
+}
+
+.links {
+	display: flex;
+	gap: 1.5rem;
+}
+
+.links a {
+	font-size: 0.9rem;
+	color: var(--subtle);
+	transition: color 0.2s;
+}
+
+@media (hover: hover) {
+	.links a:hover {
+		color: var(--foreground);
+	}
+}
+
+.links a.active {
+	color: var(--foreground);
+}

@@ -1,0 +1,183 @@
+.bgWrapper {
+	background: var(--background);
+	width: 100%;
+	min-height: 100vh;
+}
+
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 6rem 2rem 4rem 2rem;
+}
+
+@media (max-width: 600px) {
+	.container {
+		padding-left: 2rem;
+		padding-right: 2rem;
+		padding-top: 6rem;
+	}
+}
+
+.header {
+	margin-bottom: 2rem;
+}
+
+.backLink {
+	display: inline-block;
+	margin-bottom: 2rem;
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
+@media (hover: hover) {
+	.backLink:hover {
+		color: var(--foreground);
+	}
+}
+
+.titleWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+.titleDivider {
+	width: calc(100% - 2rem);
+	max-width: 240px;
+	height: auto;
+	margin: 1.5rem 1rem;
+	display: block;
+	color: var(--muted);
+	opacity: 0.5;
+}
+
+@media (max-width: 420px) {
+	.titleDivider {
+		max-width: calc(100% - 2rem);
+	}
+}
+
+.title {
+	font-size: 2.5rem;
+	margin-bottom: 0;
+	color: var(--foreground);
+	font-weight: 700;
+}
+
+.tags {
+	display: flex;
+	gap: 0.75rem;
+}
+
+
+
+.description {
+	font-size: 1.1rem;
+	line-height: 1.6;
+	color: var(--accent);
+	margin-bottom: 2rem;
+}
+
+.links {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.divider {
+	border: none;
+	border-top: 1px solid var(--card-border);
+	margin: 4rem 0;
+}
+
+/* Markdown Styles */
+.readme {
+	color: var(--foreground);
+	font-size: 1rem;
+	line-height: 1.7;
+	overflow-wrap: break-word;
+}
+
+.readme h1,
+.readme h2,
+.readme h3,
+.readme h4 {
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
+	font-weight: 600;
+	color: var(--foreground);
+}
+
+.readme h1 {
+	font-size: 2rem;
+	border-bottom: 1px solid var(--card-border);
+	padding-bottom: 0.5rem;
+}
+
+.readme h2 {
+	font-size: 1.5rem;
+}
+
+.readme h3 {
+	font-size: 1.25rem;
+}
+
+.readme p {
+	margin-bottom: 1.25rem;
+}
+
+.readme ul,
+.readme ol {
+	margin-bottom: 1.5rem;
+	padding-left: 1.5rem;
+}
+
+.readme li {
+	margin-bottom: 0.5rem;
+}
+
+.readme a {
+	color: var(--primary);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.readme code {
+	background: var(--code-bg);
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-family: monospace;
+	font-size: 0.9em;
+}
+
+.readme pre {
+	background: var(--pre-bg);
+	padding: 1rem;
+	border-radius: 6px;
+	overflow-x: auto;
+	margin-bottom: 1.5rem;
+	border: 1px solid var(--card-border);
+}
+
+.readme pre code {
+	background: none;
+	padding: 0;
+	color: inherit;
+}
+
+.readme img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	margin: 1.5rem 0;
+	border: 1px solid var(--card-border);
+}
+
+.readme blockquote {
+	border-left: 4px solid var(--card-border);
+	margin: 1.5rem 0;
+	padding-left: 1rem;
+	color: var(--muted);
+	font-style: italic;
+}

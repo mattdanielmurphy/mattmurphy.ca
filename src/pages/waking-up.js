@@ -65,7 +65,7 @@ export default function Codes() {
 				(payload) => {
 					console.log("Change received!", payload)
 					getData()
-				}
+				},
 			)
 			.subscribe()
 
@@ -78,7 +78,7 @@ export default function Codes() {
 				prevCodes.map((code) => ({
 					...code,
 					timeAgo: timeAgo(code.createdAt),
-				}))
+				})),
 			)
 		}, 1000)
 
@@ -116,13 +116,13 @@ export default function Codes() {
 				}}
 			>
 				<div style={{ margin: "3rem auto 0 auto" }}>
-					{codes.length > 0 ? (
+					{codes.length > 0 ?
 						<>
 							<h3 style={{ textAlign: "left", fontSize: "2rem" }}>
 								{codes[0].code} <span style={{ color: "grey", fontWeight: "300" }}>{timeAgo(codes[0].createdAt)}</span>
 							</h3>
 							{codes.length > 1 && (
-								<button onClick={toggleShowAll} style={{ margin: "10px 0" }}>
+								<button onClick={toggleShowAll} className='btn' style={{ margin: "10px 0" }}>
 									{showAll ? "Hide" : "Show"} older codes
 								</button>
 							)}
@@ -133,9 +133,7 @@ export default function Codes() {
 									</h3>
 								))}
 						</>
-					) : (
-						<h2>Loading codes...</h2>
-					)}
+					:	<h2>Loading codes...</h2>}
 				</div>
 			</div>
 

@@ -1,0 +1,126 @@
+.container {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 4rem 2rem;
+	min-height: calc(100vh - 80px);
+}
+
+.container h1 {
+	font-size: 3rem;
+	margin-bottom: 0.5rem;
+}
+
+.subtitle {
+	font-size: 1.2rem;
+	color: #666;
+	margin-bottom: 3rem;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 2rem;
+}
+
+.card {
+	display: block;
+	padding: 2rem;
+	border: 1px solid #eaeaea;
+	border-radius: 12px;
+	text-decoration: none;
+	color: inherit;
+	transition: transform 0.2s, box-shadow 0.2s;
+	background: #fff;
+}
+
+.card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+	border-color: #ddd;
+}
+
+.card h2 {
+	font-size: 1.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.card p {
+	color: #666;
+	margin: 0;
+}
+
+/* Viewer styles */
+.physicsNavbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+	background: #fff;
+	border-bottom: 1px solid #eaeaea;
+	/* Removed position: sticky to satisfy "I don't want the header to be sticky" */
+}
+
+.navLogo {
+	font-weight: 700;
+	font-size: 1.25rem;
+	color: #000;
+	text-decoration: none;
+}
+
+.navLinks {
+	display: flex;
+	gap: 1.5rem;
+}
+
+.navLinks a {
+	color: #666;
+	text-decoration: none;
+	font-size: 0.95rem;
+	transition: color 0.2s;
+}
+
+.navLinks a:hover,
+.navLinks a.active {
+	color: #000;
+}
+
+.viewerContainer {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.navBar {
+	padding: 1rem 2rem;
+	background: #fafafa;
+	border-bottom: 1px solid #eaeaea;
+}
+
+.backButton {
+	color: #333;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 0.9rem;
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	border-radius: 6px;
+	transition: background 0.2s;
+}
+
+.backButton:hover {
+	background: #eee;
+}
+
+.iframe {
+	flex: 1;
+	width: 100%;
+	min-height: 100vh;
+	border: none;
+	background: #f5f5f7;
+	/* Match pdf-exporter.js html background */
+}
+
+.notFound {
+	padding: 4rem 2rem;
+	text-align: center;
+}

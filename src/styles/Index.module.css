@@ -6,6 +6,7 @@
 	min-height: 100vh;
 	padding: 2rem;
 	position: relative;
+	gap: 4rem;
 }
 
 .title {
@@ -13,7 +14,6 @@
 	font-weight: normal;
 	text-transform: uppercase;
 	letter-spacing: .2em;
-	margin-bottom: 4rem;
 }
 
 .container {
@@ -21,12 +21,12 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 2vh;
-	padding-bottom: 1rem;
+	gap: 1.5rem;
+	width: 100%;
 }
 
 .heading {
-	font-size: 1rem;
+	font-size: 1.2rem;
 	font-weight: bold;
 	text-transform: uppercase;
 	letter-spacing: .08em;
@@ -44,8 +44,10 @@
 	padding: .5rem;
 }
 
-.button:hover {
-	cursor: pointer;
+@media (hover: hover) {
+	.button:hover {
+		cursor: pointer;
+	}
 }
 
 .link {
@@ -56,6 +58,8 @@
 	transition: ease-in-out .3s;
 }
 
-.link:hover {
-	color: var(--link-hover-color);
+@media (hover: hover) {
+	.link:hover {
+		color: var(--link-hover-color);
+	}
 }

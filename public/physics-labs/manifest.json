@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "ph12-u1-free-fall-lab-2d-projectiles",
+    "title": "PH12 U1 Free-Fall Lab (2D Projectiles)",
+    "unit": "Unit 1"
+  },
+  {
+    "slug": "ph12-u2-force-table-lab",
+    "title": "PH12 U2 Force Table Lab",
+    "unit": "Unit 2"
+  },
+  {
+    "slug": "ph12-u3a-artificial-gravity-lab",
+    "title": "PH12 U3A Artificial Gravity Lab",
+    "unit": "Unit 3"
+  },
+  {
+    "slug": "ph12-u4-lab-a-collision-forensics",
+    "title": "PH12 U4 Lab A - Collision Forensics",
+    "unit": "Unit 4"
+  },
+  {
+    "slug": "ph12-u5-coulomb-s-law-virtual-lab",
+    "title": "PH12 U5 Coulomb’s Law Virtual Lab",
+    "unit": "Unit 5"
+  }
+]

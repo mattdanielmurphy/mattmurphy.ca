@@ -1,0 +1,43 @@
+export const projects = [
+	{
+		slug: "lost-fuzz",
+		title: "Lost Fuzz Website",
+		description: "Online portfolio for musician Lost Fuzz and his studio, featuring several retro pseudo-emulator terminals.",
+		repo: "https://github.com/mattdanielmurphy/lost-fuzz-website",
+		live: "https://lostfuzz.vercel.app",
+		tags: ["Retro", "Portfolio"],
+	},
+	{
+		slug: "blockdoku",
+		title: "Blockdoku",
+		description: "Browser-based block puzzle game featuring a leaderboard and an evolving ML simulator that plays multiple games in parallel.",
+		repo: "https://github.com/mattdanielmurphy/block-puzzle",
+		live: "https://blockdoku.vercel.app",
+		extraLinks: [{ label: "View ML Simulator", url: "https://blockdoku.vercel.app/simulate" }],
+		tags: ["Web Game", "Simulator", "ML"],
+	},
+	{
+		slug: "typery",
+		title: "Typery",
+		description: "Minimalist typing practice tool based on keybr.com.",
+		repo: "https://github.com/mattdanielmurphy/typery",
+		live: "https://typery.mattmurphy.ca",
+		tags: ["Web App", "Productivity"],
+	},
+	{
+		slug: "userscript-bundler",
+		title: "Userscript Bundler",
+		description: "CLI tool to bundle userscripts for streamlined local editing.",
+		repo: "https://github.com/mattdanielmurphy/userscript-bundler",
+		live: null,
+		tags: ["CLI", "Dev Tool"],
+	},
+	{
+		slug: "webpage-compressor",
+		title: "Webpage Compressor",
+		description: "CLI tool to compress HTML by removing metadata, scripts, and styles.",
+		repo: "https://github.com/mattdanielmurphy/webpage-compressor",
+		live: null,
+		tags: ["CLI", "Dev Tool"],
+	},
+]
