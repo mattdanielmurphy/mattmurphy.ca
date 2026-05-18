@@ -359,6 +359,130 @@ tr:nth-child(even) { background-color: #fcfcfc; }
 @media print {
   .reset-button { display: none !important; }
 }
+
+/* Clickable images on screen */
+@media screen {
+  img {
+    cursor: zoom-in;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  }
+  img:hover {
+    transform: scale(1.015);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Modal styling */
+.image-modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 10000; /* Extremely high z-index to stay on top */
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(10, 10, 12, 0.45); /* Dark semi-transparent background */
+  backdrop-filter: blur(16px) saturate(180%); /* Premium glassmorphism */
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Open State */
+.image-modal.open {
+  display: flex;
+  opacity: 1;
+}
+
+/* Modal Content (Image) */
+.image-modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Springs/bounces slightly */
+  cursor: zoom-out; /* Click image to close too */
+}
+
+.image-modal.open .image-modal-content {
+  transform: scale(1);
+}
+
+/* Modal Caption */
+.image-modal-caption {
+  margin: 15px auto;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+  color: #f3f4f6;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+}
+
+.image-modal.open .image-modal-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Close Button */
+.image-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.image-modal-close:hover,
+.image-modal-close:focus {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* Hide modal and zoom effects when printing */
+@media print {
+  .image-modal {
+    display: none !important;
+  }
+  img {
+    cursor: default !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
 </style>
 <script>
 window.addEventListener('load', () => {
@@ -644,6 +768,63 @@ window.addEventListener('load', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(updateScaling, 150);
   });
+
+  // Image Modal Viewer logic
+  const modal = document.getElementById('image-modal');
+  const modalImg = document.getElementById('image-modal-content');
+  const modalCaption = document.getElementById('image-modal-caption');
+  const closeBtn = document.getElementById('image-modal-close');
+
+  if (modal && modalImg && modalCaption && closeBtn) {
+    document.querySelectorAll('img:not(#image-modal-content)').forEach(img => {
+      img.addEventListener('click', () => {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        
+        let captionText = '';
+        let sibling = img.nextElementSibling;
+        if (!sibling && img.parentElement) {
+          sibling = img.parentElement.nextElementSibling;
+        }
+        if (sibling && sibling.classList.contains('figure-caption')) {
+          captionText = sibling.innerHTML;
+        } else if (img.alt) {
+          captionText = img.alt;
+        }
+        
+        modalCaption.innerHTML = captionText;
+        modal.style.display = 'flex';
+        modal.offsetHeight; // Force reflow
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    const closeModal = () => {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        if (!modal.classList.contains('open')) {
+          modal.style.display = 'none';
+        }
+      }, 300);
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target === modalImg) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeModal();
+      }
+    });
+  }
 });
 </script>
 </head>
@@ -655,7 +836,7 @@ window.addEventListener('load', () => {
   <div class="pdf-only-link" style="text-align: center; margin-bottom: 2rem; font-size: 0.95em;">
     <a href="https://mattmurphy.ca/physics/ph12-u3a-artificial-gravity-lab" style="color: #0066cc; text-decoration: underline; font-weight: 500;">Recommended: view web version: https://mattmurphy.ca/physics/ph12-u3a-artificial-gravity-lab</a>
   </div>
-  <h1>Physics 12 Unit 3: Artifical Gravity Lab – Mission to Mars</h1>
+  <h1>PH12 U3: Artifical Gravity Lab – Mission to Mars</h1>
 <div class="metadata-header">
   <div><strong>Teacher:</strong> Naresh Chand</div>
   <div><strong>Student:</strong> Matthew Murphy</div>
@@ -907,5 +1088,12 @@ s76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,1
 
 <p><span class="citation"><sup>1</sup> <a href="https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/fnsys.2015.00092/full">Clément GR, Bukley AP and Paloski WH (2015) Artificial gravity as a countermeasure for mitigating physiological deconditioning during long-duration space missions</a>. Front. Syst. Neurosci. 9:92. doi: 10.3389/fnsys.2015.00092</span></p>
 
+  
+  <!-- Image Viewer Modal -->
+  <div id="image-modal" class="image-modal" aria-hidden="true" style="display: none;">
+    <span class="image-modal-close" id="image-modal-close" role="button" aria-label="Close modal">&times;</span>
+    <img class="image-modal-content" id="image-modal-content" alt="Enlarged view">
+    <div class="image-modal-caption" id="image-modal-caption"></div>
+  </div>
 </body>
 </html>
