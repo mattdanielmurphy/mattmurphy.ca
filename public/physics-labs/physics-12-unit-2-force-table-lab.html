@@ -648,7 +648,7 @@ window.addEventListener('load', () => {
 </script>
 </head>
 <body>
-  <div style="padding: 1.5rem 1.5rem 0 1.5rem; text-align: left; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+  <div style="padding-bottom: 1.5rem; text-align: left; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
     <a href="/physics" target="_parent" style="color: #666; text-decoration: none; font-weight: 500; font-size: 1rem; border: 1px solid #ddd; padding: 0.5rem 1rem; border-radius: 6px; display: inline-block; background: #fff;">← Back to Physics Labs</a>
   </div>
   <h1>Physics 12 Unit 2 Force Table Lab</h1>
@@ -767,14 +767,7 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <p>The resultant was calculated as <span class="inline-math-nowrap" style="white-space: nowrap;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">47.8</span><span class="mord text"><span class="mord"> N @ </span></span><span class="mord">258°</span></span></span></span>,</span> from which the required equilibrant was derived as <span class="inline-math-nowrap" style="white-space: nowrap;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">47.8</span><span class="mord text"><span class="mord"> N @ </span></span><span class="mord">78°</span></span></span></span></span> by reversing its direction. <strong>This confirms that the force required to achieve equilibrium can be predicted analytically with precision.</strong> The scaled vector diagram in Part 2 produced a measured resultant of <span class="inline-math-nowrap" style="white-space: nowrap;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">50</span><span class="mord text"><span class="mord"> N @ </span></span><span class="mord">259°</span></span></span></span>,</span> yielding a percent error of <span class="inline-math-nowrap" style="white-space: nowrap;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">4.71%</span></span></span></span></span> in magnitude and <span class="inline-math-nowrap" style="white-space: nowrap;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">0.204%</span></span></span></span></span> in direction. <strong>The close agreement between methods validates that the component method is a reliable predictive tool for achieving translational equilibrium.</strong></p>
 
   <div class="pdf-only-link" style="text-align: center; margin-top: 3rem; font-size: 0.9em; color: #666;">
-    <script>
-      let slug = '';
-      if (document.title.includes('Coulomb')) slug = 'coulombs-law';
-      else if (document.title.includes('Collision')) slug = 'collision-forensics';
-      if (slug) {
-        document.write('Interactive web version available at: <a href="https://mattmurphy.ca/physics/' + slug + '">https://mattmurphy.ca/physics/' + slug + '</a>');
-      }
-    </script>
+    Interactive web version available at: <a href="https://mattmurphy.ca/physics/${path.basename(INPUT_FILENAME, '.md').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">https://mattmurphy.ca/physics/${path.basename(INPUT_FILENAME, '.md').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}</a>
   </div>
 </body>
 </html>
