@@ -19,13 +19,20 @@ export default function PhysicsLabViewer() {
 			<Head>
 				<title>{isValid ? `${id.replace("-", " ")} Lab` : "Lab Not Found"} | Matt Murphy</title>
 			</Head>
-			<Navbar />
-			<div className={styles.viewerContainer}>
-				<div className={styles.navBar}>
-					<Link href="/physics" className={styles.backButton}>
-						← Back to Labs
+			<div className={styles.physicsNavbar}>
+				<Link href="/physics" className={styles.navLogo}>
+					Physics Labs
+				</Link>
+				<div className={styles.navLinks}>
+					<Link href="/physics/coulombs-law" className={id === 'coulombs-law' ? styles.active : ''}>
+						Coulomb's Law
+					</Link>
+					<Link href="/physics/collision-forensics" className={id === 'collision-forensics' ? styles.active : ''}>
+						Collision Forensics
 					</Link>
 				</div>
+			</div>
+			<div className={styles.viewerContainer}>
 				{isValid ? (
 					<iframe 
 						src={`/physics-labs/${id}.html`} 

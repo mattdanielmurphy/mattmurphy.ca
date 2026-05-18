@@ -50,10 +50,43 @@
 }
 
 /* Viewer styles */
+.physicsNavbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+	background: #fff;
+	border-bottom: 1px solid #eaeaea;
+	/* Removed position: sticky to satisfy "I don't want the header to be sticky" */
+}
+
+.navLogo {
+	font-weight: 700;
+	font-size: 1.25rem;
+	color: #000;
+	text-decoration: none;
+}
+
+.navLinks {
+	display: flex;
+	gap: 1.5rem;
+}
+
+.navLinks a {
+	color: #666;
+	text-decoration: none;
+	font-size: 0.95rem;
+	transition: color 0.2s;
+}
+
+.navLinks a:hover, .navLinks a.active {
+	color: #000;
+}
+
 .viewerContainer {
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 80px);
+	height: calc(100vh - 61px);
 	width: 100%;
 	overflow: hidden;
 }

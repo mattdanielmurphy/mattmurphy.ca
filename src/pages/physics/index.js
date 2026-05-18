@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout"
-import Navbar from "@/components/Navbar"
+import Link from "next/link"
 import Link from "next/link"
 import Head from "next/head"
 import styles from "./physics.module.css"
@@ -10,7 +10,19 @@ export default function PhysicsLabsDirectory() {
 			<Head>
 				<title>Physics Labs | Matt Murphy</title>
 			</Head>
-			<Navbar />
+			<div className={styles.physicsNavbar}>
+				<Link href="/physics" className={styles.navLogo}>
+					Physics Labs
+				</Link>
+				<div className={styles.navLinks}>
+					<Link href="/physics/coulombs-law">
+						Coulomb's Law
+					</Link>
+					<Link href="/physics/collision-forensics">
+						Collision Forensics
+					</Link>
+				</div>
+			</div>
 			<main className={styles.container}>
 				<h1>Physics Labs</h1>
 				<p className={styles.subtitle}>A collection of physics lab reports and simulations.</p>
