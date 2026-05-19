@@ -5,11 +5,36 @@ const path = require('path')
 const SCHOOL_DIR = path.resolve(__dirname, '../../../School')
 const PUBLIC_LABS_DIR = path.resolve(__dirname, '../public/physics-labs')
 const IMAGES_DIR = path.join(PUBLIC_LABS_DIR, 'images')
+const FONTS_DIR = path.join(PUBLIC_LABS_DIR, 'fonts')
 
 // Ensure directories exist
 if (!fs.existsSync(PUBLIC_LABS_DIR))
     fs.mkdirSync(PUBLIC_LABS_DIR, { recursive: true })
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true })
+if (!fs.existsSync(FONTS_DIR)) fs.mkdirSync(FONTS_DIR, { recursive: true })
+
+// Copy KaTeX fonts from School/node_modules/katex/dist/fonts to public/physics-labs/fonts
+const schoolFontsDir = path.join(SCHOOL_DIR, 'node_modules/katex/dist/fonts')
+if (fs.existsSync(schoolFontsDir)) {
+    console.log('Copying KaTeX fonts...')
+    const fontFiles = fs.readdirSync(schoolFontsDir)
+    let copiedCount = 0
+    fontFiles.forEach((file) => {
+        const srcPath = path.join(schoolFontsDir, file)
+        const destPath = path.join(FONTS_DIR, file)
+        if (!fs.existsSync(destPath) || fs.statSync(srcPath).size !== fs.statSync(destPath).size) {
+            fs.copyFileSync(srcPath, destPath)
+            copiedCount++
+        }
+    })
+    if (copiedCount > 0) {
+        console.log(`  Copied ${copiedCount} new/updated font files to public/physics-labs/fonts/`)
+    } else {
+        console.log('  All KaTeX fonts are already up-to-date in public/physics-labs/fonts/')
+    }
+} else {
+    console.warn(`  Warning: Could not find KaTeX fonts in ${schoolFontsDir}`)
+}
 
 console.log('Finding and copying physics labs...')
 
@@ -92,6 +117,14 @@ previewFiles.forEach((source) => {
 
     // Remove <base> tag
     html = html.replace(/<base[^>]+>/i, '')
+
+    // Inject font preloads into <head> to speed up initial math rendering and prevent FOUT
+    const fontPreloads = `
+  <link rel="preload" href="/physics-labs/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/physics-labs/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/physics-labs/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin>
+`
+    html = html.replace(/<\/head>/i, `${fontPreloads}$&`)
 
     // Inject the internal scrolling Navbar at the top of the body
     const backButtonHtml = `
