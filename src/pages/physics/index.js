@@ -38,7 +38,8 @@ export default function PhysicsLabsDirectory({ labs }) {
             <main className={styles.container}>
                 <h1>Physics Labs</h1>
                 <p className={styles.subtitle}>
-                    A collection of physics lab reports and simulations.
+                    A collection of physics lab reports for a marginally
+                    improved viewing experience.
                 </p>
 
                 <div className={styles.grid}>
@@ -48,7 +49,12 @@ export default function PhysicsLabsDirectory({ labs }) {
                             href={`/physics/${lab.slug}`}
                             className={styles.card}
                         >
-                            <h2>{lab.title.replace(/^PH\d+\s+U\d+[A-Z]?[:\s]+/, '')}</h2>
+                            <h2>
+                                {lab.title.replace(
+                                    /^PH\d+\s+U\d+[A-Z]?[:\s]+/,
+                                    ''
+                                )}
+                            </h2>
                             <p>{lab.unit}</p>
                         </Link>
                     ))}
