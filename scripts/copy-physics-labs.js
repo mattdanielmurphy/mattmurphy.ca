@@ -47,7 +47,7 @@ function findPreviews(dir, fileList = []) {
             findPreviews(filePath, fileList)
         } else if (
             file.endsWith('.preview.html') &&
-            file.toLowerCase().includes('lab')
+            (file.toLowerCase().includes('lab') || file === 'Physics 12 Formula Sheet.preview.html')
         ) {
             fileList.push(filePath)
         }
@@ -57,6 +57,7 @@ function findPreviews(dir, fileList = []) {
 
 const previewFiles = findPreviews(path.join(SCHOOL_DIR, 'physics-12'))
 const manifest = []
+const processedSlugs = new Set()
 
 previewFiles.forEach((source) => {
     const sourceDir = path.dirname(source)
@@ -67,6 +68,8 @@ previewFiles.forEach((source) => {
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')
+
+    processedSlugs.add(slug)
 
     let html = fs.readFileSync(source, 'utf8')
 
@@ -138,15 +141,18 @@ previewFiles.forEach((source) => {
     const destHtml = path.join(PUBLIC_LABS_DIR, `${slug}.html`)
     fs.writeFileSync(destHtml, html, 'utf8')
 
-    // Push to manifest
-    // Read unit from filename or directory if possible
-    let unit = 'Other'
-    const unitMatch = source.match(/u(\d)/i) || source.match(/unit[\s-]?(\d)/i)
-    if (unitMatch) {
-        unit = `Unit ${unitMatch[1]}`
-    }
+    // Only push to manifest if it's a lab (i.e. not the formula sheet)
+    const isFormulaSheet = basename === 'Physics 12 Formula Sheet'
+    if (!isFormulaSheet) {
+        // Read unit from filename or directory if possible
+        let unit = 'Other'
+        const unitMatch = source.match(/u(\d)/i) || source.match(/unit[\s-]?(\d)/i)
+        if (unitMatch) {
+            unit = `Unit ${unitMatch[1]}`
+        }
 
-    manifest.push({ slug, title, unit })
+        manifest.push({ slug, title, unit })
+    }
     console.log(`✔ Processed ${slug} ("${title}")`)
 })
 
@@ -163,11 +169,10 @@ fs.writeFileSync(
 
 // Clean up obsolete HTML files in the destination directory
 const existingFiles = fs.readdirSync(PUBLIC_LABS_DIR)
-const activeSlugs = new Set(manifest.map((m) => m.slug))
 existingFiles.forEach((file) => {
     if (file.endsWith('.html')) {
         const slug = path.basename(file, '.html')
-        if (!activeSlugs.has(slug)) {
+        if (!processedSlugs.has(slug)) {
             fs.unlinkSync(path.join(PUBLIC_LABS_DIR, file))
             console.log(`🧹 Deleted obsolete HTML file: ${file}`)
         }
