@@ -23,5 +23,10 @@
     "slug": "ph12-u5-coulomb-s-law-virtual-lab",
     "title": "PH12 U5 Coulomb’s Law Virtual Lab",
     "unit": "Unit 5"
+  },
+  {
+    "slug": "ph12-u6-dc-motor-lab",
+    "title": "PH12 U6 DC Motor Lab",
+    "unit": "Unit 6"
   }
 ]

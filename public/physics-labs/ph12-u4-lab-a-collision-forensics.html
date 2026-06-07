@@ -96,7 +96,20 @@ body {
   }
 }
 
+/* Custom media rules for video handling */
+@media screen {
+  .pdf-fallback-img { display: none !important; }
+  .video-container { display: flex; justify-content: center; }
+  iframe { max-height: 70vh; width: auto; }
+}
+
 /* Print Specific */
+
+
+@media print {
+  .video-container { display: none !important; }
+  .pdf-fallback-img { display: block !important; margin: 5px auto 1.2em auto; }
+}
 
 @media print {
   html, body {
