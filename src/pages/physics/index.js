@@ -38,8 +38,9 @@ export default function PhysicsLabsDirectory({ labs }) {
             <main className={styles.container}>
                 <h1>Physics Labs</h1>
                 <p className={styles.subtitle}>
-                    A collection of physics lab reports for a{' '}
-                    <strike>marginally</strike> improved viewing experience.
+                    A collection of physics lab reports for{' '}
+                    <strike>a marginally</strike> an improved viewing
+                    experience.
                 </p>
 
                 <div className={styles.grid}>
