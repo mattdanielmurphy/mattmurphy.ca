@@ -28,5 +28,10 @@
     "slug": "ph12-u6-dc-motor-lab",
     "title": "PH12 U6 DC Motor Lab",
     "unit": "Unit 6"
+  },
+  {
+    "slug": "ph12-u7-induction-lab",
+    "title": "PH12 U7 Induction Lab",
+    "unit": "Unit 7"
   }
 ]
