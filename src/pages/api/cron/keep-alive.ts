@@ -1,19 +1,8 @@
+import { Client } from "pg"
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import { createClient } from "@supabase/supabase-js"
-
-const supabaseUrl = "https://mxjkwzbcgefwdwifpgaz.supabase.co"
-const supabaseKey = process.env.SUPABASE_KEY
-
-if (!supabaseKey) {
-	console.warn("SUPABASE_KEY is not defined in environment variables.")
-}
-
-// Create a single supabase client for interacting with your database
-const supabase = supabaseKey ? createClient(supabaseUrl, supabaseKey) : null
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	console.log("[Cron] Starting supabase keep-alive ping at:", new Date().toISOString())
+	console.log("[Cron] Starting direct Postgres keep-alive ping at:", new Date().toISOString())
 
 	// Verify the request is from Vercel Cron
 	if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -21,27 +10,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(401).json({ message: "Unauthorized" })
 	}
 
-	if (!supabase) {
-		console.error("[Cron] Supabase client not initialized")
-		return res.status(500).json({ message: "Supabase client not initialized" })
+	// Ensure your connection string env variable is set in Vercel
+	if (!process.env.SUPABASE_DATABASE_URL) {
+		console.error("[Cron] Database connection string missing")
+		return res.status(500).json({ message: "Database connection string missing" })
 	}
 
+	// Initialize the direct Postgres client
+	const client = new Client({
+		connectionString: process.env.SUPABASE_DATABASE_URL,
+	})
+
 	try {
-		// Ping a lightweight table to keep the database active
-		const { data, error } = await supabase.from("waking-up-login-codes").select("id").limit(1)
+		await client.connect()
 
-		if (error) {
-			console.error("[Cron] Error pinging Supabase:", error)
-			return res.status(500).json({ message: "Error pinging database", error: error.message })
-		}
+		// A raw SQL query forces the Postgres engine to process compute, resetting the inactivity timer
+		const result = await client.query("SELECT NOW();")
 
-		console.log("[Cron] Successfully pinged Supabase:", data)
+		await client.end()
+
+		console.log("[Cron] Direct DB Ping Success:", result.rows[0])
 		return res.status(200).json({
-			message: "Successfully pinged Supabase",
-			timestamp: new Date().toISOString(),
+			message: "Database kept alive successfully",
+			timestamp: result.rows[0].now,
 		})
-	} catch (error: any) {
-		console.error("[Cron] Unexpected error during keep-alive:", error)
-		return res.status(500).json({ message: "Unexpected error", error: error?.message || String(error) })
+	} catch (error: unknown) {
+		await client.end().catch(() => {})
+		const message = error instanceof Error ? error.message : String(error)
+		console.error("[Cron] Direct DB Connection Failed:", error)
+		return res.status(500).json({ message: "Unexpected database error", error: message })
 	}
 }
