@@ -2,13 +2,11 @@
   "name": "nextjs",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.2.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "preinstall": "npx -y corepack enable && corepack use pnpm@11.2.2"
+    "lint": "next lint"
   },
   "engines": {
     "node": ">=22.0.0"
