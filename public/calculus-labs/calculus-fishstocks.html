@@ -33406,6 +33406,11 @@
     </head>
     <body>
         <canvas id="bgCanvas"></canvas>
+        <button id="float-math-btn" class="float-math-btn">
+            Control the fish...<br/>
+            <span class="math-highlight">with math!</span>
+            <span class="arrow">&darr;</span>
+        </button>
         <div class="pdf-page">
             <h1 style="margin-top: 2rem">Calculus Project 2: Fishstocks</h1>
             <h3>Q1: Fishstocks Research Part 1</h3>
@@ -36148,6 +36153,67 @@
                     pointer-events: none;
                     transition: background 0.5s ease;
                 }
+                .float-math-btn {
+                    position: fixed;
+                    right: 30px;
+                    bottom: 30px;
+                    z-index: 999;
+                    background: rgba(10, 25, 41, 0.65);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid rgba(0, 255, 204, 0.25);
+                    border-radius: 16px;
+                    padding: 12px 20px;
+                    color: #ffffff;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-size: 14px;
+                    line-height: 1.4;
+                    cursor: pointer;
+                    text-align: left;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    animation: float-bob 2.5s infinite ease-in-out;
+                }
+                .float-math-btn .math-highlight {
+                    color: #00ffcc;
+                    font-weight: bold;
+                    text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+                }
+                .float-math-btn .arrow {
+                    display: inline-block;
+                    margin-left: 6px;
+                    font-size: 16px;
+                    color: #00ffcc;
+                    transition: transform 0.3s ease;
+                }
+                .float-math-btn:hover {
+                    background: rgba(10, 25, 41, 0.85);
+                    border-color: rgba(0, 255, 204, 0.6);
+                    box-shadow: 0 12px 40px rgba(0, 255, 204, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                    transform: translateY(-4px) scale(1.03);
+                }
+                .float-math-btn:hover .arrow {
+                    transform: translateY(3px);
+                }
+                .float-math-btn.hidden-btn {
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(30px) scale(0.9);
+                    pointer-events: none;
+                }
+                @keyframes float-bob {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                    100% { transform: translateY(0px); }
+                }
+                @media (max-width: 768px) {
+                    .float-math-btn {
+                        right: 20px;
+                        bottom: 20px;
+                        padding: 10px 16px;
+                        font-size: 13px;
+                    }
+                }
                 .interactive-modeler-section .model-title {
                     margin-bottom: 2rem;
                     padding: 0 1rem;
@@ -36187,7 +36253,7 @@
                     height: calc(100% - 95px);
                 }
                 .interactive-modeler-section .glass-panel {
-                    background-color: rgba(15, 15, 20, 0.15);
+                    background-color: rgba(15, 15, 20, 0.35);
                     backdrop-filter: blur(4px);
                     -webkit-backdrop-filter: blur(4px);
                     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -36217,7 +36283,7 @@
                 .interactive-modeler-section .slider-group,
                 .interactive-modeler-section .radio-group,
                 .interactive-modeler-section .data-panel {
-                    background: rgba(0, 0, 0, 0.25);
+                    background: rgba(0, 0, 0, 0.15);
                     padding: 10px;
                     border-radius: 8px;
                     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -36304,7 +36370,7 @@
             <div
                 class="interactive-modeler-info"
                 style="
-                    background: #f8fafc;
+                    background: rgba(255,255,255,.2);
                     border-left: 4px solid #005a82;
                     padding: 18px;
                     margin: 20px 0;
@@ -36604,6 +36670,8 @@
                     const bExpSlider = document.getElementById('bExpSlider')
                     const radios = document.getElementsByName('modelType')
 
+                    let school = []
+
                     // CANVASES SETUP
                     const bgCanvas = document.getElementById('bgCanvas')
                     const bgCtx = bgCanvas.getContext('2d')
@@ -36623,6 +36691,9 @@
 
                         const dpr = window.devicePixelRatio || 1
 
+                        const oldWidth = bgLogicalWidth
+                        const oldHeight = bgLogicalHeight
+
                         bgLogicalWidth = window.innerWidth
                         bgLogicalHeight = window.innerHeight
                         bgCanvas.width = bgLogicalWidth * dpr
@@ -36631,6 +36702,22 @@
                         bgCanvas.style.height = bgLogicalHeight + 'px'
                         bgCtx.setTransform(1, 0, 0, 1, 0, 0)
                         bgCtx.scale(dpr, dpr)
+
+                        // Redistribute or rescale existing fish school
+                        if (school && school.length > 0) {
+                            for (let fish of school) {
+                                // If they were spawned in a tiny corner (e.g. before layout was fully ready),
+                                // scatter them fully across the new viewport
+                                if (fish.x <= 150 && fish.y <= 150) {
+                                    fish.x = Math.random() * bgLogicalWidth
+                                    fish.y = Math.random() * bgLogicalHeight
+                                } else if (oldWidth > 0 && oldHeight > 0) {
+                                    // Otherwise scale them proportionally to the new dimensions
+                                    fish.x = (fish.x / oldWidth) * bgLogicalWidth
+                                    fish.y = (fish.y / oldHeight) * bgLogicalHeight
+                                }
+                            }
+                        }
 
                         const hudParent = hudCanvas.parentElement
                         hudLogicalWidth = hudParent.clientWidth - 50
@@ -36775,8 +36862,6 @@
                         }
                     }
 
-                    let school = []
-
                     function getPop(t) {
                         let model = Array.from(radios).find(
                             (r) => r.checked
@@ -36861,7 +36946,7 @@
                                     'linear-gradient(to bottom, #222, #0a0a0a)'
                         }
 
-                        let targetFish = Math.min(600, Math.ceil(pop / 20))
+                        let targetFish = Math.min(800, Math.ceil(pop / 5))
                         while (school.length < targetFish)
                             school.push(new Fish())
                         if (school.length > targetFish)
@@ -37028,6 +37113,25 @@
                             aExpSlider.value = 3580.38
                             bExpSlider.value = 0.934
                             updateUI()
+                        })
+                    }
+
+                    // Floating button scroll behavior
+                    const floatBtn = document.getElementById('float-math-btn')
+                    const modelerSection = document.querySelector('.interactive-modeler-section')
+                    if (floatBtn && modelerSection) {
+                        floatBtn.addEventListener('click', () => {
+                            modelerSection.scrollIntoView({ behavior: 'smooth' })
+                        })
+
+                        window.addEventListener('scroll', () => {
+                            const rect = modelerSection.getBoundingClientRect()
+                            // Hide the button when the top of the interactive section is within the viewport (with a 150px offset threshold)
+                            if (rect.top < window.innerHeight - 150) {
+                                floatBtn.classList.add('hidden-btn')
+                            } else {
+                                floatBtn.classList.remove('hidden-btn')
+                            }
                         })
                     }
 
