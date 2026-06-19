@@ -36653,6 +36653,34 @@
                     resizeCanvases()
                     setTimeout(resizeCanvases, 100)
 
+                    // Track mouse/touch cursor for fish avoidance
+                    const cursor = { x: 0, y: 0, active: false }
+                    window.addEventListener('mousemove', (e) => {
+                        cursor.x = e.clientX
+                        cursor.y = e.clientY
+                        cursor.active = true
+                    })
+                    window.addEventListener('mouseleave', () => {
+                        cursor.active = false
+                    })
+                    window.addEventListener('touchstart', (e) => {
+                        if (e.touches.length > 0) {
+                            cursor.x = e.touches[0].clientX
+                            cursor.y = e.touches[0].clientY
+                            cursor.active = true
+                        }
+                    }, { passive: true })
+                    window.addEventListener('touchmove', (e) => {
+                        if (e.touches.length > 0) {
+                            cursor.x = e.touches[0].clientX
+                            cursor.y = e.touches[0].clientY
+                            cursor.active = true
+                        }
+                    }, { passive: true })
+                    window.addEventListener('touchend', () => {
+                        cursor.active = false
+                    })
+
                     // FISH CLASS (Background layer)
                     class Fish {
                         constructor() {
@@ -36676,25 +36704,50 @@
                                 this.changeTimer = Math.random() * 4 + 2
                             }
 
+                            // Avoid cursor/touch coordinates
+                            if (cursor.active) {
+                                const dx = this.x - cursor.x
+                                const dy = this.y - cursor.y
+                                const dist = Math.hypot(dx, dy)
+                                const avoidRadius = 120
+                                if (dist < avoidRadius) {
+                                    const force = (avoidRadius - dist) / avoidRadius
+                                    const angle = Math.atan2(dy, dx)
+                                    const avoidSpeed = 160 * force
+                                    this.vx += Math.cos(angle) * avoidSpeed * dt * 10
+                                    this.vy += Math.sin(angle) * avoidSpeed * dt * 10
+
+                                    // Limit maximum speed when fleeing
+                                    const speed = Math.hypot(this.vx, this.vy)
+                                    const maxSpeed = 220
+                                    if (speed > maxSpeed) {
+                                        this.vx = (this.vx / speed) * maxSpeed
+                                        this.vy = (this.vy / speed) * maxSpeed
+                                    }
+                                    // Reset change timer so they keep fleeing state fresh
+                                    this.changeTimer = 0.5
+                                }
+                            }
+
                             this.x += this.vx * dt
                             this.y += this.vy * dt
 
                             // Bounce off walls of the page
                             const buffer = this.size * 3 // size of fish boundary
                             if (this.x < buffer) {
-                                this.x = buffer
-                                this.vx = Math.abs(this.vx) // bounce right
+                                    this.x = buffer
+                                    this.vx = Math.abs(this.vx) // bounce right
                             } else if (this.x > bgLogicalWidth - buffer) {
-                                this.x = bgLogicalWidth - buffer
-                                this.vx = -Math.abs(this.vx) // bounce left
+                                    this.x = bgLogicalWidth - buffer
+                                    this.vx = -Math.abs(this.vx) // bounce left
                             }
 
                             if (this.y < buffer) {
-                                this.y = buffer
-                                this.vy = Math.abs(this.vy) // bounce down
+                                    this.y = buffer
+                                    this.vy = Math.abs(this.vy) // bounce down
                             } else if (this.y > bgLogicalHeight - buffer) {
-                                this.y = bgLogicalHeight - buffer
-                                this.vy = -Math.abs(this.vy) // bounce up
+                                    this.y = bgLogicalHeight - buffer
+                                    this.vy = -Math.abs(this.vy) // bounce up
                             }
                         }
                         draw() {
