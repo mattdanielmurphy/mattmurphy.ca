@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="school-review-doc" content="physics-12/u4-momentum/PH12 U4 Lab/PH12 U4 Collision Forensics Lab.md">
 
 <title>PH12 U4 Collision Forensics Lab</title>
 <script>
@@ -57,13 +58,19 @@ if (typeof d3 !== 'undefined') {
   page-break-after: always; 
 }
 
+.pdf-page {
+  position: relative;
+  min-height: 11.0in;
+  padding: 0.75in;
+  box-sizing: border-box;
+}
+
 html {
   margin: 0;
   padding: 0;
   background-color: white;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 body {
@@ -74,7 +81,6 @@ body {
   margin: 0;
   padding: 1rem;
   background-color: white;
-  min-height: 100vh;
   width: 100%;
   flex-shrink: 0;
 }
@@ -83,10 +89,18 @@ body {
 body {
   max-width: 8.5in;
   margin: 40px auto;
-  padding: .75in;
+  padding: 0;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.05);
   border-radius: 4px;
-  min-height: 11in;
+}
+
+body.pdf-tall-export {
+  margin: 0 auto !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+body.pdf-tall-export .pdf-page {
+  padding: 0;
 }
 
 @media screen and (max-width: 600px) {
@@ -103,12 +117,149 @@ body {
   .video-container iframe { max-height: 70vh; width: auto !important; height: auto !important; }
 }
 
+/* Answer pages get a min-height on screen so each answer feels isolated */
+@media screen {
+  .answer-page {
+    min-height: 100vh;
+  }
+}
+
+/* Question Navigation Buttons */
+.question-nav {
+  position: absolute;
+  top: 30%;
+  transform: translateY(-30%);
+  left: 0.25in;
+  right: 0.25in;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 100;
+}
+.question-nav-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 15px;
+  border-radius: 6px;
+  // border: 1px solid #ccc;
+  // box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+  color: #333;
+  font-weight: 700;
+  font-size: 1.25em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.question-nav-btn:hover {
+  background: white;
+  color: rgba(255, 117, 117, 1);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.01);
+  transition: ease-in-out color .3s;
+}
+.question-nav-btn--disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+.question-nav-counter {
+  display: none;
+}
+
+/* Interactive review (screen preview only; skipped when is-pdf-export) */
+@media screen {
+  body.review-interactive .answer-page,
+  body.review-interactive .review-appendix-hidden {
+    display: none !important;
+  }
+  body.review-interactive .review-question {
+    display: none;
+    padding: 0.75in;
+    min-height: 70vh;
+    box-sizing: border-box;
+  }
+  body.review-interactive .review-question.is-active {
+    display: block;
+  }
+  body.review-interactive .pdf-page {
+    min-height: auto;
+    padding: 0;
+  }
+  body.review-interactive .pdf-page > :not(.review-question) {
+    display: none !important;
+  }
+  body.review-interactive .write-space--screen-hidden {
+    display: none !important;
+  }
+  body.review-interactive .answer-input {
+    display: block;
+    width: 100%;
+    min-height: 160px;
+    margin: 1em 0;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.6;
+    color: #1a1a1a;
+    border: 1px solid #c5d3e0;
+    border-radius: 6px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  body.review-interactive .answer-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  }
+  body.review-interactive .inline-answer {
+    margin: 1.25em 0 2em;
+  }
+  body.review-interactive .inline-answer[hidden] {
+    display: none !important;
+  }
+  body.review-interactive .review-global-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+    max-width: 8.5in;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  body.review-interactive .review-global-nav .question-nav-counter {
+    display: block;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.95em;
+  }
+  body.review-interactive a.reveal-answer-btn {
+    cursor: pointer;
+  }
+}
+@media print {
+  .answer-input {
+    display: none !important;
+  }
+}
+
 /* Print Specific */
 
 
 @media print {
   .video-container { display: none !important; }
   .pdf-fallback-img { display: block !important; margin: 5px auto 1.2em auto; }
+  .page-break { page-break-after: always !important; }
 }
 
 @media print {
@@ -120,9 +271,59 @@ body {
     min-height: auto !important;
   }
   body {
-    max-width: 7.0in;
+    max-width: 8.5in;
+    width: 100%;
     padding: 0;
     margin: 0;
+  }
+  /* Margins come from Puppeteer page.pdf() — padding only applies to the first
+     printed fragment of a box, so overflow pages would be edge-to-edge. */
+  .pdf-page {
+    padding: 0 !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    break-after: page;
+    page-break-after: always;
+  }
+  .pdf-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .answer-page {
+    padding: 0 !important;
+    min-height: auto !important;
+    break-before: page;
+    page-break-before: always;
+  }
+  /* Prev/next: inside printable area (negative inset is clipped by Chromium PDF) */
+  .question-nav {
+    left: 0.06in;
+    right: 0.06in;
+    width: auto;
+    top: 2.9166666666666665in;
+    transform: translateY(-50%);
+    justify-content: space-between;
+  }
+  body.school-custom-review-pdf .pdf-page:not(:has(.answer-page)) {
+    padding-left: 0.45in !important;
+    padding-right: 0.45in !important;
+    box-sizing: border-box;
+  }
+  body.school-custom-review-pdf .question-nav {
+    left: 0.05in;
+    right: 0.05in;
+  }
+  .question-nav-btn {
+    padding: 2px 4px;
+    font-size: 13pt;
+    line-height: 1;
+    background: transparent;
+    box-shadow: none;
+  }
+  .math-block {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
   }
   .pdf-only-link { display: block !important; }
 }
@@ -171,7 +372,15 @@ h4 {
   margin: 16px 0 6px; 
   color: #222; 
   page-break-after: avoid; 
-}
+  }
+  
+  h5 {
+    font-size: 10.5pt; 
+    font-weight: 600; 
+    margin: 16px 0 6px; 
+    color: #222; 
+    page-break-after: avoid; 
+  }
 .figure-container {
   display: flex;
   flex-direction: column;
@@ -179,7 +388,7 @@ h4 {
   width: fit-content;
   max-width: 100%;
   margin: 2rem auto;
-  background: #f1f1f1;
+  // background: #f1f1f1;
   padding: .1rem;
   border-radius: .5rem;
   page-break-inside: avoid;
@@ -236,7 +445,7 @@ img[src*="FBD"] { max-height: 350px; }
 
   .figure-container:hover {
     transform: scale(1.015);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    // box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   }
 
   .figure-container {
@@ -891,6 +1100,319 @@ window.addEventListener('load', () => {
 });
 </script>
 
+<script>
+// ── Interactive review (screen): one question, textareas, inline answers ───
+(function () {
+  var pagehideBound = false;
+
+  function isPdfExport() {
+    return (
+      document.documentElement.classList.contains('is-pdf-export') ||
+      !!document.querySelector('meta[name="school-pdf-export"]')
+    );
+  }
+
+  function getReviewDocId() {
+    const meta = document.querySelector('meta[name="school-review-doc"]');
+    const fromMeta = meta && meta.getAttribute('content');
+    if (fromMeta) return fromMeta;
+    return location.pathname || 'unknown';
+  }
+
+  const REVIEW_DOC_ID = getReviewDocId();
+
+  function answerStorageKey(revealId, index) {
+    return (
+      'school-review-answer:v1:' +
+      REVIEW_DOC_ID +
+      ':' +
+      revealId +
+      ':' +
+      index
+    );
+  }
+
+  function loadAnswer(key) {
+    try {
+      return localStorage.getItem(key) || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function saveAnswer(key, value) {
+    try {
+      if (value) localStorage.setItem(key, value);
+      else localStorage.removeItem(key);
+    } catch (e) {}
+  }
+
+  function flushAllAnswers() {
+    document.querySelectorAll('.answer-input[data-answer-key]').forEach((ta) => {
+      saveAnswer(ta.getAttribute('data-answer-key'), ta.value);
+    });
+  }
+
+  function revealBlockParent(anchor) {
+    let block = anchor;
+    while (block.parentNode && block.parentNode !== document.body) {
+      block = block.parentNode;
+      if (block.tagName === 'P') break;
+    }
+    return block;
+  }
+
+  function initPdfQuestionNav() {
+    if (!isPdfExport()) return;
+
+    const revealLinks = Array.from(
+      document.querySelectorAll('a[href^="#reveal-"]')
+    ).filter((a) => !a.closest('.answer-page'));
+    if (revealLinks.length === 0) return;
+
+    document.querySelectorAll('.question-nav').forEach((el) => el.remove());
+
+    const questionIds = revealLinks.map((a) => a.getAttribute('href').slice(1));
+
+    revealLinks.forEach((revealAnchor, idx) => {
+      const prevId = idx > 0 ? questionIds[idx - 1] : null;
+      const nextId =
+        idx < questionIds.length - 1 ? questionIds[idx + 1] : null;
+
+      const nav = document.createElement('div');
+      nav.className = 'question-nav';
+
+      const prevBtn = document.createElement('a');
+      prevBtn.className =
+        'question-nav-btn' + (prevId ? '' : ' question-nav-btn--disabled');
+      prevBtn.textContent = '←';
+      if (prevId) {
+        const num = prevId.replace(/^reveal-/, '');
+        prevBtn.setAttribute('href', '#return-' + num);
+      }
+
+      const counter = document.createElement('span');
+      counter.className = 'question-nav-counter';
+      counter.textContent = 'Q ' + (idx + 1) + ' / ' + revealLinks.length;
+
+      const nextBtn = document.createElement('a');
+      nextBtn.className =
+        'question-nav-btn' + (nextId ? '' : ' question-nav-btn--disabled');
+      nextBtn.textContent = '→';
+      if (nextId) {
+        const num = nextId.replace(/^reveal-/, '');
+        nextBtn.setAttribute('href', '#return-' + num);
+      }
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(counter);
+      nav.appendChild(nextBtn);
+
+      const revealBlock = revealBlockParent(revealAnchor);
+      const page = revealAnchor.closest('.pdf-page');
+      if (page) {
+        page.insertBefore(nav, page.firstChild);
+      } else if (revealBlock.parentNode) {
+        revealBlock.parentNode.insertBefore(nav, revealBlock);
+      }
+    });
+  }
+
+  function initInteractiveReview() {
+    if (isPdfExport()) return;
+
+    const revealLinks = Array.from(
+      document.querySelectorAll('a[href^="#reveal-"]')
+    );
+    if (revealLinks.length === 0) return;
+
+    const questionMetas = [];
+
+    revealLinks.forEach((revealAnchor, idx) => {
+      const revealId = revealAnchor.getAttribute('href').slice(1);
+      const num = revealId.replace(/^reveal-/, '');
+      const returnEl = document.getElementById('return-' + num);
+      if (!returnEl) return;
+
+      const revealBlock = revealBlockParent(revealAnchor);
+      const prevMeta = idx > 0 ? questionMetas[idx - 1] : null;
+      const prevRevealBlock = prevMeta ? prevMeta.revealBlock : null;
+
+      let start = returnEl;
+      let p = returnEl.previousElementSibling;
+      while (p) {
+        if (prevRevealBlock && (p === prevRevealBlock || prevRevealBlock.contains(p)))
+          break;
+        const tag = p.tagName;
+        if (/^H[1-4]$/.test(tag) || tag === 'HR') {
+          start = p;
+          p = p.previousElementSibling;
+          continue;
+        }
+        if (tag === 'P' && start && /^H[1-4]$/.test(start.tagName)) {
+          start = p;
+          p = p.previousElementSibling;
+          continue;
+        }
+        break;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'review-question' + (idx === 0 ? ' is-active' : '');
+      wrapper.dataset.revealId = revealId;
+      start.parentNode.insertBefore(wrapper, start);
+
+      if (idx === 0) {
+        const page = returnEl.closest('.pdf-page');
+        if (page) {
+          let n = page.firstElementChild;
+          while (n && n !== start) {
+            if (n.tagName === 'H1' || n.tagName === 'H2') {
+              wrapper.appendChild(n);
+            }
+            n = n.nextElementSibling;
+          }
+        }
+      }
+
+      let node = start;
+      while (node) {
+        const next = node.nextElementSibling;
+        wrapper.appendChild(node);
+        if (node === revealBlock) break;
+        node = next;
+      }
+
+      wrapper.querySelectorAll('.write-space').forEach((ws, wsIdx) => {
+        ws.classList.add('write-space--screen-hidden');
+        const ta = document.createElement('textarea');
+        ta.className = 'answer-input';
+        ta.setAttribute('rows', '8');
+        ta.setAttribute('placeholder', 'Type your answer here…');
+        ta.setAttribute('aria-label', 'Your answer');
+        const storageKey = answerStorageKey(revealId, wsIdx);
+        ta.setAttribute('data-answer-key', storageKey);
+        ta.value = loadAnswer(storageKey);
+        ta.addEventListener('input', () => {
+          saveAnswer(storageKey, ta.value);
+        });
+        ws.insertAdjacentElement('afterend', ta);
+      });
+
+      const answerPage = document.getElementById(revealId);
+      const answerBlock = answerPage && answerPage.querySelector('.answer-block');
+      if (answerBlock) {
+        const inline = document.createElement('div');
+        inline.className = 'inline-answer';
+        inline.hidden = true;
+        inline.appendChild(answerBlock.cloneNode(true));
+        revealBlock.insertAdjacentElement('afterend', inline);
+      }
+
+      revealAnchor.classList.add('reveal-answer-btn');
+      revealAnchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const inline = wrapper.querySelector('.inline-answer');
+        if (!inline) return;
+        const willShow = inline.hidden;
+        inline.hidden = !willShow;
+        revealAnchor.textContent = willShow ? 'Hide Answer' : 'Reveal Answer';
+      });
+
+      questionMetas.push({ wrapper, revealBlock, revealAnchor });
+    });
+
+    const firstAppendix = document.querySelector('.answer-page');
+    if (firstAppendix) {
+      let walk = firstAppendix.previousElementSibling;
+      while (walk && !walk.classList.contains('review-question')) {
+        walk.classList.add('review-appendix-hidden');
+        walk = walk.previousElementSibling;
+      }
+      let sib = firstAppendix;
+      while (sib) {
+        sib.classList.add('review-appendix-hidden');
+        sib = sib.nextElementSibling;
+      }
+    }
+
+    document.body.classList.add('review-interactive');
+    document.body.style.paddingBottom = '72px';
+
+    const nav = document.createElement('div');
+    nav.className = 'review-global-nav';
+    nav.setAttribute('role', 'navigation');
+    nav.setAttribute('aria-label', 'Question navigation');
+
+    const prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'question-nav-btn';
+    prevBtn.textContent = '← Previous';
+
+    const counter = document.createElement('span');
+    counter.className = 'question-nav-counter';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'question-nav-btn';
+    nextBtn.textContent = 'Next →';
+
+    nav.appendChild(prevBtn);
+    nav.appendChild(counter);
+    nav.appendChild(nextBtn);
+    document.body.appendChild(nav);
+
+    let activeIdx = 0;
+
+    function showQuestion(idx) {
+      if (idx < 0 || idx >= questionMetas.length) return;
+      activeIdx = idx;
+      questionMetas.forEach((q, i) => {
+        q.wrapper.classList.toggle('is-active', i === idx);
+      });
+      counter.textContent =
+        'Question ' + (idx + 1) + ' / ' + questionMetas.length;
+      prevBtn.classList.toggle(
+        'question-nav-btn--disabled',
+        idx === 0
+      );
+      nextBtn.classList.toggle(
+        'question-nav-btn--disabled',
+        idx === questionMetas.length - 1
+      );
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => showQuestion(activeIdx - 1));
+    nextBtn.addEventListener('click', () => showQuestion(activeIdx + 1));
+
+    if (!pagehideBound) {
+      pagehideBound = true;
+      window.addEventListener('pagehide', flushAllAnswers);
+    }
+
+    showQuestion(0);
+  }
+
+  function bootReview() {
+    if (isPdfExport()) {
+      initPdfQuestionNav();
+    } else {
+      initInteractiveReview();
+    }
+  }
+
+  window.__schoolInitReviewUx = bootReview;
+  window.__schoolInitPdfQuestionNav = initPdfQuestionNav;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootReview);
+  } else {
+    bootReview();
+  }
+})();
+</script>
+
   <link rel="preload" href="/physics-labs/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/physics-labs/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/physics-labs/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -903,7 +1425,7 @@ window.addEventListener('load', () => {
     <div class="pdf-only-link" style="text-align: center; margin: 2rem 0; font-size: 1.25em;">
     <a href="https://mattmurphy.ca/physics/ph12-u4-collision-forensics-lab" style="color: #0066cc; text-decoration: underline; font-weight: 500;">View the web version (better).</a>
   </div>
-  <h1>PH12 U4: Collision Forensics Lab – Route 66 Accident</h1>
+  <div class="pdf-page"><h1>PH12 U4: Collision Forensics Lab – Route 66 Accident</h1>
 <div class="metadata-header">
   <div><strong>Teacher:</strong> Naresh Chand</div>
   <div><strong>Student:</strong> Matthew Murphy</div>
@@ -1195,7 +1717,8 @@ H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
 c-16-25.333-24-45-24-59z"/></svg></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord text mtight"><span class="mord mtight">car</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mtight">∣</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4451em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.4911em;vertical-align:-0.4811em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1270.06</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord text mtight"><span class="mord mtight">kg</span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">4962.24</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord text mtight"><span class="mord mtight">kg</span></span><span class="mbin mtight">⋅</span><span class="mord text mtight"><span class="mord mtight">m/s</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4811em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3.90709</span><span class="mspace"> </span><span class="mord text"><span class="mord">m/s</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathbf">3.91</span><span class="mspace"> </span><span class="mord text"><span class="mord">m/s @</span></span><span class="mspace"> </span><span class="mord mathbf">76.9°</span><span class="mspace"> </span><span class="mord text"><span class="mord">S of W</span></span></span></span></span></span></span></p>
 </li>
 </ul>
-<div class="page-break"></div>
+</div>
+<div class="pdf-page">
 
 <h3>5. Initial Speed of Motorcycle Before Braking</h3>
 <p><strong>Calculations for initial speed of bike before braking:</strong>
@@ -1272,7 +1795,7 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
 <p><span class="citation"><sup>1</sup> BMW AG. (1972). <a href="https://autocatalogarchive.com/wp-content/uploads/2024/08/BMW-Coupe-3.0-CSL-1972-INT.pdf">BMW Coupe 3.0 CSL Specification Sheet</a>. Accessed May 3, 2026.</span></p>
 <p><span class="citation"><sup>2</sup> Gao, S., Li, M., Wang, Q., Jin, X., Hou, X., Qin, C., &amp; Fu, S. (2022). <a href="https://doi.org/10.3390/ijerph192214950">A Research on Accident Reconstruction of Bus–Two-Wheeled Vehicle Based on Vehicle Damage and Human Head Injury</a>. International Journal of Environmental Research and Public Health, 19(22), 14950. Accessed May 4, 2026.</span></p>
 <p><span class="citation"><sup>3</sup> Royalton Police Department. (2022). <a href="https://royaltonpd.com/math/">Advanced - Crash Math - R.P.D</a>. Accessed May 4, 2026. (Value derived from &quot;steel on pavement or packed gravel&quot; category of Coefficients sub-page).</span></p>
-
+</div>
   
   <!-- Image Viewer Modal -->
   <div id="image-modal" class="image-modal" aria-hidden="true" style="display: none;">

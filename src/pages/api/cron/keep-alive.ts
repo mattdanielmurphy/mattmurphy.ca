@@ -1,8 +1,8 @@
-import { Client } from "pg"
+import { createClient } from "@supabase/supabase-js"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	console.log("[Cron] Starting direct Postgres keep-alive ping at:", new Date().toISOString())
+	console.log("[Cron] Starting Supabase keep-alive ping at:", new Date().toISOString())
 
 	// Verify the request is from Vercel Cron
 	if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -10,34 +10,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(401).json({ message: "Unauthorized" })
 	}
 
-	// Ensure your connection string env variable is set in Vercel
-	if (!process.env.SUPABASE_DATABASE_URL) {
-		console.error("[Cron] Database connection string missing")
-		return res.status(500).json({ message: "Database connection string missing" })
+	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+	const supabaseKey = process.env.SUPABASE_KEY
+
+	if (!supabaseUrl || !supabaseKey) {
+		console.error("[Cron] Supabase configuration missing")
+		return res.status(500).json({ message: "Supabase configuration missing" })
 	}
 
-	// Initialize the direct Postgres client
-	const client = new Client({
-		connectionString: process.env.SUPABASE_DATABASE_URL,
-	})
+	// Initialize the Supabase client
+	const supabase = createClient(supabaseUrl, supabaseKey)
 
 	try {
-		await client.connect()
+		// Perform a simple query to keep the database active
+		const { data, error } = await supabase.from("zoho-spam-filter").select("count").limit(1)
 
-		// A raw SQL query forces the Postgres engine to process compute, resetting the inactivity timer
-		const result = await client.query("SELECT NOW();")
+		if (error) {
+			throw error
+		}
 
-		await client.end()
-
-		console.log("[Cron] Direct DB Ping Success:", result.rows[0])
+		console.log("[Cron] Supabase Ping Success")
 		return res.status(200).json({
 			message: "Database kept alive successfully",
-			timestamp: result.rows[0].now,
+			timestamp: new Date().toISOString(),
 		})
 	} catch (error: unknown) {
-		await client.end().catch(() => {})
 		const message = error instanceof Error ? error.message : String(error)
-		console.error("[Cron] Direct DB Connection Failed:", error)
+		console.error("[Cron] Supabase Connection Failed:", error)
 		return res.status(500).json({ message: "Unexpected database error", error: message })
 	}
 }
