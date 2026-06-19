@@ -25,8 +25,8 @@ I set $t = 0$ as the year 1985.
 
 ### Q3: Graph of Fish Stocks Decline
 
-<div class="figure-container" style="max-width: 100%; height: auto; max-height: 550px;">
-	<img src="fish-stocks-graph.png" style="max-width: 100%; height: auto; max-height: 500px" align="center" class="figure-image" alt="Graph of Fish Stocks Decline">
+<div class="figure-container" style="max-width: 100%; height: auto; max-height: 700px;">
+	<img src="fish-stocks-graph.png" style="max-width: 100%; height: auto; max-height: 900px" align="center" class="figure-image" alt="Graph of Fish Stocks Decline">
 	<div align="center" class="figure-caption" style="max-width: 100%; width: 100%;">
 		<em><strong>Figure 1:</strong> Graph of Fish Stocks Decline</em>
 	</div>
