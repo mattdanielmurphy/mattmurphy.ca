@@ -829,7 +829,8 @@ h1 {
 
             #hudCanvas {
                 width: 100%;
-                flex-grow: 1;
+                height: 520px;
+                display: block;
             }
 
             /* Sub-elements with tinted black */
@@ -947,6 +948,18 @@ h1 {
                 }
                 100% {
                     transform: translateY(0px);
+                }
+            }
+            @media (max-width: 900px) {
+                .container {
+                    flex-direction: column;
+                }
+                .controls {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                #hudCanvas {
+                    height: 350px;
                 }
             }
             @media (max-width: 768px) {
@@ -1391,14 +1404,11 @@ window.addEventListener('load', function () {
                         }
                     }
 
-                    const hudParent = hudCanvas.parentElement
-                    hudLogicalWidth = hudParent.clientWidth - 50
-                    const isSmall = window.innerWidth <= 900
-                    hudLogicalHeight = isSmall ? 350 : 520
+                    const rect = hudCanvas.getBoundingClientRect()
+                    hudLogicalWidth = rect.width || (hudCanvas.parentElement ? hudCanvas.parentElement.clientWidth - 50 : 600)
+                    hudLogicalHeight = rect.height || (window.innerWidth <= 900 ? 350 : 520)
                     hudCanvas.width = hudLogicalWidth * dpr
                     hudCanvas.height = hudLogicalHeight * dpr
-                    hudCanvas.style.width = hudLogicalWidth + 'px'
-                    hudCanvas.style.height = hudLogicalHeight + 'px'
                     hudCtx.setTransform(1, 0, 0, 1, 0, 0)
                     hudCtx.scale(dpr, dpr)
                 }
