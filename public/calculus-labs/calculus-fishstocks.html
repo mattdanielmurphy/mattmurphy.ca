@@ -33405,6 +33405,7 @@
         </script>
     </head>
     <body>
+        <canvas id="bgCanvas"></canvas>
         <div
             style="
                 padding: 1.5rem 2rem 0;
@@ -36098,13 +36099,16 @@
 
             <style>
                 @media screen {
+                    html {
+                        background: linear-gradient(to bottom, #005a82, #002236) fixed !important;
+                    }
                     html,
                     body {
                         overflow-x: hidden;
                     }
                     body {
                         max-width: none !important;
-                        background-color: #f0f2f5 !important;
+                        background-color: transparent !important;
                         margin: 0 !important;
                         box-shadow: none !important;
                         border-radius: 0 !important;
@@ -36146,14 +36150,16 @@
                     height: 720px;
                     padding-bottom: 2rem;
                     overflow: hidden;
-                    background: linear-gradient(to bottom, #005a82, #002236);
+                    background: linear-gradient(to bottom, rgba(0, 90, 130, 0.4), rgba(0, 34, 54, 0.4)) !important;
+                    backdrop-filter: blur(8px);
+                    -webkit-backdrop-filter: blur(8px);
                     color: #f5f5f5;
                     font-family:
                         'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                     margin-top: 40px;
-                    border-top: 1px solid rgba(0, 0, 0, 0.1);
-                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -36161,13 +36167,14 @@
                 .interactive-modeler-section * {
                     box-sizing: border-box;
                 }
-                .interactive-modeler-section #bgCanvas {
-                    position: absolute;
+                #bgCanvas {
+                    position: fixed !important;
                     top: 0;
                     left: 0;
-                    width: 100vw;
-                    height: 80vh;
-                    z-index: 1;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    z-index: -100 !important;
+                    pointer-events: none;
                     transition: background 0.5s ease;
                 }
                 .interactive-modeler-section h1 {
@@ -36231,7 +36238,7 @@
                 .interactive-modeler-section #hudCanvas {
                     width: 100%;
                     flex-grow: 1;
-                    min-height: 380px;
+                    min-height: 450px;
                 }
                 .interactive-modeler-section .slider-group,
                 .interactive-modeler-section .radio-group,
@@ -36417,8 +36424,6 @@
             </div>
 
             <div class="interactive-modeler-section">
-                <!-- Background Aquarium -->
-                <canvas id="bgCanvas"></canvas>
 
                 <h1>Interactive Population Modeler</h1>
                 <p class="subtitle">
@@ -36635,12 +36640,12 @@
                         const section = document.querySelector(
                             '.interactive-modeler-section'
                         )
-                        if (!section || !bgCanvas || !hudCanvas) return
+                        if (!bgCanvas || !hudCanvas) return
 
                         const dpr = window.devicePixelRatio || 1
 
-                        bgLogicalWidth = section.clientWidth
-                        bgLogicalHeight = section.clientHeight
+                        bgLogicalWidth = window.innerWidth
+                        bgLogicalHeight = window.innerHeight
                         bgCanvas.width = bgLogicalWidth * dpr
                         bgCanvas.height = bgLogicalHeight * dpr
                         bgCanvas.style.width = bgLogicalWidth + 'px'
