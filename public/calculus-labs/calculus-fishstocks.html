@@ -36600,8 +36600,8 @@
                     const hudCanvas = document.getElementById('hudCanvas')
                     const hudCtx = hudCanvas.getContext('2d')
 
-                    let bgLogicalWidth = 0
-                    let bgLogicalHeight = 0
+                    let bgLogicalWidth = window.innerWidth
+                    let bgLogicalHeight = window.innerHeight
                     let hudLogicalWidth = 0
                     let hudLogicalHeight = 0
 
@@ -36639,30 +36639,51 @@
                     }
                     window.addEventListener('resize', resizeCanvases)
 
-                    // Run after DOM load
+                    // Run immediately to set dimensions and run timeout fallback
+                    resizeCanvases()
                     setTimeout(resizeCanvases, 100)
 
                     // FISH CLASS (Background layer)
                     class Fish {
                         constructor() {
-                            this.x =
-                                Math.random() *
-                                (bgLogicalWidth || window.innerWidth)
-                            this.y =
-                                Math.random() *
-                                (bgLogicalHeight || window.innerHeight)
+                            this.x = Math.random() * bgLogicalWidth
+                            this.y = Math.random() * bgLogicalHeight
                             this.vx = (Math.random() - 0.5) * 100
                             this.vy = (Math.random() - 0.5) * 50
                             this.size = 3 + Math.random() * 2.5
+                            this.changeTimer = Math.random() * 3 + 1 // change direction periodically
                         }
                         update(dt) {
+                            // Periodically change direction slightly
+                            this.changeTimer -= dt
+                            if (this.changeTimer <= 0) {
+                                const angle = Math.atan2(this.vy, this.vx) + (Math.random() - 0.5) * 0.8
+                                const speed = 30 + Math.random() * 60
+                                this.vx = Math.cos(angle) * speed
+                                this.vy = Math.sin(angle) * speed * 0.6 // keep vertical speed slightly lower
+                                this.changeTimer = Math.random() * 4 + 2
+                            }
+
                             this.x += this.vx * dt
                             this.y += this.vy * dt
 
-                            if (this.x > bgLogicalWidth + 20) this.x = -20
-                            if (this.x < -20) this.x = bgLogicalWidth + 20
-                            if (this.y > bgLogicalHeight + 20) this.y = -20
-                            if (this.y < -20) this.y = bgLogicalHeight + 20
+                            // Bounce off walls of the page
+                            const buffer = this.size * 3 // size of fish boundary
+                            if (this.x < buffer) {
+                                this.x = buffer
+                                this.vx = Math.abs(this.vx) // bounce right
+                            } else if (this.x > bgLogicalWidth - buffer) {
+                                this.x = bgLogicalWidth - buffer
+                                this.vx = -Math.abs(this.vx) // bounce left
+                            }
+
+                            if (this.y < buffer) {
+                                this.y = buffer
+                                this.vy = Math.abs(this.vy) // bounce down
+                            } else if (this.y > bgLogicalHeight - buffer) {
+                                this.y = bgLogicalHeight - buffer
+                                this.vy = -Math.abs(this.vy) // bounce up
+                            }
                         }
                         draw() {
                             bgCtx.save()
