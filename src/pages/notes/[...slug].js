@@ -12,6 +12,12 @@ export default function NotePage({ title, html, headings = [] }) {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true)
 
     useEffect(() => {
+        if (typeof window !== 'undefined' && window.innerWidth < 768) {
+            setIsSidebarVisible(false)
+        }
+    }, [])
+
+    useEffect(() => {
         if (headings.length === 0) return
 
         const handleScroll = () => {
@@ -59,7 +65,7 @@ export default function NotePage({ title, html, headings = [] }) {
                 {headings.length > 0 && (
                     <aside className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''}`}>
                         <div className={styles.sidebarHeader}>
-                            {isSidebarVisible && <span className={styles.sidebarTitle}>Outline</span>}
+                            <span className={`${styles.sidebarTitle} ${!isSidebarVisible ? styles.titleHidden : ''}`}>Outline</span>
                             <button
                                 onClick={() => setIsSidebarVisible(!isSidebarVisible)}
                                 className={styles.sidebarToggleButton}
@@ -68,14 +74,15 @@ export default function NotePage({ title, html, headings = [] }) {
                                 }
                             >
                                 {isSidebarVisible ? (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.toggleIcon}>
                                         <polyline points="15 18 9 12 15 6" />
                                     </svg>
                                 ) : (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <rect width="18" height="18" x="3" y="3" rx="2" />
-                                        <path d="M9 3v18" />
-                                        <path d="m14 9 3 3-3 3" />
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.toggleIcon}>
+                                        <rect width="18" height="18" x="3" y="3" rx="2" className={styles.desktopOnlyIcon} />
+                                        <path d="M9 3v18" className={styles.desktopOnlyIcon} />
+                                        <path d="m14 9 3 3-3 3" className={styles.desktopOnlyIcon} />
+                                        <polyline points="6 9 12 15 18 9" className={styles.mobileOnlyIcon} />
                                     </svg>
                                 )}
                             </button>
