@@ -3,6 +3,7 @@ import AdmZip from 'adm-zip';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../../styles/Notes.module.css';
+import { pathToSlug } from '../../utils/slug';
 
 export default function NotesIndex({ notes }) {
   return (
@@ -101,7 +102,7 @@ export async function getStaticProps() {
           const { data } = matter(rawContent);
           if (data.public === true) {
             publicNotes.push({
-              slug: repoRelativePath.replace(/\.md$/, ''), // Removes .md
+              slug: pathToSlug(repoRelativePath),
               title: data.title || repoRelativePath.split('/').pop().replace(/\.md$/, ''),
             });
           }

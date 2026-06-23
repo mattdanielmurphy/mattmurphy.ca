@@ -1,3 +1,5 @@
+import { pathToSlug } from '../../utils/slug';
+
 export default async function handler(req, res) {
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== process.env.REVALIDATE_SECRET) {
@@ -28,9 +30,9 @@ export default async function handler(req, res) {
 
         changedFiles.forEach((file) => {
           if (file.endsWith('.md')) {
-            // Remove .md and encode each part
-            const pathParts = file.replace(/\.md$/, '').split('/');
-            const encodedPath = pathParts.map(encodeURIComponent).join('/');
+            // Convert to dashed slug and encode each part
+            const dashedSlug = pathToSlug(file);
+            const encodedPath = dashedSlug.split('/').map(encodeURIComponent).join('/');
             filesToRevalidate.add(`/notes/${encodedPath}`);
           }
         });

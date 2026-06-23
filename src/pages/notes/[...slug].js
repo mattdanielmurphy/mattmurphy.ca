@@ -5,6 +5,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import matter from 'gray-matter'
 import styles from '../../styles/Notes.module.css'
+import { pathToSlug } from '../../utils/slug'
 
 export default function NotePage({ title, html, headings = [] }) {
     const [activeId, setActiveId] = useState('')
@@ -122,8 +123,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
     const { slug } = params // slug is an array
-    const pathParts = slug.map(encodeURIComponent)
-    const filePath = pathParts.join('/') + '.md'
+    const targetSlug = slug.join('/')
     const repo = 'mattdanielmurphy/personal-notes'
     const GITHUB_PAT = process.env.GITHUB_PAT
 
@@ -133,8 +133,39 @@ export async function getStaticProps({ params }) {
     }
 
     try {
+        // Fetch Git tree to resolve the dashed slug to the actual file path
+        let treeResponse = await fetch(`https://api.github.com/repos/${repo}/git/trees/main?recursive=1`, {
+            headers: {
+                Authorization: `token ${GITHUB_PAT}`,
+            },
+        });
+
+        if (treeResponse.status === 404) {
+            treeResponse = await fetch(`https://api.github.com/repos/${repo}/git/trees/master?recursive=1`, {
+                headers: {
+                    Authorization: `token ${GITHUB_PAT}`,
+                },
+            });
+        }
+
+        if (!treeResponse.ok) {
+            console.error(`Failed to fetch repo tree: ${treeResponse.status} ${treeResponse.statusText}`);
+            return { notFound: true };
+        }
+
+        const treeData = await treeResponse.json();
+        const matchedFile = treeData.tree.find(file => {
+            return file.type === 'blob' && file.path.endsWith('.md') && pathToSlug(file.path) === targetSlug;
+        });
+
+        if (!matchedFile) {
+            return { notFound: true };
+        }
+
+        const resolvedPath = matchedFile.path.split('/').map(encodeURIComponent).join('/');
+
         const response = await fetch(
-            `https://api.github.com/repos/${repo}/contents/${filePath}`,
+            `https://api.github.com/repos/${repo}/contents/${resolvedPath}`,
             {
                 headers: {
                     Authorization: `token ${GITHUB_PAT}`,
