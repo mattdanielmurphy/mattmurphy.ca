@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+import AdmZip from 'adm-zip';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../../styles/Notes.module.css';
@@ -37,104 +38,62 @@ export async function getStaticProps() {
 
   if (!GITHUB_PAT) {
     console.warn('GITHUB_PAT is not set. Cannot fetch notes.');
-    return { props: { notes: [] }, revalidate: 60 };
+    return { props: { notes: [] } };
   }
 
-  // Helper to fetch file contents in concurrent batches to avoid secondary rate limits
-  const batchFetch = async (files, batchSize = 5) => {
-    const results = [];
-    for (let i = 0; i < files.length; i += batchSize) {
-      const batch = files.slice(i, i + batchSize);
-      const batchResults = await Promise.all(
-        batch.map(async (file) => {
-          const encodedPath = file.path.split('/').map(encodeURIComponent).join('/');
-          try {
-            const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
-              headers: {
-                Authorization: `token ${GITHUB_PAT}`,
-                Accept: 'application/vnd.github.v3.raw',
-              },
-            });
-
-            if (!fileRes.ok) {
-              console.error(`Failed to fetch content for ${file.path}: ${fileRes.status} ${fileRes.statusText}`);
-              return null;
-            }
-
-            const rawContent = await fileRes.text();
-            const { data } = matter(rawContent);
-            if (data.public === true) {
-              return {
-                slug: file.path.replace(/\.md$/, ''), // Removes .md
-                title: data.title || file.path.split('/').pop().replace(/\.md$/, ''),
-              };
-            }
-          } catch (e) {
-            console.error(`Error parsing frontmatter or fetching ${file.path}:`, e);
-          }
-          return null;
-        })
-      );
-      results.push(...batchResults);
-    }
-    return results.filter(Boolean);
-  };
-
   try {
-    // 1. Try to search for "public: true" in markdown files using the Code Search API first
-    console.log('Searching for public notes via GitHub Code Search API...');
-    const searchRes = await fetch(
-      `https://api.github.com/search/code?q=repo:${repo}+"public:+true"+extension:md`,
-      {
-        headers: {
-          Authorization: `token ${GITHUB_PAT}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
-      }
-    );
-
-    if (searchRes.ok) {
-      const searchData = await searchRes.json();
-      console.log(`Found ${searchData.items ? searchData.items.length : 0} candidate files via search.`);
-      if (searchData.items && searchData.items.length > 0) {
-        const publicNotes = await batchFetch(searchData.items);
-        return {
-          props: {
-            notes: publicNotes,
-          },
-        };
-      }
-    } else {
-      console.warn(`GitHub Code Search API failed (${searchRes.status}). Falling back to full tree scan.`);
-    }
-
-    // 2. Fallback: Fetch the entire tree from the default branch
-    console.log('Running fallback: scanning repository tree...');
-    let treeRes = await fetch(`https://api.github.com/repos/${repo}/git/trees/main?recursive=1`, {
+    console.log('Downloading repository ZIP archive from GitHub...');
+    let response = await fetch(`https://api.github.com/repos/${repo}/zipball/main`, {
       headers: {
         Authorization: `token ${GITHUB_PAT}`,
-        Accept: 'application/vnd.github.v3+json',
       },
     });
 
-    if (treeRes.status === 404) {
-      treeRes = await fetch(`https://api.github.com/repos/${repo}/git/trees/master?recursive=1`, {
+    if (response.status === 404) {
+      console.log('Main branch zipball not found, trying master branch...');
+      response = await fetch(`https://api.github.com/repos/${repo}/zipball/master`, {
         headers: {
           Authorization: `token ${GITHUB_PAT}`,
-          Accept: 'application/vnd.github.v3+json',
         },
       });
     }
 
-    if (!treeRes.ok) {
-      console.error('Failed to fetch repo tree:', await treeRes.text());
-      return { props: { notes: [] }, revalidate: 60 };
+    if (!response.ok) {
+      console.error(`Failed to download repo zipball: ${response.status} ${response.statusText}`);
+      return { props: { notes: [] } };
     }
 
-    const treeData = await treeRes.json();
-    const mdFiles = treeData.tree.filter(file => file.type === 'blob' && file.path.endsWith('.md'));
-    console.log(`Scanning all ${mdFiles.length} markdown files in fallback mode...`);
-    const publicNotes = await batchFetch(mdFiles);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const zip = new AdmZip(buffer);
+    const zipEntries = zip.getEntries();
+    const publicNotes = [];
+
+    console.log(`Processing ${zipEntries.length} archive entries...`);
+
+    for (const entry of zipEntries) {
+      if (entry.isDirectory) continue;
+
+      const pathParts = entry.entryName.split('/');
+      if (pathParts.length <= 1) continue;
+
+      const repoRelativePath = pathParts.slice(1).join('/');
+      if (repoRelativePath.endsWith('.md')) {
+        try {
+          const rawContent = entry.getData().toString('utf8');
+          const { data } = matter(rawContent);
+          if (data.public === true) {
+            publicNotes.push({
+              slug: repoRelativePath.replace(/\.md$/, ''), // Removes .md
+              title: data.title || repoRelativePath.split('/').pop().replace(/\.md$/, ''),
+            });
+          }
+        } catch (e) {
+          console.error(`Error parsing frontmatter for ${repoRelativePath}:`, e);
+        }
+      }
+    }
+
+    console.log(`Found ${publicNotes.length} public notes.`);
 
     return {
       props: {
@@ -143,7 +102,7 @@ export async function getStaticProps() {
     };
   } catch (error) {
     console.error('Error fetching notes:', error);
-    return { props: { notes: [] }, revalidate: 60 };
+    return { props: { notes: [] } };
   }
 }
 
