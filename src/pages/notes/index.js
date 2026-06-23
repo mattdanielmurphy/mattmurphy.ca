@@ -41,6 +41,24 @@ export async function getStaticProps() {
     return { props: { notes: [] } };
   }
 
+  const devCachePath = './tmp/notes-cache.json';
+  if (process.env.NODE_ENV === 'development') {
+    const fs = require('fs');
+    try {
+      if (fs.existsSync(devCachePath)) {
+        const stats = fs.statSync(devCachePath);
+        const ageInMs = Date.now() - stats.mtimeMs;
+        if (ageInMs < 300000) { // 5 minutes cache
+          console.log('Loading notes from local dev cache...');
+          const cachedData = JSON.parse(fs.readFileSync(devCachePath, 'utf8'));
+          return { props: { notes: cachedData } };
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to read dev cache:', e);
+    }
+  }
+
   try {
     console.log('Downloading repository ZIP archive from GitHub...');
     let response = await fetch(`https://api.github.com/repos/${repo}/zipball/main`, {
@@ -94,6 +112,18 @@ export async function getStaticProps() {
     }
 
     console.log(`Found ${publicNotes.length} public notes.`);
+
+    if (process.env.NODE_ENV === 'development') {
+      const fs = require('fs');
+      const path = require('path');
+      try {
+        fs.mkdirSync(path.dirname(devCachePath), { recursive: true });
+        fs.writeFileSync(devCachePath, JSON.stringify(publicNotes, null, 2), 'utf8');
+        console.log('Saved notes to local dev cache.');
+      } catch (e) {
+        console.warn('Failed to write dev cache:', e);
+      }
+    }
 
     return {
       props: {
