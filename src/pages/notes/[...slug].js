@@ -136,6 +136,111 @@ export async function getStaticProps({ params }) {
     const repo = 'mattdanielmurphy/personal-notes'
     const GITHUB_PAT = process.env.GITHUB_PAT
 
+    // 1. In development, read directly from the local Obsidian vault if it exists
+    const localVaultPath = '/Users/matthewmurphy/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal';
+    if (process.env.NODE_ENV === 'development') {
+        const fs = require('fs');
+        if (fs.existsSync(localVaultPath)) {
+            console.log(`Loading single note '${targetSlug}' from local Obsidian vault...`);
+            const path = require('path');
+            
+            const getLocalFilesRecursively = (dir, fileList = []) => {
+                if (!fs.existsSync(dir)) return fileList;
+                const files = fs.readdirSync(dir);
+                for (const file of files) {
+                    if (file === '.git' || file === 'node_modules' || file === '.obsidian') continue;
+                    const filePath = path.join(dir, file);
+                    const stat = fs.statSync(filePath);
+                    if (stat.isDirectory()) {
+                        getLocalFilesRecursively(filePath, fileList);
+                    } else if (file.endsWith('.md')) {
+                        fileList.push(filePath);
+                    }
+                }
+                return fileList;
+            };
+
+            const filePaths = getLocalFilesRecursively(localVaultPath);
+            const matchedFilePath = filePaths.find(filePath => {
+                const repoRelativePath = path.relative(localVaultPath, filePath);
+                return pathToSlug(repoRelativePath) === targetSlug;
+            });
+
+            if (!matchedFilePath) {
+                console.log(`Note not found in local vault for slug: ${targetSlug}`);
+                return { notFound: true };
+            }
+
+            try {
+                const rawContent = fs.readFileSync(matchedFilePath, 'utf8');
+                const { data, content } = matter(rawContent);
+
+                if (data.public !== true) {
+                    console.log(`Note '${targetSlug}' is not public.`);
+                    return { notFound: true };
+                }
+
+                // Extract headings and generate HTML with matching unique IDs
+                const tempMarked = new Marked();
+                const tokens = tempMarked.lexer(content);
+                const headings = [];
+                const ids = {};
+
+                const getUniqueId = (text) => {
+                    let id = text
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/[\s_-]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    if (ids[id] !== undefined) {
+                        ids[id]++;
+                        id = `${id}-${ids[id]}`;
+                    } else {
+                        ids[id] = 0;
+                    }
+                    return id;
+                };
+
+                tokens.forEach((token) => {
+                    if (token.type === 'heading') {
+                        headings.push({
+                            text: token.text,
+                            depth: token.depth,
+                        });
+                    }
+                });
+
+                headings.forEach((h) => {
+                    h.id = getUniqueId(h.text);
+                });
+
+                for (const key in ids) delete ids[key];
+
+                const renderer = {
+                    heading({ tokens, depth, text }) {
+                        const id = getUniqueId(text);
+                        return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+                    },
+                };
+
+                const customMarked = new Marked({ renderer });
+                const htmlContent = customMarked.parse(content);
+
+                return {
+                    props: {
+                        title: data.title || slug[slug.length - 1],
+                        html: htmlContent,
+                        headings,
+                    },
+                };
+            } catch (err) {
+                console.error(`Error reading local note '${targetSlug}':`, err);
+                return { notFound: true };
+            }
+        }
+    }
+
     if (!GITHUB_PAT) {
         console.warn('GITHUB_PAT is not set.')
         return { notFound: true }
