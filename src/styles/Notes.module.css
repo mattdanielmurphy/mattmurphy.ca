@@ -308,9 +308,51 @@
   background-color: #fafafa;
 }
 
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  min-height: 28px;
+}
+
+.sidebarTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+}
+
+.sidebarToggleButton {
+  background: none;
+  border: 1px solid #eaeaea;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.sidebarToggleButton:hover {
+  color: #111;
+  border-color: #111;
+  background-color: #fafafa;
+}
+
+.sidebarCollapsed {
+  width: 28px !important;
+  overflow: visible;
+}
+
 .layoutWrapper.sidebarHidden {
-  display: block;
-  max-width: 800px;
+  gap: 1.5rem;
+  max-width: 850px;
   margin: 0 auto;
 }
 
@@ -335,7 +377,7 @@
     padding-left: 0;
   }
   
-  .toggleButton {
+  .sidebarToggleButton {
     display: none; /* Hide toggle on mobile since outline stacks inline */
   }
 }
