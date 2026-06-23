@@ -10,6 +10,7 @@ import { pathToSlug } from '../../utils/slug'
 export default function NotePage({ title, html, headings = [] }) {
     const [activeId, setActiveId] = useState('')
     const [isSidebarVisible, setIsSidebarVisible] = useState(true)
+    const [isSticky, setIsSticky] = useState(false)
     const sidebarRef = useRef(null)
 
     useEffect(() => {
@@ -22,6 +23,11 @@ export default function NotePage({ title, html, headings = [] }) {
         if (headings.length === 0) return
 
         const handleScroll = () => {
+            if (sidebarRef.current) {
+                const rect = sidebarRef.current.getBoundingClientRect()
+                setIsSticky(rect.top <= 35)
+            }
+
             const headingElements = headings
                 .map((h) => document.getElementById(h.id))
                 .filter(Boolean)
@@ -57,14 +63,14 @@ export default function NotePage({ title, html, headings = [] }) {
             const containerRect = container.getBoundingClientRect()
             const elemRect = activeEl.getBoundingClientRect()
 
-            if (elemRect.top < containerRect.top + 20) {
+            if (elemRect.top < containerRect.top + 40) {
                 container.scrollBy({
-                    top: elemRect.top - containerRect.top - 20,
+                    top: elemRect.top - containerRect.top - 40,
                     behavior: 'smooth'
                 })
-            } else if (elemRect.bottom > containerRect.bottom - 20) {
+            } else if (elemRect.bottom > containerRect.bottom - 80) {
                 container.scrollBy({
-                    top: elemRect.bottom - containerRect.bottom + 20,
+                    top: elemRect.bottom - containerRect.bottom + 80,
                     behavior: 'smooth'
                 })
             }
@@ -89,7 +95,9 @@ export default function NotePage({ title, html, headings = [] }) {
                 {headings.length > 0 && (
                     <aside
                         ref={sidebarRef}
-                        className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''}`}
+                        className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''} ${
+                            isSticky ? styles.stickySidebar : ''
+                        }`}
                     >
                         <div className={styles.sidebarHeader}>
                             <span className={`${styles.sidebarTitle} ${!isSidebarVisible ? styles.titleHidden : ''}`}>Outline</span>

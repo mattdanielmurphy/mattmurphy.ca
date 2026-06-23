@@ -216,6 +216,11 @@
   overflow-y: auto;
   scrollbar-width: none;
   /* Firefox */
+  transition: max-height 0.2s ease;
+}
+
+.sidebar.stickySidebar {
+  max-height: calc(100vh - 4rem);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -277,10 +282,13 @@
 
 .activeOutlineItem a {
   color: #111;
-  font-weight: 600;
   border-left: 2px solid #111;
   padding-left: 0.5rem;
   margin-left: -0.5rem;
+}
+
+.activeOutlineItem:not(.depth1) a {
+  text-shadow: 0.6px 0 0 currentColor;
 }
 
 .mainContent {
