@@ -212,7 +212,7 @@
   flex-shrink: 0;
   position: sticky;
   top: 2rem;
-  max-height: calc(100vh - 4rem);
+  max-height: calc(100vh - 8rem);
   overflow-y: auto;
   scrollbar-width: none;
   /* Firefox */
@@ -236,7 +236,7 @@
 
 .outlineItem {
   margin-bottom: 0.75rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.4;
 }
 
@@ -284,6 +284,7 @@
 }
 
 .mainContent {
+  margin-bottom: 10rem;
   flex-grow: 1;
   min-width: 0;
 }
@@ -436,23 +437,27 @@
   .title {
     font-size: 2rem;
   }
+
   .content h1 {
     font-size: 1.8rem;
   }
+
   .content h2 {
     font-size: 1.5rem;
   }
+
   .content h3 {
     font-size: 1.3rem;
   }
 }
 
 @media (max-width: 480px) {
+
   .noteContainer,
   .container {
     padding: 1.5rem 0.75rem;
   }
-  
+
   .title {
     font-size: 1.6rem;
   }
@@ -473,5 +478,35 @@
   .content li,
   .content a {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .noteContainer,
+  .container {
+    padding: 1.5rem 0.35rem;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .content h1 {
+    font-size: 1.3rem;
+  }
+
+  .content h2 {
+    font-size: 1.15rem;
+  }
+
+  .content h3 {
+    font-size: 1.05rem;
+  }
+
+  .content p,
+  .content li,
+  .content a {
+    font-size: .9rem;
   }
 }
