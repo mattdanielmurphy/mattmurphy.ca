@@ -104,7 +104,7 @@ export async function getStaticProps() {
       props: {
         notes: publicNotes,
       },
-      revalidate: 300, // Revalidate every 5 minutes (300 seconds)
+      // Removed revalidate: 300 to stop background polling. We now use on-demand revalidation via webhook.
     };
   } catch (error) {
     console.error('Error fetching notes:', error);

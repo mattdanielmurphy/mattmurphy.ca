@@ -73,7 +73,7 @@ export async function getStaticProps({ params }) {
         title: data.title || slug[slug.length - 1],
         html: htmlContent,
       },
-      revalidate: 60, // Revalidate every 60 seconds
+      // Removed revalidate: 60 to stop background polling.
     };
   } catch (err) {
     console.error('Error fetching note:', err);
