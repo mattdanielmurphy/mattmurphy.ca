@@ -5,6 +5,6 @@
 - **Calculus Fishstocks Simulation (`/calculus-fishstocks`)**: Interactive simulation of fish populations and harvesting models using dynamic canvas plotting and user parameters. Includes a real-time background canvas with fish that dynamically avoid the mouse cursor and touch positions.
 
 ## Content Publishing
-- **Dynamic Public Notes (`/notes`)**: Fetches markdown notes dynamically from a private GitHub repository (`mattdanielmurphy/personal-notes`). Automatically publishes notes that have `public: true` in their frontmatter. Utilizes the GitHub Code Search API with fallback batch-fetching to prevent secondary rate limits and timeouts, and uses a catch-all route to support nested folder structures.
+- **Dynamic Public Notes (`/notes`)**: Fetches markdown notes dynamically from a private GitHub repository (`mattdanielmurphy/personal-notes`). Automatically publishes notes that have `public: true` in their frontmatter. Utilizes the GitHub Code Search API with fallback batch-fetching to prevent secondary rate limits and timeouts, and uses a catch-all route to support nested folder structures. Includes a minimalist, sticky left sidebar outline showing note headings as anchor links, with active scroll tracking highlighting the current heading.
 - **Obsidian Auto-Sync Daemon**: macOS LaunchAgent service backing the dynamic publishing pipeline. Monitors the local Obsidian directory for modifications and automatically commits and pushes changes to the private repository, with sandbox/TCC isolation managed via a compiled C binary wrapper.
 

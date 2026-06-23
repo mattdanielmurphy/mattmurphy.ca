@@ -1,22 +1,79 @@
+import { useState, useEffect } from 'react';
 import matter from 'gray-matter';
-import { marked } from 'marked';
+import { Marked, marked } from 'marked';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../../styles/Notes.module.css';
 
-export default function NotePage({ title, html }) {
+export default function NotePage({ title, html, headings = [] }) {
+  const [activeId, setActiveId] = useState('');
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+
+    const handleScroll = () => {
+      const headingElements = headings
+        .map((h) => document.getElementById(h.id))
+        .filter(Boolean);
+
+      let currentActive = '';
+      for (const el of headingElements) {
+        const rect = el.getBoundingClientRect();
+        // If the heading is within 120px of the top of the viewport
+        if (rect.top <= 120) {
+          currentActive = el.id;
+        }
+      }
+
+      if (!currentActive && headingElements.length > 0) {
+        currentActive = headingElements[0].id;
+      }
+
+      setActiveId(currentActive);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [headings]);
+
   return (
-    <div className={styles.container}>
+    <div className={styles.noteContainer}>
       <Head>
         <title>{title}</title>
       </Head>
       <Link href="/notes" className={styles.backLink}>
         &larr; Back to Notes
       </Link>
-      <div 
-        className={styles.content}
-        dangerouslySetInnerHTML={{ __html: html }} 
-      />
+      
+      <div className={styles.layoutWrapper}>
+        {headings.length > 0 && (
+          <aside className={styles.sidebar}>
+            <nav className={styles.outlineNav}>
+              <ul className={styles.outlineList}>
+                {headings.map((heading) => (
+                  <li
+                    key={heading.id}
+                    className={`${styles.outlineItem} ${styles[`depth${heading.depth}`] || ''} ${
+                      activeId === heading.id ? styles.activeOutlineItem : ''
+                    }`}
+                  >
+                    <a href={`#${heading.id}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )}
+        
+        <main className={styles.mainContent}>
+          <div 
+            className={styles.content}
+            dangerouslySetInnerHTML={{ __html: html }} 
+          />
+        </main>
+      </div>
     </div>
   );
 }
@@ -65,18 +122,66 @@ export async function getStaticProps({ params }) {
       return { notFound: true }; 
     }
 
-    // Convert Markdown to HTML
-    const htmlContent = marked(content);
+    // Extract headings and generate HTML with matching unique IDs
+    const tempMarked = new Marked();
+    const tokens = tempMarked.lexer(content);
+    const headings = [];
+    const ids = {};
+
+    const getUniqueId = (text) => {
+      let id = text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      if (ids[id] !== undefined) {
+        ids[id]++;
+        id = `${id}-${ids[id]}`;
+      } else {
+        ids[id] = 0;
+      }
+      return id;
+    };
+
+    // 1. Gather all heading tokens
+    tokens.forEach((token) => {
+      if (token.type === 'heading') {
+        headings.push({
+          text: token.text,
+          depth: token.depth,
+        });
+      }
+    });
+
+    // 2. Assign unique IDs to headings
+    headings.forEach((h) => {
+      h.id = getUniqueId(h.text);
+    });
+
+    // 3. Reset unique IDs map before compiling to ensure matching sequential IDs
+    for (const key in ids) delete ids[key];
+
+    const renderer = {
+      heading({ tokens, depth, text }) {
+        const id = getUniqueId(text);
+        return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+      },
+    };
+
+    const customMarked = new Marked({ renderer });
+    const htmlContent = customMarked.parse(content);
 
     return {
       props: {
         title: data.title || slug[slug.length - 1],
         html: htmlContent,
+        headings,
       },
-      // Removed revalidate: 60 to stop background polling.
     };
   } catch (err) {
     console.error('Error fetching note:', err);
     return { notFound: true };
   }
 }
+
