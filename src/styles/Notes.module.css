@@ -61,6 +61,8 @@
 
 .content {
   font-size: 1.1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .content p,
@@ -87,7 +89,8 @@
   color: #111;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  scroll-margin-top: 6rem; /* Leaves room when jumping to anchor links */
+  scroll-margin-top: 6rem;
+  /* Leaves room when jumping to anchor links */
 }
 
 .content li {
@@ -121,11 +124,17 @@
   border-radius: 3px;
   font-size: 0.9em;
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .content pre code {
   background-color: transparent;
   padding: 0;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
 }
 
 .content blockquote {
@@ -142,7 +151,9 @@
 }
 
 .content table {
+  display: block;
   width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
 }
@@ -203,11 +214,13 @@
   top: 2rem;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .sidebar::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
 
 .outlineNav {
@@ -284,7 +297,8 @@
 
 .backLink {
   display: inline-block;
-  margin-bottom: 0 !important; /* Override previous margin-bottom */
+  margin-bottom: 0 !important;
+  /* Override previous margin-bottom */
   color: #666;
   text-decoration: none;
   font-weight: 500;
@@ -330,7 +344,7 @@
 
 .sidebarToggleButton {
   background: none;
-  border: 1px solid #eaeaea;
+  border: none;
   width: 28px;
   height: 28px;
   border-radius: 4px;
@@ -374,7 +388,7 @@
     flex-direction: column;
     gap: 2rem;
   }
-  
+
   .sidebar {
     position: static;
     width: 100%;
@@ -388,12 +402,12 @@
     width: 100% !important;
     padding-bottom: 0.5rem;
   }
-  
+
   .outlineNav {
     border-left: none;
     padding-left: 0;
   }
-  
+
   .sidebarToggleButton {
     display: flex;
   }
