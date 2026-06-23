@@ -219,10 +219,6 @@
   transition: max-height 0.2s ease;
 }
 
-.sidebar.stickySidebar {
-  max-height: calc(100vh - 4rem);
-}
-
 .sidebar::-webkit-scrollbar {
   display: none;
   /* Safari and Chrome */

@@ -1,11 +1,11 @@
 import { Marked, marked } from 'marked'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Head from 'next/head'
 import Link from 'next/link'
 import matter from 'gray-matter'
-import styles from '../../styles/Notes.module.css'
 import { pathToSlug } from '../../utils/slug'
+import styles from '../../styles/Notes.module.css'
 
 export default function NotePage({ title, html, headings = [] }) {
     const [activeId, setActiveId] = useState('')
@@ -23,10 +23,7 @@ export default function NotePage({ title, html, headings = [] }) {
         if (headings.length === 0) return
 
         const handleScroll = () => {
-            if (sidebarRef.current) {
-                const rect = sidebarRef.current.getBoundingClientRect()
-                setIsSticky(rect.top <= 35)
-            }
+            setIsSticky(window.scrollY > 50)
 
             const headingElements = headings
                 .map((h) => document.getElementById(h.id))
@@ -57,21 +54,23 @@ export default function NotePage({ title, html, headings = [] }) {
     useEffect(() => {
         if (!activeId || !sidebarRef.current) return
 
-        const activeEl = sidebarRef.current.querySelector(`.${styles.activeOutlineItem}`)
+        const activeEl = sidebarRef.current.querySelector(
+            `.${styles.activeOutlineItem}`
+        )
         if (activeEl) {
             const container = sidebarRef.current
             const containerRect = container.getBoundingClientRect()
             const elemRect = activeEl.getBoundingClientRect()
 
-            if (elemRect.top < containerRect.top + 40) {
+            if (elemRect.top < containerRect.top + 120) {
                 container.scrollBy({
-                    top: elemRect.top - containerRect.top - 40,
-                    behavior: 'smooth'
+                    top: elemRect.top - containerRect.top - 120,
+                    behavior: 'smooth',
                 })
-            } else if (elemRect.bottom > containerRect.bottom - 80) {
+            } else if (elemRect.bottom > containerRect.bottom - 120) {
                 container.scrollBy({
-                    top: elemRect.bottom - containerRect.bottom + 80,
-                    behavior: 'smooth'
+                    top: elemRect.bottom - containerRect.bottom + 120,
+                    behavior: 'smooth',
                 })
             }
         }
@@ -98,26 +97,73 @@ export default function NotePage({ title, html, headings = [] }) {
                         className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''} ${
                             isSticky ? styles.stickySidebar : ''
                         }`}
+                        style={
+                            isSticky ? { maxHeight: 'calc(100vh - 3rem)' } : {}
+                        }
                     >
                         <div className={styles.sidebarHeader}>
-                            <span className={`${styles.sidebarTitle} ${!isSidebarVisible ? styles.titleHidden : ''}`}>Outline</span>
+                            <span
+                                className={`${styles.sidebarTitle} ${!isSidebarVisible ? styles.titleHidden : ''}`}
+                            >
+                                Outline
+                            </span>
                             <button
-                                onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+                                onClick={() =>
+                                    setIsSidebarVisible(!isSidebarVisible)
+                                }
                                 className={styles.sidebarToggleButton}
                                 aria-label={
-                                    isSidebarVisible ? 'Hide outline' : 'Show outline'
+                                    isSidebarVisible
+                                        ? 'Hide outline'
+                                        : 'Show outline'
                                 }
                             >
                                 {isSidebarVisible ? (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.toggleIcon}>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className={styles.toggleIcon}
+                                    >
                                         <polyline points="15 18 9 12 15 6" />
                                     </svg>
                                 ) : (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.toggleIcon}>
-                                        <rect width="18" height="18" x="3" y="3" rx="2" className={styles.desktopOnlyIcon} />
-                                        <path d="M9 3v18" className={styles.desktopOnlyIcon} />
-                                        <path d="m14 9 3 3-3 3" className={styles.desktopOnlyIcon} />
-                                        <polyline points="6 9 12 15 18 9" className={styles.mobileOnlyIcon} />
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className={styles.toggleIcon}
+                                    >
+                                        <rect
+                                            width="18"
+                                            height="18"
+                                            x="3"
+                                            y="3"
+                                            rx="2"
+                                            className={styles.desktopOnlyIcon}
+                                        />
+                                        <path
+                                            d="M9 3v18"
+                                            className={styles.desktopOnlyIcon}
+                                        />
+                                        <path
+                                            d="m14 9 3 3-3 3"
+                                            className={styles.desktopOnlyIcon}
+                                        />
+                                        <polyline
+                                            points="6 9 12 15 18 9"
+                                            className={styles.mobileOnlyIcon}
+                                        />
                                     </svg>
                                 )}
                             </button>
@@ -138,9 +184,14 @@ export default function NotePage({ title, html, headings = [] }) {
                                                 href={`#${heading.id}`}
                                                 onClick={(e) => {
                                                     e.preventDefault()
-                                                    const el = document.getElementById(heading.id)
+                                                    const el =
+                                                        document.getElementById(
+                                                            heading.id
+                                                        )
                                                     if (el) {
-                                                        el.scrollIntoView({ behavior: 'smooth' })
+                                                        el.scrollIntoView({
+                                                            behavior: 'smooth',
+                                                        })
                                                     }
                                                 }}
                                             >
@@ -179,54 +230,64 @@ export async function getStaticProps({ params }) {
     const GITHUB_PAT = process.env.GITHUB_PAT
 
     // 1. In development, read directly from the local Obsidian vault if it exists
-    const localVaultPath = '/Users/matthewmurphy/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal';
+    const localVaultPath =
+        '/Users/matthewmurphy/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal'
     if (process.env.NODE_ENV === 'development') {
-        const fs = require('fs');
+        const fs = require('fs')
         if (fs.existsSync(localVaultPath)) {
-            console.log(`Loading single note '${targetSlug}' from local Obsidian vault...`);
-            const path = require('path');
-            
+            console.log(
+                `Loading single note '${targetSlug}' from local Obsidian vault...`
+            )
+            const path = require('path')
+
             const getLocalFilesRecursively = (dir, fileList = []) => {
-                if (!fs.existsSync(dir)) return fileList;
-                const files = fs.readdirSync(dir);
+                if (!fs.existsSync(dir)) return fileList
+                const files = fs.readdirSync(dir)
                 for (const file of files) {
-                    if (file === '.git' || file === 'node_modules' || file === '.obsidian') continue;
-                    const filePath = path.join(dir, file);
-                    const stat = fs.statSync(filePath);
+                    if (
+                        file === '.git' ||
+                        file === 'node_modules' ||
+                        file === '.obsidian'
+                    )
+                        continue
+                    const filePath = path.join(dir, file)
+                    const stat = fs.statSync(filePath)
                     if (stat.isDirectory()) {
-                        getLocalFilesRecursively(filePath, fileList);
+                        getLocalFilesRecursively(filePath, fileList)
                     } else if (file.endsWith('.md')) {
-                        fileList.push(filePath);
+                        fileList.push(filePath)
                     }
                 }
-                return fileList;
-            };
+                return fileList
+            }
 
-            const filePaths = getLocalFilesRecursively(localVaultPath);
-            const matchedFilePath = filePaths.find(filePath => {
-                const repoRelativePath = path.relative(localVaultPath, filePath);
-                return pathToSlug(repoRelativePath) === targetSlug;
-            });
+            const filePaths = getLocalFilesRecursively(localVaultPath)
+            const matchedFilePath = filePaths.find((filePath) => {
+                const repoRelativePath = path.relative(localVaultPath, filePath)
+                return pathToSlug(repoRelativePath) === targetSlug
+            })
 
             if (!matchedFilePath) {
-                console.log(`Note not found in local vault for slug: ${targetSlug}`);
-                return { notFound: true };
+                console.log(
+                    `Note not found in local vault for slug: ${targetSlug}`
+                )
+                return { notFound: true }
             }
 
             try {
-                const rawContent = fs.readFileSync(matchedFilePath, 'utf8');
-                const { data, content } = matter(rawContent);
+                const rawContent = fs.readFileSync(matchedFilePath, 'utf8')
+                const { data, content } = matter(rawContent)
 
                 if (data.public !== true) {
-                    console.log(`Note '${targetSlug}' is not public.`);
-                    return { notFound: true };
+                    console.log(`Note '${targetSlug}' is not public.`)
+                    return { notFound: true }
                 }
 
                 // Extract headings and generate HTML with matching unique IDs
-                const tempMarked = new Marked();
-                const tokens = tempMarked.lexer(content);
-                const headings = [];
-                const ids = {};
+                const tempMarked = new Marked()
+                const tokens = tempMarked.lexer(content)
+                const headings = []
+                const ids = {}
 
                 const getUniqueId = (text) => {
                     let id = text
@@ -234,40 +295,40 @@ export async function getStaticProps({ params }) {
                         .trim()
                         .replace(/[^\w\s-]/g, '')
                         .replace(/[\s_-]+/g, '-')
-                        .replace(/^-+|-+$/g, '');
+                        .replace(/^-+|-+$/g, '')
                     if (ids[id] !== undefined) {
-                        ids[id]++;
-                        id = `${id}-${ids[id]}`;
+                        ids[id]++
+                        id = `${id}-${ids[id]}`
                     } else {
-                        ids[id] = 0;
+                        ids[id] = 0
                     }
-                    return id;
-                };
+                    return id
+                }
 
                 tokens.forEach((token) => {
                     if (token.type === 'heading') {
                         headings.push({
                             text: token.text,
                             depth: token.depth,
-                        });
+                        })
                     }
-                });
+                })
 
                 headings.forEach((h) => {
-                    h.id = getUniqueId(h.text);
-                });
+                    h.id = getUniqueId(h.text)
+                })
 
-                for (const key in ids) delete ids[key];
+                for (const key in ids) delete ids[key]
 
                 const renderer = {
                     heading({ tokens, depth, text }) {
-                        const id = getUniqueId(text);
-                        return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+                        const id = getUniqueId(text)
+                        return `<h${depth} id="${id}">${text}</h${depth}>\n`
                     },
-                };
+                }
 
-                const customMarked = new Marked({ renderer });
-                const htmlContent = customMarked.parse(content);
+                const customMarked = new Marked({ renderer })
+                const htmlContent = customMarked.parse(content)
 
                 return {
                     props: {
@@ -275,10 +336,10 @@ export async function getStaticProps({ params }) {
                         html: htmlContent,
                         headings,
                     },
-                };
+                }
             } catch (err) {
-                console.error(`Error reading local note '${targetSlug}':`, err);
-                return { notFound: true };
+                console.error(`Error reading local note '${targetSlug}':`, err)
+                return { notFound: true }
             }
         }
     }
@@ -290,35 +351,50 @@ export async function getStaticProps({ params }) {
 
     try {
         // Fetch Git tree to resolve the dashed slug to the actual file path
-        let treeResponse = await fetch(`https://api.github.com/repos/${repo}/git/trees/main?recursive=1`, {
-            headers: {
-                Authorization: `token ${GITHUB_PAT}`,
-            },
-        });
-
-        if (treeResponse.status === 404) {
-            treeResponse = await fetch(`https://api.github.com/repos/${repo}/git/trees/master?recursive=1`, {
+        let treeResponse = await fetch(
+            `https://api.github.com/repos/${repo}/git/trees/main?recursive=1`,
+            {
                 headers: {
                     Authorization: `token ${GITHUB_PAT}`,
                 },
-            });
+            }
+        )
+
+        if (treeResponse.status === 404) {
+            treeResponse = await fetch(
+                `https://api.github.com/repos/${repo}/git/trees/master?recursive=1`,
+                {
+                    headers: {
+                        Authorization: `token ${GITHUB_PAT}`,
+                    },
+                }
+            )
         }
 
         if (!treeResponse.ok) {
-            console.error(`Failed to fetch repo tree: ${treeResponse.status} ${treeResponse.statusText}`);
-            return { notFound: true };
+            console.error(
+                `Failed to fetch repo tree: ${treeResponse.status} ${treeResponse.statusText}`
+            )
+            return { notFound: true }
         }
 
-        const treeData = await treeResponse.json();
-        const matchedFile = treeData.tree.find(file => {
-            return file.type === 'blob' && file.path.endsWith('.md') && pathToSlug(file.path) === targetSlug;
-        });
+        const treeData = await treeResponse.json()
+        const matchedFile = treeData.tree.find((file) => {
+            return (
+                file.type === 'blob' &&
+                file.path.endsWith('.md') &&
+                pathToSlug(file.path) === targetSlug
+            )
+        })
 
         if (!matchedFile) {
-            return { notFound: true };
+            return { notFound: true }
         }
 
-        const resolvedPath = matchedFile.path.split('/').map(encodeURIComponent).join('/');
+        const resolvedPath = matchedFile.path
+            .split('/')
+            .map(encodeURIComponent)
+            .join('/')
 
         const response = await fetch(
             `https://api.github.com/repos/${repo}/contents/${resolvedPath}`,
