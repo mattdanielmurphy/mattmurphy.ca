@@ -245,6 +245,8 @@
   text-decoration: none;
   transition: color 0.2s ease, font-weight 0.2s ease;
   display: block;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .outlineItem a:hover {
@@ -427,5 +429,49 @@
   /* Rotate chevron-left to point up on mobile when expanded */
   .sidebar:not(.sidebarCollapsed) .sidebarToggleButton svg {
     transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  .content h1 {
+    font-size: 1.8rem;
+  }
+  .content h2 {
+    font-size: 1.5rem;
+  }
+  .content h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .noteContainer,
+  .container {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .content h1 {
+    font-size: 1.4rem;
+  }
+
+  .content h2 {
+    font-size: 1.25rem;
+  }
+
+  .content h3 {
+    font-size: 1.15rem;
+  }
+
+  .content p,
+  .content li,
+  .content a {
+    font-size: 1rem;
   }
 }
