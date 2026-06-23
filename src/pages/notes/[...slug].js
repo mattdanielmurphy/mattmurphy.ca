@@ -7,6 +7,7 @@ import styles from '../../styles/Notes.module.css';
 
 export default function NotePage({ title, html, headings = [] }) {
   const [activeId, setActiveId] = useState('');
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   useEffect(() => {
     if (headings.length === 0) return;
@@ -43,12 +44,24 @@ export default function NotePage({ title, html, headings = [] }) {
       <Head>
         <title>{title}</title>
       </Head>
-      <Link href="/notes" className={styles.backLink}>
-        &larr; Back to Notes
-      </Link>
       
-      <div className={styles.layoutWrapper}>
+      <div className={styles.controls}>
+        <Link href="/notes" className={styles.backLink}>
+          &larr; Back to Notes
+        </Link>
         {headings.length > 0 && (
+          <button 
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+            className={styles.toggleButton}
+            aria-label={isSidebarVisible ? 'Hide outline' : 'Show outline'}
+          >
+            {isSidebarVisible ? 'Hide Outline' : 'Show Outline'}
+          </button>
+        )}
+      </div>
+      
+      <div className={`${styles.layoutWrapper} ${!isSidebarVisible ? styles.sidebarHidden : ''}`}>
+        {headings.length > 0 && isSidebarVisible && (
           <aside className={styles.sidebar}>
             <nav className={styles.outlineNav}>
               <ul className={styles.outlineList}>
