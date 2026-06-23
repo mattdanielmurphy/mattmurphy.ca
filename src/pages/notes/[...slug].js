@@ -92,7 +92,16 @@ export default function NotePage({ title, html, headings = [] }) {
                                                     : ''
                                             }`}
                                         >
-                                            <a href={`#${heading.id}`}>
+                                            <a
+                                                href={`#${heading.id}`}
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    const el = document.getElementById(heading.id)
+                                                    if (el) {
+                                                        el.scrollIntoView({ behavior: 'smooth' })
+                                                    }
+                                                }}
+                                            >
                                                 {heading.text}
                                             </a>
                                         </li>
