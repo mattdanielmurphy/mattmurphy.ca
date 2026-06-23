@@ -63,6 +63,20 @@
   font-size: 1.1rem;
 }
 
+.content p,
+.content ul,
+.content ol,
+.content blockquote,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+  max-width: 70ch;
+}
+
+
 
 .content h1,
 .content h2,
