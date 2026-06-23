@@ -4,6 +4,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
+  // Bypass Cloudflare for the internal loopback request
+  if (process.env.VERCEL_URL) {
+    req.headers.host = process.env.VERCEL_URL;
+  }
+
   try {
     console.log('Revalidating notes index...');
     // Revalidate the index page
