@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.12",
+    "gray-matter": "^4.0.3",
+    "marked": "^18.0.5",
     "next": "15.1.11",
     "nodemailer": "^6.9.16",
     "pg": "^8.21.0",
