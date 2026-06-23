@@ -6,3 +6,5 @@
 
 ## Content Publishing
 - **Dynamic Public Notes (`/notes`)**: Fetches markdown notes dynamically from a private GitHub repository (`mattdanielmurphy/personal-notes`). Automatically publishes notes that have `public: true` in their frontmatter. Utilizes ISR and a catch-all route to seamlessly support nested folder structures from an Obsidian vault.
+- **Obsidian Auto-Sync Daemon**: macOS LaunchAgent service backing the dynamic publishing pipeline. Monitors the local Obsidian directory for modifications and automatically commits and pushes changes to the private repository, with sandbox/TCC isolation managed via a compiled C binary wrapper.
+

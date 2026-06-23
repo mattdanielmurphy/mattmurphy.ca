@@ -19,6 +19,8 @@
 
 ## Background Processes
 - Includes a Vercel cron job (`/api/cron/keep-alive`) to ping Supabase daily to keep the free-tier database active.
+- **Obsidian Auto-Sync**: A background macOS `launchd` agent (`com.user.notesync`) that monitors the Obsidian vault and syncs it to the private `personal-notes` repository. Uses a compiled C wrapper (`notesync-wrapper`) located at `~/Library/LaunchAgents/` to bypass macOS TCC/CloudMounter sandbox restrictions by allowing targeted Full Disk Access.
+
 
 ## Definition of Done
 - Code compiles without errors.
