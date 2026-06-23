@@ -1,5 +1,5 @@
 import { Marked, marked } from 'marked'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import Head from 'next/head'
 import Link from 'next/link'
@@ -10,6 +10,7 @@ import { pathToSlug } from '../../utils/slug'
 export default function NotePage({ title, html, headings = [] }) {
     const [activeId, setActiveId] = useState('')
     const [isSidebarVisible, setIsSidebarVisible] = useState(true)
+    const sidebarRef = useRef(null)
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -47,6 +48,29 @@ export default function NotePage({ title, html, headings = [] }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [headings])
 
+    useEffect(() => {
+        if (!activeId || !sidebarRef.current) return
+
+        const activeEl = sidebarRef.current.querySelector(`.${styles.activeOutlineItem}`)
+        if (activeEl) {
+            const container = sidebarRef.current
+            const containerRect = container.getBoundingClientRect()
+            const elemRect = activeEl.getBoundingClientRect()
+
+            if (elemRect.top < containerRect.top + 20) {
+                container.scrollBy({
+                    top: elemRect.top - containerRect.top - 20,
+                    behavior: 'smooth'
+                })
+            } else if (elemRect.bottom > containerRect.bottom - 20) {
+                container.scrollBy({
+                    top: elemRect.bottom - containerRect.bottom + 20,
+                    behavior: 'smooth'
+                })
+            }
+        }
+    }, [activeId])
+
     return (
         <div className={styles.noteContainer}>
             <Head>
@@ -63,7 +87,10 @@ export default function NotePage({ title, html, headings = [] }) {
                 className={`${styles.layoutWrapper} ${!isSidebarVisible ? styles.sidebarHidden : ''}`}
             >
                 {headings.length > 0 && (
-                    <aside className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''}`}>
+                    <aside
+                        ref={sidebarRef}
+                        className={`${styles.sidebar} ${!isSidebarVisible ? styles.sidebarCollapsed : ''}`}
+                    >
                         <div className={styles.sidebarHeader}>
                             <span className={`${styles.sidebarTitle} ${!isSidebarVisible ? styles.titleHidden : ''}`}>Outline</span>
                             <button
