@@ -12,7 +12,6 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.47.12",
     "adm-zip": "^0.5.17",
     "gray-matter": "^4.0.3",
     "marked": "^18.0.5",

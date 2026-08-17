@@ -2,17 +2,12 @@
 
 // import type { NextApiRequest, NextApiResponse } from "next"
 
-// import { createClient } from "@supabase/supabase-js"
+// import { Pool } from "pg"
 // import nodemailer from "nodemailer"
 
-// const supabaseUrl = "https://mxjkwzbcgefwdwifpgaz.supabase.co"
-// const supabaseKey = process.env.SUPABASE_KEY
-
-// if (!supabaseKey) {
-//     throw new Error("SUPABASE_KEY is not defined in environment variables.");
-// }
-
-// const supabase = createClient(supabaseUrl, supabaseKey)
+// const pool = new Pool({
+//     connectionString: process.env.POSTGRES_URL || process.env.SUPABASE_URL,
+// })
 
 // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 // 	// Validate required environment variables

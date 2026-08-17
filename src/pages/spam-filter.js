@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { createClient } from "@supabase/supabase-js"
-
-const supabaseUrl = "https://mxjkwzbcgefwdwifpgaz.supabase.co"
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default function Addresss() {
 	const [addresss, setAddresss] = useState([])
@@ -33,40 +28,28 @@ export default function Addresss() {
 	}
 
 	const getData = useCallback(async () => {
-		const { data: rows, error } = await supabase.from("zoho-spam-filter").select("*")
-		setLoading(false)
-		if (error) {
+		try {
+			const res = await fetch("/api/zoho-spam-filter/addresses")
+			if (!res.ok) throw new Error("Failed to fetch")
+			const { data: rows } = await res.json()
+
+			setLoading(false)
+			const sortedRows = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+			setAddresss(sortedRows)
+			setConnectionError(false)
+		} catch (error) {
 			console.error("Error fetching data:", error)
+			setLoading(false)
 			setConnectionError(true)
-			return
 		}
-		const sortedRows = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-		setAddresss(sortedRows)
-		setConnectionError(false)
 	}, [])
 
 	useEffect(() => {
 		getData()
 
-		const channel = supabase
-			.channel("schema-db-changes")
-			.on(
-				"postgres_changes",
-				{
-					event: "INSERT",
-					schema: "public",
-					table: "zoho-spam-filter",
-				},
-				(payload) => {
-					console.log("Change received!", payload)
-					getData()
-				}
-			)
-			.subscribe()
-
-		channel.on("error", () => {
-			setConnectionError(true)
-		})
+		const pollInterval = setInterval(() => {
+			getData()
+		}, 5000)
 
 		const intervalId = setInterval(() => {
 			setAddresss((prevAddresss) =>
@@ -79,7 +62,7 @@ export default function Addresss() {
 
 		return () => {
 			clearInterval(intervalId)
-			supabase.removeChannel(channel)
+			clearInterval(pollInterval)
 		}
 	}, [getData])
 

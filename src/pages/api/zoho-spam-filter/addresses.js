@@ -1,20 +1,21 @@
-import { createClient } from "@supabase/supabase-js"
+import { Pool } from 'pg'
 
-const supabaseUrl = "https://mxjkwzbcgefwdwifpgaz.supabase.co"
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL || process.env.SUPABASE_URL,
+})
 
 export default async function handler(req, res) {
 	if (req.method !== "GET") {
 		res.setHeader("Allow", ["GET"])
-		res.status(405).end(`Method ${req.method} Not Allowed`)
+		return res.status(405).end(`Method ${req.method} Not Allowed`)
 	}
 
-	const { data, error } = await supabase.from("zoho-spam-filter").select("*")
-	if (error) {
-		console.log(error)
-		res.status(500).json({ error })
-	}
-	const addresses = data.map((row) => row.address)
-	res.status(200).json({ addresses })
+    try {
+        const result = await pool.query('SELECT * FROM "zoho-spam-filter"')
+        const addresses = result.rows.map((row) => row.address)
+        res.status(200).json({ addresses, data: result.rows })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message })
+    }
 }

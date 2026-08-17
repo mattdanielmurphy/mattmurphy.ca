@@ -1,8 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { Pool } from 'pg'
 
-const supabaseUrl = 'https://mxjkwzbcgefwdwifpgaz.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL || process.env.SUPABASE_URL,
+})
+
 export default async function handler(req, res) {
     // Check if the request method is GET
     if (req.method === 'GET') {
@@ -12,23 +13,30 @@ export default async function handler(req, res) {
         if (subject) {
             const matches = decodeURI(subject).match(/\d+/)
             console.log(matches)
-            const loginCode = matches[0]
+            const loginCode = matches ? matches[0] : null
 
             if (loginCode) {
-                const { data, error } = await supabase
-                    .from('waking-up-login-codes')
-                    .insert([{ code: loginCode }])
-                    .select()
-                if (error) console.log(error)
-                console.log(data)
-                res.status(200).json({ data })
+                try {
+                    const result = await pool.query(
+                        'INSERT INTO "waking-up-login-codes" (code) VALUES ($1) RETURNING *',
+                        [loginCode]
+                    )
+                    console.log(result.rows)
+                    res.status(200).json({ data: result.rows })
+                } catch (error) {
+                    console.log(error)
+                    res.status(500).json({ error: error.message })
+                }
+            } else {
+                res.status(200).end()
             }
-            res.status(200).end()
         } else {
-            const rows = await supabase
-                .from('waking-up-login-codes')
-                .select('*')
-            res.status(200).json({ data: rows.data })
+            try {
+                const result = await pool.query('SELECT * FROM "waking-up-login-codes"')
+                res.status(200).json({ data: result.rows })
+            } catch (error) {
+                res.status(500).json({ error: error.message })
+            }
         }
     } else {
         // Handle any other HTTP method

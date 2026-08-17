@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { createClient } from "@supabase/supabase-js"
-
-const supabaseUrl = "https://mxjkwzbcgefwdwifpgaz.supabase.co"
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default function Codes() {
 	const [codes, setCodes] = useState([])
@@ -34,44 +29,31 @@ export default function Codes() {
 	}
 
 	const getData = useCallback(async () => {
-		const { data: rows, error } = await supabase.from("waking-up-login-codes").select("*")
-		if (error) {
+		try {
+			const res = await fetch("/api/waking-up-login-code")
+			if (!res.ok) throw new Error("Failed to fetch")
+			const { data: rows } = await res.json()
+
+			const sortedRows = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+			const formattedData = sortedRows.map((row) => ({
+				createdAt: row.created_at,
+				code: formatCode(row.code),
+			}))
+
+			setCodes(formattedData)
+			setConnectionError(false)
+		} catch (error) {
 			console.error("Error fetching data:", error)
 			setConnectionError(true)
-			return
 		}
-		const sortedRows = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-		const formattedData = sortedRows.map((row) => ({
-			createdAt: row.created_at,
-			code: formatCode(row.code),
-		}))
-
-		setCodes(formattedData)
-		setConnectionError(false)
 	}, [])
 
 	useEffect(() => {
 		getData()
 
-		const channel = supabase
-			.channel("schema-db-changes")
-			.on(
-				"postgres_changes",
-				{
-					event: "INSERT",
-					schema: "public",
-					table: "waking-up-login-codes",
-				},
-				(payload) => {
-					console.log("Change received!", payload)
-					getData()
-				},
-			)
-			.subscribe()
-
-		channel.on("error", () => {
-			setConnectionError(true)
-		})
+		const pollInterval = setInterval(() => {
+			getData()
+		}, 5000)
 
 		const intervalId = setInterval(() => {
 			setCodes((prevCodes) =>
@@ -84,7 +66,7 @@ export default function Codes() {
 
 		return () => {
 			clearInterval(intervalId)
-			supabase.removeChannel(channel)
+			clearInterval(pollInterval)
 		}
 	}, [getData])
 

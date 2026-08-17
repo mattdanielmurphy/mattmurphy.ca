@@ -1,5 +1,21 @@
 export const projects = [
 	{
+		slug: "music-cross-linker",
+		title: "Music Cross-Linker",
+		description: "Cross-platform music link resolver and track view that automatically matches songs across Spotify, Apple Music, and YouTube.",
+		repo: "https://github.com/mattdanielmurphy/music-cross-linker",
+		live: "https://music.mattmurphy.ca",
+		tags: ["Web App", "Music"],
+	},
+	{
+		slug: "yt-highlight-reel",
+		title: "YouTube Highlight Reel",
+		description: "Web app to watch and share automated YouTube highlight reels with soundbite skipping, scrubber heatmaps, and AI supercuts.",
+		repo: "https://github.com/mattdanielmurphy/yt-highlight-reel",
+		live: "https://yt.mattmurphy.ca",
+		tags: ["Web App", "Video", "AI"],
+	},
+	{
 		slug: "lost-fuzz",
 		title: "Lost Fuzz Website",
 		description: "Online portfolio for musician Lost Fuzz and his studio, featuring several retro pseudo-emulator terminals.",
