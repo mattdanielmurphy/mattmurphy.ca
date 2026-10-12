@@ -38,7 +38,7 @@ export async function getStaticProps() {
   const repo = 'mattdanielmurphy/personal-notes';
 
   // 1. In development, read directly from the local Obsidian vault if it exists
-  const localVaultPath = '/Users/matthewmurphy/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal';
+  const localVaultPath = '/Users/matt/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal';
   if (process.env.NODE_ENV === 'development') {
     const fs = require('fs');
     if (fs.existsSync(localVaultPath)) {
