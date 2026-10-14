@@ -10,6 +10,10 @@ export default function Kecak() {
 			</Head>
 			<main className={styles.main}>
 				<div className={styles.container}>
+					<div className={styles.callout}>
+						<span>Please increase quality to 4k!</span>
+						<span className={styles.arrow} aria-hidden="true">↘</span>
+					</div>
 					<div className={styles.videoWrapper}>
 						<iframe
 							className={styles.iframe}
@@ -18,10 +22,6 @@ export default function Kecak() {
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							allowFullScreen
 						/>
-					</div>
-					<div className={styles.callout}>
-						<span>Please increase quality to 4k!</span>
-						<span className={styles.arrow} aria-hidden="true">↗</span>
 					</div>
 				</div>
 			</main>
