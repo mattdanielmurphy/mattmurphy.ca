@@ -1,5 +1,5 @@
 [
-	{ "name": "default", "label": "Frontier labs" },
-	{ "name": "anthropic", "label": "Anthropic" },
+	{ "name": "default", "label": "Big labs, best value" },
+	{ "name": "anthropic", "label": "Anthropic, all efforts" },
 	{ "name": "meta", "label": "Meta" }
 ]

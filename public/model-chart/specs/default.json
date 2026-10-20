@@ -1,6 +1,13 @@
 {
-	"title": "Frontier models: score, price and speed",
-	"filter": { "creators": ["Anthropic", "OpenAI", "Google", "SpaceXAI", "Meta", "DeepSeek"], "releasedAfter": "2026-01-01" },
+	"title": "Each big lab's best-value lineup: score, price and speed",
+	"note": "Per lab, the current models no sibling beats on both score and price, at their best effort level. Drag to rotate; near a straight-on view it snaps flat.",
+	"filter": {
+		"creators": ["Anthropic", "OpenAI", "Google", "Meta", "DeepSeek", "SpaceXAI"],
+		"recentMonths": 6,
+		"minScore": 35,
+		"onePerFamily": true,
+		"creatorFrontier": ["score", "price"]
+	},
 	"axes": { "x": "price", "y": "score", "z": "speed" },
 	"groupBy": "creator",
 	"labelBy": "name",

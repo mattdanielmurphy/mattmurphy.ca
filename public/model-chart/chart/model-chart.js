@@ -21,7 +21,7 @@
 	const SHORT = { minimal: "min", low: "low", medium: "med", high: "high", xhigh: "xhigh", max: "max" }
 	// fixed colours for families Matt already knows, then a palette for everything else
 	const KNOWN = { Opus: ["#2a78d6", "#3987e5"], Fable: ["#eb6834", "#d95926"], Sonnet: ["#1baf7a", "#199e70"], Haiku: ["#eda100", "#c98500"] }
-	const PALETTE = [["#2a78d6", "#3987e5"], ["#eb6834", "#d95926"], ["#1baf7a", "#199e70"], ["#eda100", "#c98500"], ["#0e8a8f", "#2fb5ba"], ["#9b4d2e", "#cf7a55"], ["#5b6b2f", "#9bb05a"], ["#3a4f8a", "#8396d6"], ["#b0414d", "#e07a85"], ["#6b5d4f", "#b3a596"]]
+	const PALETTE = [["#2a78d6", "#3987e5"], ["#eb6834", "#d95926"], ["#1baf7a", "#199e70"], ["#eda100", "#c98500"], ["#b0414d", "#e07a85"], ["#4b5563", "#a3abb8"], ["#0e8a8f", "#2fb5ba"], ["#9b4d2e", "#cf7a55"], ["#5b6b2f", "#9bb05a"], ["#3a4f8a", "#8396d6"]]
 	const AXIS_COL = { x: ["#1f7a77", "#5fc2bd"], z: ["#a04b6e", "#d98aa9"], y: ["#4a5f94", "#8fa6dc"] }
 	function money(v) { return "$" + (v < 0.1 ? v.toFixed(3) : v.toFixed(2)) }
 
@@ -77,18 +77,45 @@
 		}
 	}
 
-	// keep the rows a spec asks for
+	// a value can be drawn: a number, and above zero on a log axis (AA uses 0 for "not measured")
+	const usable = (d, k) => typeof d[k] === "number" && (!MEASURES[k].log || d[k] > 0)
+	const hasAxes = (d, spec) => !spec.axes || [spec.axes.x, spec.axes.y, spec.axes.z].every((k) => !MEASURES[k] || usable(d, k))
+
+	// keep the rows a spec asks for. Besides plain matching, a filter can trim a big list to a readable one:
+	//   recentMonths: only models released within N months of the newest release in the data
+	//   minScore: drop models below this intelligence index
+	//   onePerFamily: keep each family's best-scoring variant (usually its top effort level)
+	//   creatorFrontier: [measureA, measureB] keeps, per creator, only the models no sibling beats on both
 	function select(rows, spec) {
 		const f = spec.filter || {}
 		const lc = (a) => (a || []).map((s) => String(s).toLowerCase())
 		const creators = lc(f.creators), families = lc(f.families), ids = lc(f.ids), efforts = lc(f.efforts), inc = lc(f.nameIncludes)
-		return rows.filter((r) =>
+		let after = f.releasedAfter
+		if (f.recentMonths) {
+			const newest = rows.map((r) => r.released).filter(Boolean).sort().at(-1)
+			if (newest) { const d = new Date(newest); d.setMonth(d.getMonth() - f.recentMonths); const iso = d.toISOString().slice(0, 10); if (!after || iso > after) after = iso }
+		}
+		let out = rows.filter((r) =>
 			(!creators.length || creators.includes(r.creator.toLowerCase())) &&
 			(!families.length || families.some((x) => r.family.toLowerCase().includes(x))) &&
 			(!ids.length || ids.includes(r.id.toLowerCase())) &&
 			(!efforts.length || efforts.includes(String(r.effort).toLowerCase())) &&
 			(!inc.length || inc.some((x) => r.name.toLowerCase().includes(x))) &&
-			(!f.releasedAfter || (r.released && r.released >= f.releasedAfter)))
+			(!after || (r.released && r.released >= after)) &&
+			(f.minScore == null || (typeof r.score === "number" && r.score >= f.minScore)) &&
+			hasAxes(r, spec))
+		if (f.onePerFamily) {
+			const best = new Map()
+			out.forEach((r) => { const k = r.creator + "|" + r.family, b = best.get(k); if (!b || (r.score ?? -1) > (b.score ?? -1)) best.set(k, r) })
+			out = [...best.values()]
+		}
+		if (Array.isArray(f.creatorFrontier) && f.creatorFrontier.length === 2) {
+			const keys = f.creatorFrontier.filter((k) => MEASURES[k])
+			const val = (k, d) => (MEASURES[k].better === "high" ? d[k] : -d[k])
+			const ok = (d) => keys.every((k) => usable(d, k))
+			out = out.filter((p) => ok(p) && !out.some((q) => q !== p && q.creator === p.creator && ok(q) && keys.every((k) => val(k, q) >= val(k, p)) && keys.some((k) => val(k, q) > val(k, p))))
+		}
+		return out
 	}
 
 	function niceTicks(lo, hi, log) {
@@ -133,8 +160,11 @@
 		DATA.forEach((d) => { d._group = spec.groupBy === "creator" ? d.creator : d.family.slice(prefix.length) || d.family })
 		const allEffort = DATA.length && DATA.every((d) => d.effort)
 		const labelBy = spec.labelBy || (allEffort && spec.groupBy !== "creator" ? "effort" : "name")
-		DATA.forEach((d) => { d._label = labelBy === "effort" && d.effort ? SHORT[d.effort] || d.effort : d.name.replace(/^Claude /, "") })
-		const drawLines = spec.lines ?? allEffort
+		// name labels drop the "(Max)" part when a family only appears once
+		const famCount = DATA.reduce((m, d) => m.set(d.family, (m.get(d.family) || 0) + 1), new Map())
+		DATA.forEach((d) => { d._label = labelBy === "effort" && d.effort ? SHORT[d.effort] || d.effort : (famCount.get(d.family) === 1 ? d.family : d.name).replace(/^Claude /, "") })
+		// lines join one model's effort levels, so they only make sense when grouping by family
+		const drawLines = spec.lines ?? (allEffort && spec.groupBy !== "creator")
 		const groups = [...new Set(DATA.map((d) => d._group))]
 		const isDark = () => el.querySelector(".mc").dataset.theme === "dark" || (el.querySelector(".mc").dataset.theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)
 		let pi = 0

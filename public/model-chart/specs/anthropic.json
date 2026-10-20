@@ -1,6 +1,6 @@
 {
-	"title": "Anthropic models: score, price and speed",
-	"filter": { "creators": ["Anthropic"], "releasedAfter": "2026-01-01" },
+	"title": "Anthropic: every current model and effort level",
+	"filter": { "creators": ["Anthropic"], "recentMonths": 6, "families": ["opus", "sonnet", "haiku", "fable"] },
 	"axes": { "x": "price", "y": "score", "z": "speed" },
 	"groupBy": "family",
 	"view": "front",

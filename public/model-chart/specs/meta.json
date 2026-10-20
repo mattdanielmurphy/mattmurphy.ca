@@ -1,6 +1,6 @@
 {
-	"title": "Meta models: score, price and speed",
-	"filter": { "creators": ["Meta"] },
+	"title": "Meta: current models",
+	"filter": { "creators": ["Meta"], "recentMonths": 6, "onePerFamily": true },
 	"axes": { "x": "price", "y": "score", "z": "speed" },
 	"groupBy": "family",
 	"labelBy": "name",
