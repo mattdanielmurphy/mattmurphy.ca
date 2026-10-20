@@ -4,5 +4,5 @@
 	"axes": { "x": "price", "y": "score", "z": "speed" },
 	"groupBy": "family",
 	"view": "front",
-	"fronts": ["xy"]
+	"fronts": ["view"]
 }

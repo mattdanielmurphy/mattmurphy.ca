@@ -12,5 +12,5 @@
 	"groupBy": "creator",
 	"labelBy": "name",
 	"view": "front",
-	"fronts": ["xy"]
+	"fronts": ["view"]
 }

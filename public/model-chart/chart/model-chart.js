@@ -150,7 +150,7 @@
 
 	function mount(el, { rows, spec: spec0, meta }) {
 		injectCss()
-		const spec = Object.assign({ axes: { x: "cost", y: "score", z: "time" }, groupBy: "family", view: "front", fronts: ["xy"], table: true }, spec0 || {})
+		const spec = Object.assign({ axes: { x: "cost", y: "score", z: "time" }, groupBy: "family", view: "front", fronts: ["view"], table: true }, spec0 || {})
 		const A = spec.axes, MX = MEASURES[A.x], MY = MEASURES[A.y], MZ = MEASURES[A.z]
 		if (!MX || !MY || !MZ) throw new Error(`Unknown measure in axes: ${JSON.stringify(A)}. Known: ${Object.keys(MEASURES).join(", ")}`)
 		const picked = select(rows, spec)
@@ -174,11 +174,12 @@
 
 		// pairs for best trade-off lines; "xy" is the opening flat view
 		const PAIRS = { xy: [A.x, A.y], zy: [A.z, A.y], xz: [A.x, A.z], all: [A.x, A.y, A.z] }
-		const FNAME = { xy: `${MY.short.toLowerCase()} vs ${MX.short.toLowerCase()}`, zy: `${MY.short.toLowerCase()} vs ${MZ.short.toLowerCase()}`, xz: `${MX.short.toLowerCase()} vs ${MZ.short.toLowerCase()}`, all: "all three" }
+		const FNAME = { view: "follow the view", xy: `${MY.short.toLowerCase()} vs ${MX.short.toLowerCase()}`, zy: `${MY.short.toLowerCase()} vs ${MZ.short.toLowerCase()}`, xz: `${MX.short.toLowerCase()} vs ${MZ.short.toLowerCase()}`, all: "all three" }
 		const OBJ = (k) => (d) => (MEASURES[k].better === "high" ? d[k] : -d[k])
 		const front = (keys) => new Set(DATA.filter((p) => !DATA.some((q) => q !== p && keys.every((k) => OBJ(k)(q) >= OBJ(k)(p)) && keys.some((k) => OBJ(k)(q) > OBJ(k)(p)))))
 		const FR = Object.fromEntries(Object.entries(PAIRS).map(([k, keys]) => [k, front(keys)]))
-		const fon = { xy: false, zy: false, xz: false, all: false }
+		// "view" shows each pair's line on its wall, faded by how squarely that wall faces you
+		const fon = { view: false, xy: false, zy: false, xz: false, all: false }
 		;(spec.fronts || []).forEach((k) => { if (k in fon) fon[k] = true })
 
 		const title = spec.title || `${MY.short}, ${MX.short.toLowerCase()} and ${MZ.short.toLowerCase()}`
@@ -197,7 +198,7 @@
     </div>
     <div class="views fronts" data-r="fronts">
       <span class="fl">Best trade-off lines</span>
-      ${["xy", "zy", "xz", "all"].map((k) => `<button type="button" data-f="${k}" aria-pressed="false">${cap(FNAME[k])}</button>`).join("")}
+      ${["view", "xy", "zy", "xz", "all"].map((k) => `<button type="button" data-f="${k}" aria-pressed="false">${cap(FNAME[k])}</button>`).join("")}
       <span class="fcount" data-r="fcount"></span>
     </div>
     <div class="stage">
@@ -255,6 +256,12 @@
 			const half = Math.PI / 2, dYaw = Math.abs(view.yaw - Math.round(view.yaw / half) * half), ap = Math.abs(view.pitch)
 			return 1 - smooth(0.04, 0.45, Math.min(half - ap, Math.max(ap, dYaw)))
 		}
+		// how squarely each pair's wall faces the camera: the xy wall's normal is the depth axis, and so on
+		const WALL_NORMAL = { xy: [0, 1, 0], zy: [1, 0, 0], xz: [0, 0, 1] }
+		function curveAlpha(k) {
+			if (!fon[k] && !fon.view) return 0
+			return smooth(0.2, 0.5, Math.abs(rot(WALL_NORMAL[k])[2]))
+		}
 		function rot(p) {
 			const cy = Math.cos(view.yaw), sy = Math.sin(view.yaw), cp = Math.cos(view.pitch), sp = Math.sin(view.pitch)
 			const x1 = p[0] * cy - p[1] * sy, y1 = p[0] * sy + p[1] * cy
@@ -276,6 +283,10 @@
 			return [W / 2 + x1 * k, H * 0.5 - z2 * k, y2, m]
 		}
 		function draw() {
+			paint()
+			updateFronts() // which lines are showing depends on the angle
+		}
+		function paint() {
 			const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1
 			const W = Math.max(320, r.width), H = r.height
 			if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr) }
@@ -324,17 +335,19 @@
 				["xz", `Best ${MX.short.toLowerCase()} for the ${MZ.short.toLowerCase()}`, (p) => [p[0], p[1], -1], (a, b) => a.p[0] - b.p[0]],
 			]
 			CURVES.forEach(([k, name, wall, cmp]) => {
-				if (!fon[k]) return
+				const al = curveAlpha(k)
+				if (al < 0.02) return // its wall is edge-on, so neither the line nor its label would read
 				const pts = P3.filter((o) => FR[k].has(o.d)).sort(cmp)
 				if (!pts.length) return
-				pts.forEach((o) => { const P = pr(o.p), Q = pr(wall(o.p)); c.globalAlpha = 0.3; c.strokeStyle = fg; c.lineWidth = 1; c.setLineDash([1, 3]); c.beginPath(); c.moveTo(P[0], P[1]); c.lineTo(Q[0], Q[1]); c.stroke(); c.setLineDash([]); c.globalAlpha = 1 })
-				c.strokeStyle = fg; c.lineWidth = 2.4; c.lineCap = "round"; c.lineJoin = "round"; c.setLineDash([7, 5]); c.beginPath()
-				pts.forEach((o, i) => { const Q = pr(wall(o.p)); i ? c.lineTo(Q[0], Q[1]) : c.moveTo(Q[0], Q[1]) })
-				c.stroke(); c.setLineDash([])
+				pts.forEach((o) => { const P = pr(o.p), Q = pr(wall(o.p)); c.globalAlpha = 0.3 * al; c.strokeStyle = fg; c.lineWidth = 1; c.setLineDash([1, 3]); c.beginPath(); c.moveTo(P[0], P[1]); c.lineTo(Q[0], Q[1]); c.stroke(); c.setLineDash([]) })
+				c.globalAlpha = al; c.strokeStyle = fg; c.lineWidth = 2.4; c.lineCap = "round"; c.lineJoin = "round"
+				if (pts.length === 1) { const Q = pr(wall(pts[0].p)); c.beginPath(); c.arc(Q[0], Q[1], 5, 0, 7); c.stroke() } // one winner: mark its spot on the wall
+				else { c.setLineDash([7, 5]); c.beginPath(); pts.forEach((o, i) => { const Q = pr(wall(o.p)); i ? c.lineTo(Q[0], Q[1]) : c.moveTo(Q[0], Q[1]) }); c.stroke(); c.setLineDash([]) }
 				const txt = pts.length === 1 ? `${pts[0].d.name.replace(/^Claude /, "")} wins on both` : name
 				const L = pr(wall(pts[pts.length - 1].p))
 				c.font = `600 12.5px ${SANS}`; c.textAlign = "left"; c.textBaseline = "alphabetic"
 				c.lineWidth = 4; c.strokeStyle = panel; c.strokeText(txt, L[0] + 8, L[1] - 10); c.fillStyle = fg; c.fillText(txt, L[0] + 8, L[1] - 10)
+				c.globalAlpha = 1
 			})
 			// data: a line joins each group's effort levels
 			proj3 = P3.map((o) => ({ o, s: pr(o.p) }))
@@ -346,8 +359,8 @@
 			const order = [...proj3].sort((a, b) => b.s[2] - a.s[2]) // far to near
 			const dotR = (o) => 6 * Math.pow(o.s[3], 1.8)
 			const hit = (p, q) => p[0] < q[2] && q[0] < p[2] && p[1] < q[3] && q[1] < p[3]
-			const ringed = (o) => ["xy", "zy", "xz"].some((k) => fon[k] && FR[k].has(o.o.d)) || (fon.all && FR.all.has(o.o.d))
-			const anyOn = Object.values(fon).some(Boolean)
+			const ringed = (o) => ["xy", "zy", "xz"].some((k) => curveAlpha(k) > 0.5 && FR[k].has(o.o.d)) || (fon.all && FR.all.has(o.o.d))
+			const anyOn = fon.all || ["xy", "zy", "xz"].some((k) => curveAlpha(k) > 0.5)
 			const taken = order.map((o) => { const r = dotR(o) + (ringed(o) ? 9 : 2); return [o.s[0] - r, o.s[1] - r, o.s[0] + r, o.s[1] + r] })
 			const CAND = [[11, -7, "l"], [11, 14, "l"], [-11, -7, "r"], [-11, 14, "r"], [0, -15, "c"], [0, 25, "c"], [17, 4, "l"], [-17, 4, "r"]]
 			const lab = new Map()
@@ -436,7 +449,7 @@
 		viewBtns().forEach((b) => b.addEventListener("click", () => goto(b.dataset.v)))
 		function updateFronts() {
 			root.querySelectorAll('[data-r="fronts"] button').forEach((b) => b.setAttribute("aria-pressed", String(fon[b.dataset.f])))
-			const act = Object.keys(fon).filter((k) => fon[k])
+			const act = ["xy", "zy", "xz"].filter((k) => curveAlpha(k) > 0.5).concat(fon.all ? ["all"] : [])
 			$("fcount").textContent = act.length ? "On the line: " + act.map((k) => `${FNAME[k]} ${FR[k].size} of ${DATA.length}`).join(" · ") : ""
 		}
 		root.querySelectorAll('[data-r="fronts"] button').forEach((b) => b.addEventListener("click", () => { fon[b.dataset.f] = !fon[b.dataset.f]; updateFronts(); draw() }))
