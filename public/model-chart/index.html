@@ -31,7 +31,7 @@
 	function show(spec) {
 		data.then((d) => {
 			if (qs.get("embed")) spec.table = false
-			ModelChart.mount(el, { rows: d.rows, spec, meta: d })
+			window.mcChart = ModelChart.mount(el, { rows: d.rows, spec, meta: d })
 		}).catch((e) => { el.textContent = "Chart failed to load: " + e.message })
 	}
 	if (qs.get("q")) show(JSON.parse(qs.get("q")))

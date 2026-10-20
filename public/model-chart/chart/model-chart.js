@@ -260,11 +260,19 @@
 			const x1 = p[0] * cy - p[1] * sy, y1 = p[0] * sy + p[1] * cy
 			return [x1, p[2] * cp + y1 * sp, y1 * cp - p[2] * sp] // right, up, away from the viewer
 		}
+		// scale the box so its rotated outline always fills the same space. This grows smoothly as the
+		// view turns flat, so points glide straight to their place instead of overshooting and coming back
+		function fit() {
+			let ex = 0, ey = 0
+			for (const a of [-1, 1]) for (const b of [-1, 1]) for (const c of [-1, 1]) { const q = rot([a, b, c]); ex = Math.max(ex, Math.abs(q[0])); ey = Math.max(ey, Math.abs(q[1])) }
+			return 1 / Math.max(ex, ey)
+		}
+		let fitNow = 1
 		function project(p, W, H) {
 			const [x1, z2, y2] = rot(p)
-			const fl = flatness(), pf = view.persp ? 1 - fl : 0
+			const pf = view.persp ? 1 - flatness() : 0
 			const m = 1 + (5 / (5 + y2) - 1) * pf // 1 when flat; above 1 for points nearer the camera
-			const k = m * Math.min(W, H * 1.35) * 0.2 * view.zoom * (1 + 0.45 * fl)
+			const k = m * Math.min(W, H * 1.35) * 0.29 * view.zoom * fitNow
 			return [W / 2 + x1 * k, H * 0.5 - z2 * k, y2, m]
 		}
 		function draw() {
@@ -274,6 +282,7 @@
 			const c = cv.getContext("2d")
 			c.setTransform(dpr, 0, 0, dpr, 0, 0)
 			c.clearRect(0, 0, W, H)
+			fitNow = fit()
 			const pr = (p) => project(p, W, H)
 			const AX = { x: acol("x"), y: acol("z"), z: acol("y") } // keyed by 3D slot: across, depth, up
 			const axis = css("--axis"), panel = css("--panel"), fg = css("--fg"), grid = css("--grid")
@@ -480,7 +489,7 @@
 				rows.map((d) => `<tr><td><span class="sw" style="background:${gcol(d._group)}"></span>${esc(allEffort ? d._group : d.name)}</td><td>${esc(allEffort ? d.effort : d.released || "–")}</td>${cols.map((k) => `<td>${MEASURES[k].fmt(d[k])}</td>`).join("")}<td>${["xy", "zy", "xz", "all"].filter((k) => FR[k].has(d)).map((k) => FNAME[k]).join(", ") || "–"}</td></tr>`).join("") + "</tbody>"
 			root.querySelectorAll("tbody .sw").forEach((s, i) => (s.style.background = gcol(rows[i]._group)))
 		}
-		return { data: DATA, redraw: draw }
+		return { data: DATA, redraw: draw, view }
 	}
 
 	function commonPrefix(names) {
