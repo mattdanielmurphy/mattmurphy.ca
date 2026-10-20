@@ -1,0 +1,9 @@
+{
+	"title": "Frontier models: score, price and speed",
+	"filter": { "creators": ["Anthropic", "OpenAI", "Google", "xAI", "Meta", "DeepSeek"], "releasedAfter": "2026-01-01" },
+	"axes": { "x": "price", "y": "score", "z": "speed" },
+	"groupBy": "creator",
+	"labelBy": "name",
+	"view": "front",
+	"fronts": ["xy"]
+}

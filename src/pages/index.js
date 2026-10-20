@@ -21,7 +21,7 @@ export default function Home() {
 					<div className={styles.container}>
 						<h2 className={styles.sectionTitle}>Projects</h2>
 						<div className={styles.grid}>
-							{projects.map((project) => (
+							{projects.filter((project) => !project.draft).map((project) => (
 								<ProjectCard key={project.slug} project={project} />
 							))}
 						</div>

@@ -181,3 +181,14 @@
 	color: var(--muted);
 	font-style: italic;
 }
+/* Embedded live demo (e.g. the model chart); wider than the text column, centred on the page */
+.embed {
+	display: block;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	width: min(1000px, calc(100vw - 32px));
+	height: 860px;
+	margin-top: 2rem;
+	border: 0;
+}

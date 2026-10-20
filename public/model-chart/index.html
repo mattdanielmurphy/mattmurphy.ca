@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Model Charts</title>
+<style>
+	:root { color-scheme: light dark; }
+	body { margin: 0; padding: 20px max(16px, env(safe-area-inset-left)) 40px; background: #fbfbf9; font-family: "IBM Plex Sans", system-ui, sans-serif; }
+	@media (prefers-color-scheme: dark) { body { background: #161716; color: #f0efec; } }
+	main { max-width: 980px; margin: 0 auto; display: grid; gap: 12px; }
+	.pick { display: flex; gap: 8px; align-items: center; font-size: 14px; color: #55575c; }
+	.pick select { font: inherit; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e2dd; background: #fff; color: #17181a; }
+	@media (prefers-color-scheme: dark) { .pick { color: #c3c2b7; } .pick select { background: #1d1e1d; color: #f0efec; border-color: #30312e; } }
+	.pick[hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+	<label class="pick" hidden>Chart <select id="spec"></select></label>
+	<div id="chart"></div>
+</main>
+<script src="chart/model-chart.js"></script>
+<script>
+	// ?spec=<name> loads specs/<name>.json; ?q=<url-encoded JSON> passes a spec inline; ?embed=1 hides the table
+	const qs = new URLSearchParams(location.search)
+	const el = document.getElementById("chart")
+	if (qs.get("embed")) Object.assign(document.body.style, { background: "transparent", padding: "0 0 24px" })
+	const getJson = (u) => fetch(u, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json() })
+	const data = getJson("data/models.json")
+	function show(spec) {
+		data.then((d) => {
+			if (qs.get("embed")) spec.table = false
+			ModelChart.mount(el, { rows: d.rows, spec, meta: d })
+		}).catch((e) => { el.textContent = "Chart failed to load: " + e.message })
+	}
+	if (qs.get("q")) show(JSON.parse(qs.get("q")))
+	else {
+		const sel = document.getElementById("spec")
+		const load = (name) => getJson(`specs/${name}.json`).then(show)
+		getJson("specs/index.json").then((list) => {
+			if (list.length < 2) return
+			sel.innerHTML = list.map((s) => `<option value="${s.name}">${s.label}</option>`).join("")
+			sel.value = qs.get("spec") || "default"
+			sel.parentElement.hidden = false
+			sel.addEventListener("change", () => { qs.set("spec", sel.value); history.replaceState(null, "", "?" + qs); load(sel.value) })
+		}).catch(() => {})
+		load(qs.get("spec") || "default")
+	}
+</script>
+</body>
+</html>

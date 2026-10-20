@@ -1,0 +1,9 @@
+{
+	"title": "Meta models: score, price and speed",
+	"filter": { "creators": ["Meta"] },
+	"axes": { "x": "price", "y": "score", "z": "speed" },
+	"groupBy": "family",
+	"labelBy": "name",
+	"view": "front",
+	"fronts": ["xy"]
+}

@@ -34,7 +34,7 @@ export default function Project({ project, readmeContent }) {
 						<div className={styles.links}>
 							{project.live && (
 								<a href={project.live} target='_blank' rel='noopener noreferrer' className='btn'>
-									Visit Live Site
+									{project.embed ? "Open Full Screen" : "Visit Live Site"}
 								</a>
 							)}
 							{project.repo && (
@@ -49,6 +49,10 @@ export default function Project({ project, readmeContent }) {
 									</a>
 								))}
 						</div>
+
+						{project.embed && (
+							<iframe className={styles.embed} src={project.embed} title={project.title} loading='lazy' />
+						)}
 
 						{readmeContent && (
 							<div className={styles.readme}>

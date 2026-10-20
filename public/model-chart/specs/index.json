@@ -1,0 +1,5 @@
+[
+	{ "name": "default", "label": "Frontier labs" },
+	{ "name": "anthropic", "label": "Anthropic" },
+	{ "name": "meta", "label": "Meta" }
+]

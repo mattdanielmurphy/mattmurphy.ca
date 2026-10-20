@@ -1,0 +1,8 @@
+{
+	"title": "Anthropic models: score, price and speed",
+	"filter": { "creators": ["Anthropic"], "releasedAfter": "2026-01-01" },
+	"axes": { "x": "price", "y": "score", "z": "speed" },
+	"groupBy": "family",
+	"view": "front",
+	"fronts": ["xy"]
+}

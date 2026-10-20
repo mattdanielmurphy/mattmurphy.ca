@@ -1,5 +1,16 @@
 export const projects = [
 	{
+		slug: "model-charts",
+		title: "AI Model Charts",
+		description: "Rotatable 3D charts comparing AI models on score, price and speed. Drag to turn it; near a straight-on view it snaps flat into a 2D chart. Best trade-off lines show which models aren't beaten on both measures.",
+		repo: null,
+		live: "/model-chart/index.html",
+		embed: "/model-chart/index.html?embed=1",
+		tags: ["Data Viz", "AI", "3D"],
+		// hidden from the home page until the first Artificial Analysis API refresh fills public/model-chart/data
+		draft: true,
+	},
+	{
 		slug: "music-cross-linker",
 		title: "Music Cross-Linker",
 		description: "Cross-platform music link resolver and track view that automatically matches songs across Spotify, Apple Music, and YouTube.",

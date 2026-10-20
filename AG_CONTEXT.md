@@ -17,6 +17,9 @@
 - `src/pages/_document.js`: Root document component.
 - `src/pages/index.js`: Home page.
 
+- **Embedded projects**: a project in `src/data/projects.js` with `embed` shows that URL in an iframe on its page; `draft: true` hides it from the home page list (page still reachable).
+- **public/model-chart/** is generated from the private `model-charts` repo (`bun scripts/publish.ts`). Only Artificial Analysis free-API data may go there (their terms forbid republishing site-scraped numbers); the attribution link must stay.
+
 ## Background Processes
 - Includes a Vercel cron job (`/api/cron/keep-alive`) to ping Supabase daily to keep the free-tier database active.
 - **Obsidian Auto-Sync**: A background macOS `launchd` agent (`com.user.notesync`) that monitors the Obsidian vault and syncs it to the private `personal-notes` repository. Uses a compiled C wrapper (`notesync-wrapper`) located at `~/Library/LaunchAgents/` to bypass macOS TCC/CloudMounter sandbox restrictions by allowing targeted Full Disk Access.
