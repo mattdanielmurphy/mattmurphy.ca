@@ -7,8 +7,6 @@ export const projects = [
 		live: "/model-chart/index.html",
 		embed: "/model-chart/index.html?embed=1",
 		tags: ["Data Viz", "AI", "3D"],
-		// hidden from the home page until the first Artificial Analysis API refresh fills public/model-chart/data
-		draft: true,
 	},
 	{
 		slug: "music-cross-linker",
