@@ -7,6 +7,7 @@ export const projects = [
 		live: "/model-chart/index.html",
 		embed: "/model-chart/index.html?embed=1",
 		tags: ["Data Viz", "AI", "3D"],
+		note: "Note: cost here is price per 1M tokens, not cost per task, so it says little about what a model actually costs to use. I've asked Artificial Analysis about getting cost per task and am waiting to hear back.",
 	},
 	{
 		slug: "music-cross-linker",

@@ -30,6 +30,7 @@ export default function Project({ project, readmeContent }) {
 
 					<div className={styles.content}>
 						<p className={styles.description}>{project.description}</p>
+						{project.note && <p className={styles.note}>{project.note}</p>}
 
 						<div className={styles.links}>
 							{project.live && (

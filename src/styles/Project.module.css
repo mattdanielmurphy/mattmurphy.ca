@@ -79,6 +79,15 @@
 	margin-bottom: 2rem;
 }
 
+.note {
+	font-size: 0.95rem;
+	line-height: 1.6;
+	color: var(--muted);
+	border-left: 2px solid var(--card-border);
+	padding-left: 1rem;
+	margin: -1rem 0 2rem;
+}
+
 .links {
 	display: flex;
 	gap: 1rem;
