@@ -16,6 +16,10 @@
 		{
 			"source": "/tv-box",
 			"destination": "/tv-box/index.html"
+		},
+		{
+			"source": "/slub-call-2026-10-24",
+			"destination": "/slub-call-2026-10-24/index.html"
 		}
 	]
 }
