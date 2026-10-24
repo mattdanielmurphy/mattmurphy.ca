@@ -11,5 +11,11 @@
 			"destination": "https://netflix-subtitle-display.vercel.app",
 			"permanent": true
 		}
+	],
+	"rewrites": [
+		{
+			"source": "/tv-box",
+			"destination": "/tv-box/index.html"
+		}
 	]
 }
