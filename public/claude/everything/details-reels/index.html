@@ -31,6 +31,12 @@
 <p data-read>Before publishing, the script scans the file for anything that looks like a secret: API keys (OpenAI, Anthropic, Google, GitHub, AWS, Slack, Stripe), bearer tokens, JWTs, private keys, passwords inside URLs, and lines like <code>SOMETHING_TOKEN = value</code>. If it finds one, it refuses to publish and lists the line numbers and kinds, never the values. It also hides email addresses and phone numbers in the published copy.</p>
 <p data-read>Privacy risk: details files describe Matt&#39;s life and work, and reels are public to anyone with the link. The link is unguessable only in the sense that it isn&#39;t listed anywhere; the address pattern /claude/&lt;project&gt;/&lt;thread&gt; is readable and thread names are guessable. Search engines are kept out with a noindex tag and header. Agents should keep private life details (health, money, other people&#39;s personal matters) out of details files, or skip the reel for that reply.</p>
 <hr>
+<h3 id="the-rule-now-asks-for-it" data-read>The rule now asks for it</h3>
+<p data-read>The details-file rule in <code>.rules/core_safety.md</code> (compiled into every agent&#39;s rules) and Matt&#39;s <code>~/.claude/CLAUDE.md</code> now say: after appending to the details file, run <code>pages reel</code> and add <code>· [reel](&lt;link&gt;#section)</code> to the Details line, between the file link and the &quot;on Mac&quot; link. Code sessions use <code>--project code</code>. If a reply&#39;s details hold private life details, the agent skips the reel and says so.</p>
+<hr>
+<h3 id="tested" data-read>Tested</h3>
+<p data-read>I checked the scroll-read page locally and on its public link, and this reel on mattmurphy.ca, in a muted headless Chrome: words wrap, controls and reactions appear, a #section link starts reading at that section, and the voice plays on both sites. A test file with a fake GitHub token was refused with its line number and nothing was published. The noindex header is on.</p>
+<hr>
 <h3 id="what-i-rejected" data-read>What I rejected</h3>
 <ul>
 <li><span data-read>Copying the player into each reel: simplest, but Matt explicitly wants player updates to reach old reels.</span></li>
