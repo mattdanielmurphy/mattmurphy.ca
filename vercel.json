@@ -20,6 +20,21 @@
 		{
 			"source": "/slub-call-2026-10-24",
 			"destination": "/slub-call-2026-10-24/index.html"
+		},
+		{
+			"source": "/claude/:project/:thread",
+			"destination": "/claude/:project/:thread/index.html"
+		}
+	],
+	"headers": [
+		{
+			"source": "/claude/(.*)",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow"
+				}
+			]
 		}
 	]
 }

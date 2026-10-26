@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Details files as scroll-to-read reels</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · details-reels</p>
+<h1 id="details-files-as-scroll-to-read-reels" data-read>Details files as scroll-to-read reels</h1>
+<h2 id="0140-one-command-publishes-a-details-file-as-a-reel" data-read>01:40 One command publishes a details file as a reel</h2>
+<p data-read>Matt asked for one script agents call with their details file that publishes it as a scroll-to-read reel on mattmurphy.ca at /claude/&lt;project&gt;/&lt;thread&gt;, public but hidden from search, and returns the link. Every reply&#39;s Details line should then carry that reel link. He then added that the reels must pick up any change he makes to the scroll-to-read player, old reels included.</p>
+<hr>
+<h3 id="the-command" data-read>The command</h3>
+<p data-read>Agents run <code>pages reel &lt;details.md&gt; --project &lt;project&gt; --thread &lt;thread&gt;</code>. It prints one line, the reel&#39;s link, for example <a href="https://mattmurphy.ca/claude/everything/details-reels">https://mattmurphy.ca/claude/everything/details-reels</a>. The project defaults to &quot;everything&quot; and the thread defaults to the file name without its date, so <code>pages reel ~/projects/ai-os/docs/details/2026-10-26-details-reels.md</code> is enough in the Everything project. Running it again updates the same reel.</p>
+<p data-read>It lives in the pages tool (<code>~/projects/pages/reel.ts</code>), next to <code>pages md</code>, and reuses its website publishing: the reel is written into the mattmurphy.ca repo under <code>public/claude/&lt;project&gt;/&lt;thread&gt;/</code>, committed on its own and pushed, and Vercel puts it live in about a minute.</p>
+<hr>
+<h3 id="player-updates-reach-every-reel" data-read>Player updates reach every reel</h3>
+<p data-read>A reel page holds only its text. In its head it loads one script, <code>player/player.js</code>, straight from the deployed scroll-read page on matt-pages.vercel.app. That loader pulls in the look, the controls, the voice and the reactions. So when Matt changes scroll-read and runs <code>pages deploy</code>, every reel, old ones included, gets the new player on its next load. Vercel serves these files with no long cache, so there is no stale copy.</p>
+<p data-read>To make that possible I split scroll-read into its text (<code>site/scroll-read/index.html</code>) and a shared player folder (<code>site/scroll-read/player/</code>: <code>player.js</code>, <code>reel.js</code>, <code>player.css</code>, <code>reactions.js</code>, <code>reactions.css</code>). The scroll-read page itself now uses the same loader, so it is the reference reel.</p>
+<p data-read>Side fix: the deployed scroll-read page was missing its reactions script (a 404), because Vite drops plain script files it doesn&#39;t bundle. The build now copies such files as they are, so reactions work on the public page again.</p>
+<hr>
+<h3 id="voice-on-reels" data-read>Voice on reels</h3>
+<p data-read>The read-aloud voice runs on matt-pages.vercel.app. For a reel on mattmurphy.ca, the player asks the voice server by the reel&#39;s address, and the server reads the text from that live page itself. It only accepts addresses under mattmurphy.ca/claude/, so it can only ever speak text that is really published there; it is not an open text-to-speech service. Voice is cached as before, so each paragraph costs one Speechify call ever.</p>
+<hr>
+<h3 id="secrets-and-privacy" data-read>Secrets and privacy</h3>
+<p data-read>Before publishing, the script scans the file for anything that looks like a secret: API keys (OpenAI, Anthropic, Google, GitHub, AWS, Slack, Stripe), bearer tokens, JWTs, private keys, passwords inside URLs, and lines like <code>SOMETHING_TOKEN = value</code>. If it finds one, it refuses to publish and lists the line numbers and kinds, never the values. It also hides email addresses and phone numbers in the published copy.</p>
+<p data-read>Privacy risk: details files describe Matt&#39;s life and work, and reels are public to anyone with the link. The link is unguessable only in the sense that it isn&#39;t listed anywhere; the address pattern /claude/&lt;project&gt;/&lt;thread&gt; is readable and thread names are guessable. Search engines are kept out with a noindex tag and header. Agents should keep private life details (health, money, other people&#39;s personal matters) out of details files, or skip the reel for that reply.</p>
+<hr>
+<h3 id="what-i-rejected" data-read>What I rejected</h3>
+<ul>
+<li><span data-read>Copying the player into each reel: simplest, but Matt explicitly wants player updates to reach old reels.</span></li>
+<li><span data-read>Hosting reels on matt-pages.vercel.app: the voice would be same-site, but Matt asked for mattmurphy.ca addresses.</span></li>
+<li><span data-read>Sending the text to the voice server from the browser: that would turn it into an open text-to-speech service anyone could spend credits on.</span></li>
+</ul>
+<hr>
+<h3 id="untested-or-risky" data-read>Untested or risky</h3>
+<ul>
+<li><span data-read>Cloud sessions without Matt&#39;s Mac can&#39;t run <code>pages reel</code> (it needs the mattmurphy.ca repo and push access). They skip the reel link and keep the plain Details link.</span></li>
+<li><span data-read>Deploying scroll-read also redeployed every page from the working tree, including uncommitted changes to tv-box from Oct 24 (only on its unlisted matt-pages link, not mattmurphy.ca/tv-box).</span></li>
+</ul>
+<hr>
+<h3 id="how-to-undo" data-read>How to undo</h3>
+<p data-read>Remove a reel by deleting <code>public/claude/&lt;project&gt;/&lt;thread&gt;/</code> in <code>~/projects/mattmurphy.ca</code> and pushing. The rule change is in ai-os <code>.rules/core_safety.md</code> (&quot;Every reply has a details file behind it&quot;); revert that commit to drop the reel link from replies.</p>
+
+</main>
+</body>
+</html>
