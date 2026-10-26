@@ -47,6 +47,60 @@
 <hr>
 <h3 id="not-done-yet" data-read>Not done yet</h3>
 <p data-read>Nothing created. Making the repo and inviting Tyler is an outward action, so it waits for Matt&#39;s 👍. Undo: archive the repo.</p>
+<h2 id="2035-slack-vs-telegram-for-matt-and-tyler" data-read>20:35 Slack vs Telegram for Matt and Tyler</h2>
+<p data-read>Matt asked (via the coordinator, during his call with Tyler): Slack or Telegram for how the two of them talk and stay in sync, which agents can read and post to, given he may move to his own Claude Code system.</p>
+<hr>
+<h3 id="what-the-call-said" data-read>What the call said</h3>
+<ul>
+<li><span data-read>Tyler likes Slack because you can @Claude in a message. Free plan limits he read out: messages older than 90 days are hidden, huddles are one-on-one only.</span></li>
+<li><span data-read>Matt thinks Telegram would do the same and better.</span></li>
+<li><span data-read>Both said, strongly: don&#39;t get locked into Claude. Tyler dropped the Claude Teams idea for that reason and wants sync to live in a shared GitHub repo that ports to any AI.</span></li>
+<li><span data-read>Tyler&#39;s two tests: what is most future-proof, and what is easy to invite ~10 testers to in about three months. He leans to &quot;tried and true, user-friendly&quot; platforms.</span></li>
+</ul>
+<hr>
+<h3 id="recommendation-in-one-line" data-read>Recommendation in one line</h3>
+<p data-read>Telegram group for Matt and Tyler, slub-hq repo as the agents&#39; shared memory, and Discord later for testers. Skip Slack.</p>
+<hr>
+<h3 id="why-not-slack" data-read>Why not Slack</h3>
+<ul>
+<li><span data-read>The @Claude feature is Anthropic&#39;s Slack app: exactly the Claude lock-in both of you said you want to avoid.</span></li>
+<li><span data-read>Free plan hides anything older than 90 days, from people and from bots/API. Decisions you made in month one vanish for your agents in month four. Paid is per-user per-month and grows with every tester.</span></li>
+<li><span data-read>It&#39;s built for coworkers, not for a public tester community.</span></li>
+</ul>
+<hr>
+<h3 id="why-telegram-for-the-two-of-you" data-read>Why Telegram for the two of you</h3>
+<ul>
+<li><span data-read>Free, unlimited history, great phone apps, and Matt already uses it daily.</span></li>
+<li><span data-read>Matt already runs a Telegram bot gateway in ai-os (<code>services/assistant/</code>, morning check-ins, news, Codex routing). Adding a Slub group to that bot is small and model-agnostic: the bot can call Claude, GPT or an open-weights model, so switching AI doesn&#39;t touch the chat.</span></li>
+<li><span data-read>The Bot API is the simplest of the three for agents to post to (one HTTPS call with a token).</span></li>
+<li><span data-read>Catch: Telegram bots cannot see other bots&#39; messages in groups, and only see messages sent after they join. So Matt&#39;s agent and Tyler&#39;s agent can&#39;t talk to each other through Telegram. That&#39;s fine because they talk through the repo.</span></li>
+</ul>
+<hr>
+<h3 id="why-the-repo-stays-the-agent-channel" data-read>Why the repo stays the agent channel</h3>
+<ul>
+<li><span data-read>A chat is where people talk; agents don&#39;t reliably check it on their own. A git repo (<code>slub-hq</code>: NOW.md, IDEAS.md, CLAUDE.md) is read by any agent, any model, any harness, and has full history forever.</span></li>
+<li><span data-read>Bridge: a tiny GitHub Action or the bot posts a line to the Telegram group when NOW.md changes (&quot;Tyler&#39;s Claude started: tvwake&quot;). Humans see it on their phone, agents read the file.</span></li>
+</ul>
+<hr>
+<h3 id="discord-later-for-testers" data-read>Discord later, for testers</h3>
+<ul>
+<li><span data-read>When ~10 testers arrive, Discord is the tried-and-true home for audio/music software communities: free, unlimited history, channels and roles, voice rooms, very bot-friendly.</span></li>
+<li><span data-read>Don&#39;t set it up now; it&#39;s overhead for two people.</span></li>
+</ul>
+<hr>
+<h3 id="options-rejected" data-read>Options rejected</h3>
+<ul>
+<li><span data-read>Slack: lock-in and the 90-day wall (above).</span></li>
+<li><span data-read>iMessage/WhatsApp/Signal: no clean bot access for agents (WhatsApp&#39;s API is business-only and paid; Signal has no official bot API).</span></li>
+<li><span data-read>Matrix/Zulip self-hosted: most future-proof on paper but too much upkeep now.</span></li>
+</ul>
+<hr>
+<h3 id="untested--risky" data-read>Untested / risky</h3>
+<ul>
+<li><span data-read>Not verified: whether Claude&#39;s Slack app works on Slack&#39;s free plan. Didn&#39;t matter for the recommendation.</span></li>
+<li><span data-read>The bridge (NOW.md → Telegram post) doesn&#39;t exist yet; it&#39;s a small build after the repo exists.</span></li>
+<li><span data-read>Nothing was created or sent. slub-hq and the Telegram group both wait on Matt&#39;s 👍 (outward actions involving Tyler).</span></li>
+</ul>
 
 </main>
 </body>
