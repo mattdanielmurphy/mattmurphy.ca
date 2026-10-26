@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Logic speed-review reels (2026-10-26)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · logic-speed-reels</p>
+<h1 id="logic-speed-review-reels-2026-10-26" data-read>Logic speed-review reels (2026-10-26)</h1>
+<h2 id="0220-speed-reel-1-is-live-chapters-18" data-read>02:20 Speed reel 1 is live (chapters 1–8)</h2>
+<p data-read><strong>What Matt asked (via the coordinator):</strong> a fast read-through of the textbook, starting with Parts I and II, as reels with lots of quizzing: retrieval practice, spaced re-checks of earlier ideas and quick feedback. He got 77 on Midterm 1 and wants to do much better on Midterm 2 (Wed Nov 4). Start him on the earliest material quickly instead of building everything first. School rule: explain, invent examples and practice questions, give hints; never answer assigned work or textbook exercises.</p>
+<hr>
+<h3 id="reel-1-covers-parts-i-and-ii" data-read>Reel 1 covers Parts I and II</h3>
+<p data-read>Speed 1 · Arguments and TFL Symbols: <a href="https://claude.ai/artifact/WVneBno1UzEMfzY5a1rnpA">https://claude.ai/artifact/WVneBno1UzEMfzY5a1rnpA</a></p>
+<p data-read>It covers forall x: Calgary chapters 1–8 in twelve short sections: arguments and indicator words, validity and soundness, necessary/contingent/equivalent/jointly possible, atomic sentences, the five connectives (with the &quot;but&quot;, &quot;not both vs neither&quot;, &quot;only if&quot;, necessary vs sufficient and &quot;unless&quot; traps), sentences of TFL and the main connective, ambiguity, and use and mention. It has 23 questions: 17 on the section just read and 6 &quot;Throwback&quot; questions on earlier sections, ending with a mixed round.</p>
+<p data-read>I read &quot;Parts I and II&quot; literally (chapters 1–8), because that&#39;s what the coordinator passed on and it&#39;s where the course starts. Midterm 2 most likely covers Units 4–6 (natural deduction, FOL syntax, FOL semantics), so the next reels go Part III (truth tables) → Part IV (natural deduction) → a quiz-heavy recap of Part V → Part VI.</p>
+<hr>
+<h3 id="how-the-quizzing-works" data-read>How the quizzing works</h3>
+<p data-read>New in the reel player (<code>services/reels/scroll/kit/player.js</code>), reusable by every reel:</p>
+<ul>
+<li><span data-read><strong>Score:</strong> only the first pick on each question counts, shown in a small pill at the top left (&quot;7 / 9 right first try&quot;). After a wrong pick he can keep trying; the explanation shows either way.</span></li>
+<li><span data-read><strong>Comebacks (spaced re-checks):</strong> a question missed on the first pick goes into a queue. Later in the reel there are empty slots; when the reading reaches one, the oldest missed question from an earlier section comes back with its options reshuffled. Getting it right clears it. If nothing is queued, the slot is skipped.</span></li>
+<li><span data-read><strong>Throwbacks:</strong> questions written on purpose about earlier sections, mixed in between new material (interleaving).</span></li>
+<li><span data-read><strong>End review:</strong> the end shows the tally and every question still missed, ready to retry right there.</span></li>
+</ul>
+<p data-read>Why these: retrieval (answering before re-reading), spacing (coming back after a gap) and interleaving (mixing topics) are the three best-supported study methods, and immediate feedback stops a wrong idea from settling. Rejected: a separate flashcard app (more to remember, and he asked for reels), and cross-reel review (each Artifact has its own storage, so reels can&#39;t share his misses; each new reel instead opens with throwbacks to earlier ones).</p>
+<hr>
+<h3 id="school-rule" data-read>School rule</h3>
+<p data-read>Every example and question is new. I checked them against the chapter 1–8 exercise lists so none of the book&#39;s exercise sentences appear. The Ask button keeps its school mode (explains and hints, never solves textbook or graded work).</p>
+<hr>
+<h3 id="tested-and-untested" data-read>Tested and untested</h3>
+<p data-read>Tested headless (muted Chrome): the reading pauses at each question, a missed question comes back at the next slot and only once, the score counts first picks only (22 of 23 when one was missed), the end review lists everything still missed and clears one when answered right, narration loads, Ask still works with the integrity rules, no sideways scroll on a phone in light and dark, no page errors.</p>
+<p data-read>Not tested: the real claude.ai viewer on his phone (as with the earlier reels, audio from Artifact files and the Ask consent prompt haven&#39;t been tried there).</p>
+<hr>
+<h3 id="how-to-undo" data-read>How to undo</h3>
+<p data-read>Delete the artifact, and revert the commit that added quiz mode and <code>reels/speed-1</code>.</p>
+
+</main>
+</body>
+</html>
