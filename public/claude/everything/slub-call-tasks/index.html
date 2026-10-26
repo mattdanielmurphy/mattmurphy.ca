@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Slub call transcripts and tasks (2026-10-26)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · slub-call-tasks</p>
+<h1 id="slub-call-transcripts-and-tasks-2026-10-26" data-read>Slub call transcripts and tasks (2026-10-26)</h1>
+<h2 id="1650-calls-saved-to-slub-hq-action-items-become-tasks" data-read>16:50 Calls saved to slub-hq, action items become tasks</h2>
+<p data-read>Matt asked for Slub call transcripts to be saved into the slub-hq repo, and for each brother&#39;s Claude to act on what the other asked of him.</p>
+<hr>
+<h3 id="saved-when-the-call-ends" data-read>Saved when the call ends</h3>
+<p data-read><code>call-transcript stop</code> (ai-os <code>scripts/call-transcript</code>, installed copy in <code>~/.local/share/call-transcript/</code>) now runs <code>slub-hq/calls/save.sh</code> in the background for any transcript named <code>*-tyler.md</code>. That script copies the transcript to <code>slub-hq/calls/</code>, commits and pushes. The FaceTime watcher already calls <code>stop</code> when a call ends, so nothing in Hammerspoon changed (avoids clashing with the FaceTime recording prompt thread). Log: <code>~/calls/.slub-save.log</code>.</p>
+<hr>
+<h3 id="tasks-per-brother" data-read>Tasks per brother</h3>
+<p data-read>After saving, <code>save.sh</code> runs Claude Code headless (Sonnet, edits limited to the repo plus git) with &quot;follow CALLS.md&quot;. <code>CALLS.md</code> is the model-neutral recipe: read lines newer than the notes file&#39;s <code>extracted-through:</code> marker, put each action item under <code>## Matt</code> or <code>## Tyler</code> in <code>TASKS.md</code> (who has to do it, who asked, time, source), write a short Slub-only summary in <code>calls/YYYY-MM-DD-notes.md</code>, commit and push. Re-running is safe; only new lines are read.</p>
+<hr>
+<h3 id="works-for-tyler-from-the-repo-alone" data-read>Works for Tyler from the repo alone</h3>
+<p data-read>Rules 7 and 8 in <code>AGENTS.md</code> / <code>CLAUDE.md</code>: every agent reads its own human&#39;s section of <code>TASKS.md</code> at session start, offers to do the open ones and ticks them off; and if a transcript in <code>calls/</code> hasn&#39;t been processed, it does the extraction itself. So Tyler&#39;s Claude needs only <code>git pull</code>, no install.</p>
+<hr>
+<h3 id="privacy-decision" data-read>Privacy decision</h3>
+<p data-read>The raw transcript is committed as-is: both brothers were on the call and the repo is private to them. Notes and tasks are Slub-only (no health, relationships, outside money or other people&#39;s business). Rejected: filtering the raw transcript with an LLM (loses fidelity). If Matt wants raw transcripts kept off the repo, <code>save.sh</code> can commit only the notes.</p>
+<hr>
+<h3 id="tested" data-read>Tested</h3>
+<p data-read>Ran on today&#39;s live call: 10 tasks (5 Matt, 5 Tyler) and a notes file were pushed. Not yet tested end to end through a real call hang-up. Known gap: a task done during the call (the Slub work calendar events) can still be listed; a later pass won&#39;t untick it.</p>
+<p data-read>Undo: remove the <code>slub</code> block from <code>call-transcript</code> stop; delete rules 7-8.</p>
+
+</main>
+</body>
+</html>
