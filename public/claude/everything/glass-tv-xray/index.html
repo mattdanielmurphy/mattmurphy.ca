@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Glass TV X-Ray</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · glass-tv-xray</p>
+<h1 id="glass-tv-x-ray" data-read>Glass TV X-Ray</h1>
+<h2 id="1505-plan-and-four-design-options" data-read>15:05 Plan and four design options</h2>
+<p data-read>Matt asked (on his call with Tyler) for Prime Video&#39;s X-Ray in Glass TV: pause and see who&#39;s on screen. Amazon&#39;s X-Ray data isn&#39;t public, so this builds an X-Ray-like overlay from legit data.</p>
+<hr>
+<h3 id="four-design-options" data-read>Four design options</h3>
+<p data-read>Made by four separate agents (one brief each, so they don&#39;t anchor on each other), all in Glass TV&#39;s own look: Schibsted Grotesk + DM Mono, hairline borders, the existing blue accent, light and dark. Page: <a href="https://matt-pages.vercel.app/64b2148e-d2a4-4e24-8008-4c3cfed21f8a/">https://matt-pages.vercel.app/64b2148e-d2a4-4e24-8008-4c3cfed21f8a/</a> (source <code>~/projects/pages/site/glass-xray/</code>).</p>
+<ul>
+<li><span data-read>A: side rail like Prime, tabs for In scene / Cast / Trivia / Music.</span></li>
+<li><span data-read>B: name tags with leader lines on each person; nothing else covers the picture.</span></li>
+<li><span data-read>C: liner-notes shelf at the bottom: who&#39;s here, footnote trivia (&quot;director&#39;s commentary&quot;), music cue, plus a timeline of when each character appears.</span></li>
+<li><span data-read>D: nothing on the video; the Glass TV window docks beside IINA and becomes the X-Ray screen, with a &quot;tonight 1 of 2&quot; line.</span></li>
+</ul>
+<p data-read>Mockups are concept-level: trivia, music and &quot;known for&quot; text are marked &quot;Sample:&quot;. Known rough edges: A&#39;s keycap hints overlap its progress bar; B&#39;s leader lines don&#39;t land exactly on the faces.</p>
+<hr>
+<h3 id="overlay-runs-as-iina-plugin" data-read>Overlay runs as IINA plugin</h3>
+<p data-read>IINA 1.5 is installed and supports plugins with an HTML overlay on the video; Matt already runs the skip-intro and OpenSubtitles plugins. X-Ray becomes a small plugin that shows on pause and asks the Glass TV server what to draw. Option D doesn&#39;t need the plugin.</p>
+<hr>
+<h3 id="data-sources-stay-legit" data-read>Data sources stay legit</h3>
+<ul>
+<li><span data-read>Cast, guest stars and headshots per episode: TMDB episode credits (key already in Glass TV).</span></li>
+<li><span data-read>Trivia: Wikipedia/Wikidata. IMDb trivia is skipped: no API, and its terms forbid scraping.</span></li>
+<li><span data-read>Music: Chromaprint/AcoustID on a short audio clip at the pause point. ShazamKit was rejected for now (needs an Apple developer entitlement).</span></li>
+<li><span data-read>No piracy or debrid sources.</span></li>
+</ul>
+<hr>
+<h3 id="scene-detection-scans-overnight" data-read>Scene detection scans overnight</h3>
+<p data-read>&quot;Who&#39;s on screen right now&quot; needs face matching. Plan: scan each episode once while the Mac is idle at night, one frame every ~2 s, Apple Vision face detection plus a small face model matched against that episode&#39;s TMDB headshots; save a timeline per file. Low priority, one file at a time, because the Mac is low on RAM. Until a file is scanned, X-Ray shows the episode cast list. Rejected: a vision LLM per pause (slow, heavy) and live matching during playback (RAM).</p>
+<p data-read>Full plan: <code>~/projects/glass-tv/docs/XRAY_PLAN.md</code>. Nothing is built yet; waiting for Matt&#39;s pick. Undo: delete the page folder and the plan doc.</p>
+
+</main>
+</body>
+</html>
