@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Plane vs Linear (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · plane-vs-linear</p>
+<h1 id="plane-vs-linear-2026-10-27" data-read>Plane vs Linear (2026-10-27)</h1>
+<h2 id="1805-should-matt-switch-from-linear-to-plane" data-read>18:05 Should Matt switch from Linear to Plane?</h2>
+<p data-read>Matt is leaning toward <a href="https://plane.so">Plane</a> because Linear&#39;s free plan would need paying sooner. The earlier thread (&quot;Organize Linear board and compare free options&quot;) found Linear Free = 250 issues and 2 teams, with ~39 cards used, and Plane self-hosted needing ~4 GB RAM. This section checks Plane&#39;s limits and agent access properly and recommends a path. Nothing has been migrated.</p>
+<hr>
+<h3 id="plane-free-cloud-limits" data-read>Plane free cloud limits</h3>
+<p data-read>From <a href="https://plane.so/pricing">plane.so/pricing</a>, checked today:</p>
+<ul>
+<li><span data-read><strong>12 users</strong>, and no stated cap on projects, work items or storage. That beats Linear&#39;s 250-issue cap.</span></li>
+<li><span data-read><strong>Importers included on Free:</strong> Linear, Jira, Asana, ClickUp, CSV.</span></li>
+<li><span data-read><strong>Not on Free:</strong> exports, integrations (GitHub, Slack, etc.), wiki/nested pages, page templates, active-cycle features.</span></li>
+<li><span data-read><strong>Paid (Pro):</strong> $6/user/month yearly or $8 monthly. Linear Basic is $10/month for one person.</span></li>
+</ul>
+<p data-read>The &quot;no exports&quot; gap matters less than it looks: the API and MCP can read every card out, so an agent can always dump the board to JSON/Markdown if Matt ever wants to leave.</p>
+<hr>
+<h3 id="self-hosting-on-the-vps" data-read>Self-hosting on the VPS</h3>
+<ul>
+<li><span data-read>Plane Community Edition is free but is a stack of containers (web, API, worker, Postgres, Redis, MinIO). Third-party guides say 4 GB RAM minimum, 8 GB recommended. Plane itself publishes no number I could find.</span></li>
+<li><span data-read>The <strong>Linear importer is not in Community Edition</strong>; Plane&#39;s docs list it only on Cloud and the paid Commercial Edition. Self-hosting would mean a CSV or API-script migration.</span></li>
+<li><span data-read>Per the VPS rule (ask before heavy installs), this is a heavy install. Rejected for now: free cloud already removes the issue cap, so self-hosting adds work and VPS load for no gain.</span></li>
+</ul>
+<hr>
+<h3 id="agents-can-use-plane" data-read>Agents can use Plane</h3>
+<ul>
+<li><span data-read><strong>Official MCP server:</strong> <a href="https://github.com/makeplane/plane-mcp-server">makeplane/plane-mcp-server</a>, hosted at <code>https://mcp.plane.so/http/mcp</code> with OAuth sign-in, so it can be added as a Claude connector like Linear&#39;s. About 30 tools covering work items, cycles, modules, labels, states, members.</span></li>
+<li><span data-read><strong>REST API</strong> with personal access tokens; official docs say 60 requests per minute per key. Plenty for agent use.</span></li>
+<li><span data-read>I didn&#39;t find anything saying the API or MCP is blocked on the Free plan, but I haven&#39;t tested it. First migration step is to confirm it works.</span></li>
+</ul>
+<hr>
+<h3 id="recommendation" data-read>Recommendation</h3>
+<p data-read>Switch to Plane Cloud Free, not self-hosted. Why: no issue cap, a built-in Linear importer, and an official MCP so agents keep working. Trade-offs: no exports button (API covers it), no GitHub/Slack integrations (Matt isn&#39;t using them), and Plane&#39;s UI is a bit busier than Linear&#39;s.</p>
+<p data-read>Rejected: staying on Linear (fine for months, but Matt wants room and would split Slub into a second workspace anyway); self-hosting (heavy VPS load, no importer).</p>
+<p data-read>Fits the project freeze: it replaces a tool rather than adding one, and the Linear board gets archived.</p>
+<hr>
+<h3 id="migration-plan" data-read>Migration plan</h3>
+<ol>
+<li><span data-read>Matt signs up at plane.so (an account is his to create) and makes a workspace. Slub can be a second workspace later.</span></li>
+<li><span data-read>Add Plane&#39;s MCP as a connector and confirm agents can read and write a test card.</span></li>
+<li><span data-read>Run Plane&#39;s Linear importer (Workspace settings &gt; Imports &gt; Linear) with a Linear personal access token. It brings states, labels, comments, attachments, cycles, and Linear projects (as Plane modules). Non-parent issue links don&#39;t carry over.</span></li>
+<li><span data-read>Check the ~39 cards, columns (Idea / Planned / Live on Mac / Paused / Done) and the &quot;Parked idea&quot; label (MAT-35..42) landed.</span></li>
+<li><span data-read>Update the rules that point at Linear (<code>.rules/</code> thread-cleanup rule, linear-board memory) to Plane.</span></li>
+<li><span data-read>Leave Linear read-only for a couple of weeks, then archive it.</span></li>
+</ol>
+<p data-read>Undo: Linear stays untouched until step 6, so stopping at any point loses nothing.</p>
+<p data-read>Sources: <a href="https://plane.so/pricing">Plane pricing</a>, <a href="https://docs.plane.so/importers/linear">Plane Linear importer</a>, <a href="https://github.com/makeplane/plane-mcp-server">Plane MCP server</a>, <a href="https://developers.plane.so/api-reference/introduction">Plane API docs</a>, <a href="https://railway.com/deploy/plane">Railway Plane template</a> (RAM figures).</p>
+
+</main>
+</body>
+</html>
