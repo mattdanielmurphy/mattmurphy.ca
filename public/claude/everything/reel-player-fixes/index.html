@@ -226,6 +226,16 @@
 <li><span data-read>Moving the cache to Matt&#39;s VPS is waiting for his approval in the storage thread; not done here.</span></li>
 </ul>
 <p data-read>Tested live: a new 175% recording made in 1.3 s, served from cache on the second request, and the player read through two paragraphs at 200% from the new single-file recordings.</p>
+<h2 id="1400-making-inline-code-sound-different" data-read>14:00 Making inline code sound different</h2>
+<p data-read>Matt: the voice blazes through <code>inline code</code> with nothing to set it apart; add commas around it, ideally make it sound different.</p>
+<ul>
+<li><span data-read><strong>What Speechify allows on our model (simba-3.2):</strong> pauses (<code>break</code>), and <code>prosody</code> pitch, volume and rate. Emphasis and emotion styles are accepted but ignored on this model, and a second voice can&#39;t be switched in mid-paragraph within one recording.</span></li>
+<li><span data-read><strong>What I did:</strong> the voice server now gets inline code marked out of the page. Each code span gets a 180 ms pause before and after (like commas, but without changing the words) and is spoken 12% lower in pitch and 2 dB softer, so it sounds like an aside or a quote. The page and highlight are unchanged.</span></li>
+<li><span data-read>Bare punctuation written as code is still named (<code>,</code> = &quot;comma&quot;), and a sentence&#39;s own full stop right after code is no longer mistaken for one.</span></li>
+<li><span data-read>Checked live: the &quot;Rename&quot; section&#39;s first paragraph renders fine, and Whisper hears the pauses (it puts full stops after &quot;pages readthrough&quot; and &quot;pages reel&quot;). Pitch and volume I can&#39;t judge without ears.</span></li>
+<li><span data-read><strong>Tuning:</strong> the three knobs are <code>CODE_PAUSE</code>, <code>CODE_PITCH</code>, <code>CODE_VOLUME</code> at the top of <code>pages/tts.ts</code>. Changing them re-records only paragraphs that contain code.</span></li>
+<li><span data-read>Only paragraphs with inline code get re-recorded (one upload each).</span></li>
+</ul>
 
 </main>
 </body>
