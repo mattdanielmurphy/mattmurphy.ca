@@ -131,6 +131,17 @@
 <h3 id="untested-2" data-read>Untested</h3>
 <p data-read>Not tried on a phone or by ear. The ratings come from a small model, so some judgments will be off; tell me which ones and I&#39;ll tune the prompt in <code>pages/rate.ts</code>. All existing Readthroughs are being rated in the background now.</p>
 <p data-read>Undo: revert the &quot;smart skip&quot; commit in ~/projects/pages and run <code>pages deploy</code>.</p>
+<h2 id="1115-highlight-stall-on-005-s-and-held-small-scrolls" data-read>11:15 Highlight stall on &quot;0.05 s&quot;, and held small scrolls</h2>
+<hr>
+<h3 id="stall-after-words-like-005-s" data-read>Stall after words like &quot;0.05 s&quot;</h3>
+<p data-read>Cause: Speechify gives &quot;0.05 s&quot; as one timing mark, but the page has two words (&quot;0.05&quot; and &quot;s&quot;). The matcher then let &quot;s&quot; match the start of &quot;so&quot; four words later, so every word in between got the same time and lit up all at once. Fix: short words (under 3 letters) must match exactly; a page word that is the leftover end of the previous mark shares that mark&#39;s time; and any word without a mark gets a time spread evenly between its neighbours instead of copying the previous one. Tested on the exact sentence: old code put &quot;s before the word, so&quot; all at one time, new code gives each its own.</p>
+<hr>
+<h3 id="held-small-scroll" data-read>Held small scroll</h3>
+<p data-read>A scroll too small to snap now still moves the reading if you stay there: after the page has been still for 1.5 seconds, the reading jumps to the line 40% down the screen (where auto-follow keeps it, so the page doesn&#39;t shift afterwards). A dashed outline on the target word fills in and a small note counts down (&quot;reading moves here in 0.8s&quot;), so you can scroll back before it happens. Only while reading is playing; paused scrolling stays free. Tested headless with a 115 px wheel scroll: jumped after about 1.5 seconds.</p>
+<p data-read>Changed with it: after a small scroll, auto-follow now waits until the reading is back within a line of its spot, rather than anywhere in the middle band.</p>
+<hr>
+<h3 id="ratings-for-older-readthroughs" data-read>Ratings for older Readthroughs</h3>
+<p data-read>9 of 16 rated so far; the rest are running in the background.</p>
 
 </main>
 </body>
