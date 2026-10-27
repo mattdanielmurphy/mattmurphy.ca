@@ -236,6 +236,14 @@
 <li><span data-read><strong>Tuning:</strong> the three knobs are <code>CODE_PAUSE</code>, <code>CODE_PITCH</code>, <code>CODE_VOLUME</code> at the top of <code>pages/tts.ts</code>. Changing them re-records only paragraphs that contain code.</span></li>
 <li><span data-read>Only paragraphs with inline code get re-recorded (one upload each).</span></li>
 </ul>
+<h2 id="1815-inline-code-no-pause-before-every-character-sounded" data-read>18:15 Inline code: no pause before, every character sounded</h2>
+<ul>
+<li><span data-read><strong>Pause:</strong> removed before inline code (the lower voice already marks the start); the 180 ms pause after it stays.</span></li>
+<li><span data-read><strong>Every character sounded:</strong> the translator (the background Claude pass) now gets the page&#39;s inline code and paths as their own list and must give each one that could be misread a spoken form: symbols named (slash, dot, underscore, dash, tilde, at) and hidden initialisms spelled letter by letter, lowercase ones too. For this Readthrough it now says, for example, &quot;pages slash T T S dot T S&quot;, &quot;api slash T T S vercel dot T S&quot;, &quot;speech fixes dot jay son&quot;, &quot;A I O S&quot;, &quot;M P 3&quot;.</span></li>
+<li><span data-read>No hand-written rules were added to the voice code; it&#39;s all in the translator&#39;s instructions (<code>pages/rate.ts</code>), as Matt asked earlier.</span></li>
+<li><span data-read>Checked live with Whisper on the &quot;Only these 10 voices&quot; paragraph: the path comes through as &quot;slash api slash T T S question voices equals all&quot; (Whisper writes &quot;pages slash T T S dot T S&quot; back as &quot;pages/tts.ts&quot;, so that one I can&#39;t confirm by transcript).</span></li>
+<li><span data-read>Small judgement calls in the list may still be off (it says &quot;api&quot; as a word in one path). Tell me which and I&#39;ll tighten the instructions.</span></li>
+</ul>
 
 </main>
 </body>
