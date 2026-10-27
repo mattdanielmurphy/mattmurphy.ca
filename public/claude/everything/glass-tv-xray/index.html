@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrPFWrfE3WwtFZuNBEFcXUpH">
 <title>Glass TV X-Ray</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -39,6 +40,19 @@
 <h3 id="scene-detection-scans-overnight" data-read>Scene detection scans overnight</h3>
 <p data-read>&quot;Who&#39;s on screen right now&quot; needs face matching. Plan: scan each episode once while the Mac is idle at night, one frame every ~2 s, Apple Vision face detection plus a small face model matched against that episode&#39;s TMDB headshots; save a timeline per file. Low priority, one file at a time, because the Mac is low on RAM. Until a file is scanned, X-Ray shows the episode cast list. Rejected: a vision LLM per pause (slow, heavy) and live matching during playback (RAM).</p>
 <p data-read>Full plan: <code>~/projects/glass-tv/docs/XRAY_PLAN.md</code>. Nothing is built yet; waiting for Matt&#39;s pick. Undo: delete the page folder and the plan doc.</p>
+<h2 id="1230-on-pause-recognition-instead-of-overnight-scans" data-read>12:30 On-pause recognition instead of overnight scans</h2>
+<p data-read>Matt rejected overnight scanning: an episode gets paused 0–3 times, so scanning every scene wastes nearly all the work, and it must work with streams too. He wants: on pause, send data to the server, get the answer back. He likes B if it isn&#39;t much harder, and wants C kept for a future director&#39;s-commentary feature.</p>
+<hr>
+<h3 id="recognise-faces-only-on-pause" data-read>Recognise faces only on pause</h3>
+<p data-read>On pause the IINA plugin grabs the paused frame (a player screenshot, so local files and streams behave the same) and posts it to Glass TV. Apple Vision finds the faces on-device; a small face-embedding model (MobileFaceNet-size, about 15 MB) compares each face with that episode&#39;s TMDB cast headshots, whose embeddings are made on the first pause in the episode and cached. Reply: actor, character and a box per face. Aim: under a second, about 100 MB RAM only while it runs.</p>
+<p data-read>Rejected: vision LLMs (they usually refuse to name real people from their faces, and cost per call); overnight scans (Matt&#39;s reason above). Kept as an optional later booster: AWS Rekognition celebrity recognition, about a tenth of a cent per pause, needs an AWS account (none set up now), better on guest stars.</p>
+<p data-read>Untested so far: accuracy of matching one TMDB headshot per actor against a dim, side-on TV frame. Main cast should match well; minor guests may come back &quot;unknown&quot;.</p>
+<hr>
+<h3 id="design-b-is-cheap-now" data-read>Design B is cheap now</h3>
+<p data-read>Face detection returns a box for every face anyway, so the name tags in B just sit at those boxes after mapping video coordinates to the window (letterboxing included). The extra work is that mapping and keeping tags from overlapping; a plain list stays as the fallback for unknown faces or when no faces are found.</p>
+<hr>
+<h3 id="design-c-parked-in-ideas" data-read>Design C parked in ideas</h3>
+<p data-read>Added to <code>~/projects/glass-tv/IDEAS.md</code> as the future director&#39;s-commentary mode, with the mockup link. Plan doc updated: <code>~/projects/glass-tv/docs/XRAY_PLAN.md</code>.</p>
 
 </main>
 </body>
