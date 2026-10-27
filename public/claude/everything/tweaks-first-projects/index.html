@@ -77,6 +77,30 @@
 <p data-read>The panel inlines <code>vendor/slub-ui/slub-ui.js</code> and the chosen look&#39;s CSS (synced by <code>ui-mixer/knobs/sync.sh</code>, which now builds the kit too). The jump menu is <code>&lt;slub-jump&gt;</code>: ⌘J opens it, you type to filter, and it&#39;s grouped into Apps (the ones with focus bundle IDs) and Background utilities, each showing a knob count. Sliders, number fields, switches, colours, chips, search, preset fields and buttons all come from the kit. The panel&#39;s own hard-coded colours are gone; every colour comes from the look. The panel has its own tweaks entry, &quot;Tweaks panel&quot; › <code>look.style</code> (Hairline, Prairie or Synth chips), and changing it reopens the panel in the new look. Small fix in <code>tweaks.lua</code>: <code>choices</code> declared in code now get seeded into the file. The headless WebKit test passes all 23 checks in every look, light and dark. Hammerspoon reloaded fine.</p>
 <p data-read>Untested: I didn&#39;t open the real panel on your screen; you&#39;ll see it with ⌃⌥⌘T. The docking behaviour isn&#39;t built yet; it&#39;s still waiting for your 👍 on the logic.</p>
 <p data-read><strong>Undo:</strong> revert commit 729afa6 in ~/.hammerspoon and 70181b4 in ui-mixer.</p>
+<h2 id="1205-plain-look-in-the-panel-and-119-knobs-wired-into-the-code" data-read>12:05 Plain look in the panel, and 119 knobs wired into the code</h2>
+<p data-read><strong>Asked:</strong> Matt picked the &quot;plain&quot; Slub UI look for now (hairline is the runner-up), so the panel doesn&#39;t need a look setting. His 👍 on the 08:50 reply was the go to wire the kept knobs in.</p>
+<hr>
+<h3 id="plain-look-no-look-setting" data-read>Plain look, no look setting</h3>
+<p data-read>The panel now inlines <code>vendor/slub-ui/slub-ui.css</code>, the suite stylesheet, which is plain by default. The &quot;Tweaks panel › look.style&quot; knob and its file are gone. <code>sync.sh</code> copies only that one stylesheet now. The UI test passes, and Hammerspoon reloaded fine.</p>
+<p data-read>Mistake: my <code>git commit -a</code> in ui-mixer (739e57b) also swept in another session&#39;s unfinished edits to <code>dist/reel-player.html</code>, <code>kit/entry.js</code> and <code>knobs/knobs.js</code> under my commit message. Nothing was lost; those edits are pushed as they were. If that session wanted them committed separately, the commit can be split.</p>
+<hr>
+<h3 id="how-the-knobs-got-wired" data-read>How the knobs got wired</h3>
+<p data-read>There&#39;s a new step, <code>bin/tweaks wire [--dry] [module]</code>, and it&#39;s mechanical: no AI. For each knob Sonnet kept, it does one of three things. A top-level constant (<code>local STALE = 3 * 24 * 3600</code>) is deleted, and every place that used it now reads <code>T(&quot;queue.staleSeconds&quot;)</code>, so the value is live. An inline field (<code>alpha = 0.95</code>) or a timer delay (<code>doAfter(0.3, …)</code>) has its number replaced with <code>T(&quot;key&quot;)</code>. Matching <code>xRadius</code> and <code>yRadius</code> values share one knob. Declarations go into the module&#39;s existing knobs table, or into a new <code>TWEAKS</code> block at the top that opens Tweaks only inside real Hammerspoon, so test fakes just get the defaults. Every rewritten file is checked with <code>luac -p</code> before it&#39;s written, and comments are left alone.</p>
+<p data-read>Result: 119 of the 149 keepers are wired across 26 modules. Every Lua test passes, and Hammerspoon reloaded with &quot;all modules started&quot; and no errors. 39 apps are now in the Tweaks panel.</p>
+<hr>
+<h3 id="problems-caught-and-fixed" data-read>Problems caught and fixed</h3>
+<ul>
+<li><span data-read><strong>Symlinks:</strong> qwerty_midi, ps5_dashboard and ui_recorder are symlinks into their own repos (qwerty_midi is a generated bundle). The first run replaced those links with files. I restored them from git, checked that the target repos weren&#39;t touched, and <code>wire</code> now skips symlinks.</span></li>
+<li><span data-read><strong>Test fakes:</strong> some tests fake <code>hs</code>, so the guard is <code>type(hs.reload) == &quot;function&quot;</code>. thread_queue&#39;s test stub now returns each knob&#39;s default.</span></li>
+<li><span data-read><strong>Knobs declared before use:</strong> fields in a table that comes before the module&#39;s own tweaks block (song_key&#39;s CFG) are skipped, not wired.</span></li>
+<li><span data-read><strong>Two tweaks blocks in one file:</strong> otp_copy and tv_resync open Tweaks inside a function, so I merged their new knobs into the existing tables by hand. <code>wire</code> now skips modules like that and says so.</span></li>
+<li><span data-read><strong>Sonnet slips:</strong> otp_copy&#39;s &quot;pill height&quot; was really the width, so it&#39;s now <code>look.pillWidth</code> with a sensible range. claude_warm&#39;s lead time was read as 10 instead of 10 * 60; that&#39;s fixed, and the scanner now reads whole arithmetic. A value outside its slider range now widens the range.</span></li>
+</ul>
+<hr>
+<h3 id="not-wired-yet" data-read>Not wired yet</h3>
+<p data-read>30 keepers: the three symlinked modules (they need wiring in their own repos), song_key&#39;s 6 CFG values, and 12 in eye_breaks (constants used before its tweaks block). These are small hand jobs per module.</p>
+<p data-read><strong>Untested:</strong> I didn&#39;t drag any of the new knobs live on screen. The modules load and the tests pass, but you&#39;re the first to turn them.</p>
+<p data-read><strong>Undo:</strong> revert 70ba67e (wiring) and e98f3a1 (plain look) in ~/.hammerspoon.</p>
 
 </main>
 </body>
