@@ -78,6 +78,8 @@
 <li><span data-read>The current Linear board mixes both. The importer brings in a whole Linear team at a time, so either split the Slub cards into their own Linear team first (the step the earlier thread started), or import everything into the personal workspace and move the Slub cards into the Slub workspace afterwards by API. I&#39;ll do the second: it needs no clicking in Linear.</span></li>
 <li><span data-read>Slub workspace owner: Matt&#39;s account (he can make Tyler an admin). If Matt wants it owned by his slub.cc email instead, he should sign up with that address for the Slub workspace.</span></li>
 </ul>
+<h2 id="1806-exporting-a-big-board-without-burning-tokens" data-read>18:06 Exporting a big board without burning tokens</h2>
+<p data-read>Matt asked whether pulling every card out of Plane costs a lot of tokens. It doesn&#39;t if done right: an agent writes a small script that calls Plane&#39;s REST API and saves everything to JSON/Markdown files. The script does the work, so the card contents never pass through the model; the token cost is just writing the script, the same for 40 cards or 4,000. The API returns cards in pages (about 100 per request) and allows 60 requests a minute, so thousands of cards take a minute or two. Going card by card through the chat connector would be the expensive way, and is the one to avoid. Not built yet; it&#39;s only worth writing if he ever leaves Plane.</p>
 
 </main>
 </body>
