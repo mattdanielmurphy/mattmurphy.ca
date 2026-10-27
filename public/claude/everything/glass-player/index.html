@@ -50,6 +50,24 @@
 <li><span data-read>Matt was watching something when it merged, so the server restarts by itself once nothing is playing (<code>tmp/restart-when-idle.sh</code>); the episode after that opens in Glass Player.</span></li>
 <li><span data-read>Undo: Settings → Player → tap to pick IINA, or <code>git revert 15fec43</code>.</span></li>
 </ul>
+<h2 id="1408-subtitles-full-screen-scaling-and-transitions" data-read>14:08 Subtitles, full-screen scaling and transitions</h2>
+<p data-read><strong>Asked:</strong> subtitles off by default; full screen should fill the screen, with native resolution as an opt-in setting; the full-screen transition squished the picture to the left (his screen recording, ui-recorder 14:05).</p>
+<hr>
+<h3 id="why-full-screen-didnt-fill" data-read>Why full screen didn&#39;t fill</h3>
+<p data-read>The recording showed the picture staying window-sized in the middle of the full screen, and a squished frame at the left during the animation. Cause: the player sized each frame from OpenGL&#39;s viewport, which kept the old window size after a resize. It now sizes frames from the layer itself (points × backing scale). The layer also keeps the last frame&#39;s shape (<code>resizeAspect</code>) while the animation runs, so it can&#39;t squish between frames.</p>
+<hr>
+<h3 id="subtitles-and-native-size" data-read>Subtitles and native size</h3>
+<ul>
+<li><span data-read>Subtitles start off (<code>sid=no</code>); S or the subtitles menu turns them on.</span></li>
+<li><span data-read>New Settings line under Player: &quot;Show video at its own resolution&quot;, off by default. On, it passes mpv&#39;s <code>video-unscaled=downscale-big</code> (never upscaled, still shrinks to fit).</span></li>
+</ul>
+<hr>
+<h3 id="tested-and-not" data-read>Tested and not</h3>
+<ul>
+<li><span data-read>Built, typechecked, 20 unit tests pass, settings page bundles.</span></li>
+<li><span data-read><strong>Not tested in full screen:</strong> the clearance banner wasn&#39;t reachable (Hammerspoon down), so I didn&#39;t take over his screen. The server restarted by itself at 14:07 when nothing was playing, so the next video uses the fixes.</span></li>
+<li><span data-read>Undo: <code>git revert 020241d 494b19b</code>.</span></li>
+</ul>
 
 </main>
 </body>
