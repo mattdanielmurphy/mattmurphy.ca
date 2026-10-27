@@ -268,6 +268,16 @@
 <li><span data-read>Not yet tested: a real delivery all the way into the coordinator. The first real one will be his own 👍 when he next opens this Readthrough.</span></li>
 <li><span data-read>Undo: <code>python3 ~/projects/ai-os/scripts/readthrough_comments.py uninstall</code> stops delivery; revert the &quot;reactions and comments are sent to Claude&quot; commit in ~/projects/pages and run <code>pages deploy</code>.</span></li>
 </ul>
+<h2 id="1855-right-click-quick-reactions" data-read>18:55 Right-click quick reactions</h2>
+<p data-read>Matt: right-click should react to the current sentence or paragraph with the six emoji he uses with Claude, with a tooltip explaining each.</p>
+<ul>
+<li><span data-read><strong>Right-click anywhere on the text</strong> opens a small menu at the pointer: Sentence / Paragraph (the sentence you clicked is picked and highlighted; Paragraph widens it), the six emoji 👍 ❌ ❓ ⏩ ✋ ✅, and &quot;Comment…&quot; for the full comment box. Right-clicking off the text reacts to the sentence being read.</span></li>
+<li><span data-read><strong>Meanings:</strong> hovering an emoji shows its meaning both as a browser tooltip and as a line inside the menu (instant, also readable on a trackpad): 👍 yes, go ahead · ❌ no, don&#39;t · ❓ didn&#39;t get it, explain simpler · ⏩ next, keep going · ✋ wait, I&#39;ll say more · ✅ done, all good.</span></li>
+<li><span data-read>Clicking an emoji toggles it (click again to remove), closes the menu and sends it to Claude like any reaction. Esc, scrolling or clicking elsewhere closes it. Links, text boxes and the panels keep the normal right-click menu.</span></li>
+<li><span data-read>The big reaction bar now uses the same six emoji (old ❤️ reactions still show), and the delivered messages name each reaction&#39;s meaning for the receiving agent.</span></li>
+<li><span data-read>The picked-text highlight is now one continuous band, like the underline.</span></li>
+</ul>
+<p data-read>Tested headless: right-click opened the menu with 38 words picked, hovering ⏩ showed &quot;Next, keep going&quot;, Paragraph widened it to 59 words, 👍 saved and closed. Not tried with a real trackpad or in Safari.</p>
 
 </main>
 </body>
