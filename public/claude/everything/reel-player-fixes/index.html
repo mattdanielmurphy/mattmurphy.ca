@@ -86,6 +86,29 @@
 <li><span data-read><strong>Voice-only cleanup in the player&#39;s voice server.</strong> When making the audio, skip the timestamps in headings, skip code blocks and file paths (the highlight passes over them), and say symbols like <code>,</code> and <code>.</code> by name. Deterministic, no AI call.</span></li>
 </ol>
 <p data-read>Rejected: having an AI rewrite each block for speech at publish time. It would sound most natural, but the spoken words would no longer match the page, so the word highlight would drift, and every publish would cost an AI call.</p>
+<h2 id="1015-round-3-slow-speed-sound-percent-speeds-emphasis-smart-skip-plan" data-read>10:15 Round 3: slow-speed sound, percent speeds, emphasis, smart skip plan</h2>
+<p data-read>Matt: the sound has artifacts at slow speeds; show speed as a percentage that snaps to 100% and other 25% steps; → should act like a busy CEO saying &quot;uh huh&quot; (cut to the chase, and keep condensing if he keeps pressing); and make it more engaging with highlighting of important things and small formatting touches.</p>
+<hr>
+<h3 id="slow-speeds" data-read>Slow speeds</h3>
+<p data-read>The warble came from the browser stretching the audio below about 0.8x. Under 85% the voice now uses a second recording that Speechify makes at 70% pace, so the browser only stretches it a little. That recording is made once per block the first time someone listens slowly. The slowest setting is now 60%.</p>
+<hr>
+<h3 id="speed-in-percent" data-read>Speed in percent</h3>
+<p data-read>Speed is now a percentage of the voice&#39;s natural pace (100% is about 230 words a minute). Your old 310 wpm became 135%. <code>.</code> and <code>,</code> jump to the next 25% step (135 → 150 → 175, or down to 125, 100, 75). Every slider in Tune is magnetic near round values: speed snaps to 25% steps within 4%, and the others to their own round numbers.</p>
+<hr>
+<h3 id="emphasis-and-formatting" data-read>Emphasis and formatting</h3>
+<p data-read>Bold text (<code>**…**</code>) now has a marker stroke behind it, and italics a quiet tint. A section whose heading mentions Untested, Risks, Failures, Warning, Caveats or Undo gets a coloured bar down its side, so it can&#39;t be skimmed past. All of this comes from plain Markdown, so agents do nothing extra. A next step would be the AI pass below also marking key phrases.</p>
+<hr>
+<h3 id="smart-skip-plan-waiting-for-matts-" data-read>Smart skip: plan, waiting for Matt&#39;s 👍</h3>
+<ol>
+<li><span data-read><strong>Ratings, made automatically.</strong> When an agent publishes, a background step asks Claude (a small model, on Matt&#39;s own plan, about 15 seconds, nothing for the agent to do) to rate every sentence: crucial (decisions, what Matt must do, results, failures), useful, or detail. The same pass marks a few key phrases to highlight.</span></li>
+<li><span data-read><strong>→ once (&quot;uh huh&quot;).</strong> It skips to the next sentence in this section that isn&#39;t just detail; if there isn&#39;t one, to the next section.</span></li>
+<li><span data-read><strong>→ again within about 20 seconds (&quot;hurry up&quot;).</strong> For the rest of the section it reads only the crucial sentences, 25% faster.</span></li>
+<li><span data-read><strong>→ a third time (&quot;key points only&quot;).</strong> The whole rest of the document is read as crucial sentences only. A small &quot;Read everything&quot; button, or ←, goes back to normal at your usual speed.</span></li>
+</ol>
+<p data-read>Without ratings (old Readthroughs, or if the background step fails), → stays a plain next-sentence skip. Open question: should &quot;hurry up&quot; wear off by itself at the next section? I&#39;d say yes, and &quot;key points only&quot; stays until you turn it off.</p>
+<hr>
+<h3 id="untested-1" data-read>Untested</h3>
+<p data-read>Not heard by ear: the slow recording&#39;s pitch and the smoothness of the switch at 85% are checked only by measurement (the 70% recording is 1.42 times as long, as expected).</p>
 
 </main>
 </body>
