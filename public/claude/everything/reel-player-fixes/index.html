@@ -160,6 +160,16 @@
 <p data-read>Tested headless, locally and live: at 100% it played the plain recording; pressing . four times went quiet, then resumed on the 130% recording at 0.92x.</p>
 <h2 id="1205-why-rename-sounded-like-re-na-may" data-read>12:05 Why &quot;rename&quot; sounded like &quot;re-na-may&quot;</h2>
 <p data-read>Speechify&#39;s voice guesses pronunciation from spelling and context, and &quot;rename&quot; alone (as in the heading &quot;Rename&quot;) looks like a French-style word such as résumé, so it said &quot;re-na-may&quot;. Transcribing the old live clip with Whisper heard &quot;RENEMY&quot;. Fix: the voice server now has a small pronunciation list that tells Speechify to say &quot;re-name&quot; (also renamed, renames) while the page still shows the real word. The fixed clip transcribes as &quot;Rename.&quot; Only paragraphs containing those words get new audio. When you hear another word said wrong, tell me and I&#39;ll add it to the list (<code>PRONOUNCE</code> in pages/tts.ts).</p>
+<h2 id="1215-skim-levels-on-a-double-" data-read>12:15 Skim levels on a double →</h2>
+<p data-read>Matt: two → presses in a row should raise the skim level, and the UI should appear right away on any → so it&#39;s clear.</p>
+<ul>
+<li><span data-read><strong>→ once</strong> goes to the next sentence (skipping faded ones if a skim level is on).</span></li>
+<li><span data-read><strong>→ twice within 0.6 seconds</strong> raises the level one step (Everything → Skip details → Hurry → Key points) and moves on. A third quick press counts as a plain → again, so four quick presses raise it twice.</span></li>
+<li><span data-read><strong>Any →</strong> opens the Pace panel in the top left, with the four levels, the current one marked, and the keys. It closes by itself after 3.5 seconds unless the pointer is on it.</span></li>
+<li><span data-read><strong>Lowering it:</strong> Esc goes back to Everything, or tap any level in the panel. ← stays &quot;previous sentence&quot; (and the quick double ← still goes back two), so going back never fights with skimming.</span></li>
+<li><span data-read>Both → targets are preloaded, so neither should buffer.</span></li>
+</ul>
+<p data-read>Tested headless on a copy of this Readthrough: → → (slow) stayed on Everything moving one sentence each, a quick pair moved to Skip details, a second quick pair to Hurry, Esc back to Everything, and the panel closed after about 4 seconds.</p>
 
 </main>
 </body>
