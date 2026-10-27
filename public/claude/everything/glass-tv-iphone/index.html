@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Glass TV on iPhone: how hard?</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · glass-tv-iphone</p>
+<h1 id="glass-tv-on-iphone-how-hard" data-read>Glass TV on iPhone: how hard?</h1>
+<h2 id="1735-estimate" data-read>17:35 Estimate</h2>
+<p data-read>Matt asked how hard it would be to get Glass TV on his iPhone. Question only; nothing was built or changed. The estimate comes from reading the code, not from trying anything.</p>
+<hr>
+<h3 id="how-glass-tv-is-built-today" data-read>How Glass TV is built today</h3>
+<ul>
+<li><span data-read>The Mac app (<code>app/main.swift</code>, 276 lines) is just a window around a web page. The page (<code>web/</code>) is served by a Bun server on the Mac (<code>src/server.ts</code>), which holds your files, keys, TMDB, Real-Debrid, rules and X-Ray matching.</span></li>
+<li><span data-read>The server listens on <code>127.0.0.1</code> only, so nothing else on your network or tailnet can reach it yet.</span></li>
+<li><span data-read>Glass Player (<code>app/player/main.swift</code>, ~1000 lines) is AppKit + libmpv. It plays MKV/HEVC/anything because mpv does.</span></li>
+<li><span data-read>The Android TV port already treats the Mac as the backend behind a <code>MediaRepository</code> interface.</span></li>
+</ul>
+<hr>
+<h3 id="the-plan-mac-stays-the-brain-iphone-is-a-client" data-read>The plan: Mac stays the brain, iPhone is a client</h3>
+<p data-read>The server cannot run on iOS (Bun, your files, <code>.env</code> keys), so the phone talks to the Mac over Tailscale (already installed). This also means files never need copying to the phone.</p>
+<p data-read><strong>Step 1 (an afternoon): the web app on the phone.</strong> Let the server also listen on the Tailscale address, make the page fit a phone screen, add it to the Home Screen. The commit flow, library and rules work as-is. Weak spot: Safari can&#39;t play MKV or many HEVC files, so playback would need the Mac to remux to HLS with ffmpeg on the fly (another half day to a day), or wait for step 2.</p>
+<p data-read><strong>Step 2 (about 3 to 5 days of agent work): a real iPhone app.</strong> A small SwiftUI app that shows the same web page, plus a native player built on libmpv through MPVKit (a Swift package that ships mpv for iOS). It plays everything the Mac plays, no transcoding. Glass Player&#39;s controls are AppKit and mouse-driven, so they get rewritten for touch (tap, swipe to seek, pinch for full screen); the mpv control logic and progress/credits timing carry over.</p>
+<p data-read><strong>X-Ray on the phone (about a day more).</strong> On pause, the app grabs the frame and sends it to the Mac, which already does the face matching. Simpler than porting the model to iOS.</p>
+<hr>
+<h3 id="paths-i-rejected" data-read>Paths I rejected</h3>
+<ul>
+<li><span data-read><strong>Mac Catalyst:</strong> goes the wrong way (iPad app running on Mac). Your Mac app is AppKit, so it gives nothing here.</span></li>
+<li><span data-read><strong>AVPlayer instead of mpv:</strong> no MKV support, so it would force transcoding on the Mac for most files.</span></li>
+<li><span data-read><strong>Running everything on the phone:</strong> would need the files on the phone and a rewrite of the server in Swift. Far more work for a worse result.</span></li>
+</ul>
+<hr>
+<h3 id="installing-without-the-app-store" data-read>Installing without the App Store</h3>
+<p data-read>You have a paid Apple developer account: your existing iOS provisioning profiles (Mindful Browser) last a full year, which free accounts can&#39;t do (they expire after 7 days). So installing is easy: build from Xcode straight to the phone, or use TestFlight for easy updates. No App Store review needed.</p>
+<hr>
+<h3 id="untested--risks" data-read>Untested / risks</h3>
+<ul>
+<li><span data-read>Nothing was built or run. Day estimates are guesses from code size.</span></li>
+<li><span data-read>MPVKit on iOS was not tried on your machine; it is the main unknown.</span></li>
+<li><span data-read>Opening the server to the tailnet needs a check that only your devices can reach it (Tailscale does this by default).</span></li>
+<li><span data-read>Other threads are editing glass-tv right now; any build should start after they land.</span></li>
+</ul>
+
+</main>
+</body>
+</html>
