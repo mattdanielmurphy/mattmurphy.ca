@@ -102,6 +102,82 @@
 <hr>
 <h3 id="untested-and-open" data-read>Untested and open</h3>
 <p data-read>The voice change is rebuilt and on the page, but nobody has listened to it yet. Nothing in the plan above is built.</p>
+<h2 id="1345-difficulty-slider-drone-and-bell-are-live" data-read>13:45 Difficulty slider, drone and bell are live</h2>
+<p data-read>Matt asked for a difficulty slider on the page that starts at one minute, and said to build everything now.</p>
+<hr>
+<h3 id="the-slider-has-eight-levels" data-read>The slider has eight levels</h3>
+<p data-read>The Still page has a new card at the top, &quot;Sit with the bell&quot;, with a slider from level 1 to 8. Each level is its own pre-built track; moving the slider swaps the track and the line under it says how often the bell rings and how many reminders there are. The page remembers your last level on that device.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Length</th>
+<th>Bell every</th>
+<th>Reminders during the sit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1 min</td>
+<td>15 s</td>
+<td>none</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2 min</td>
+<td>20 s</td>
+<td>none</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3 min</td>
+<td>30 s</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5 min</td>
+<td>45 s</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>7 min</td>
+<td>1 min</td>
+<td>3</td>
+</tr>
+<tr>
+<td>6</td>
+<td>10 min</td>
+<td>90 s</td>
+<td>3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>15 min</td>
+<td>2 min</td>
+<td>2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>20 min</td>
+<td>3 min</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p data-read>Short levels can&#39;t fit many bells around the talking, so level 2 rings 3 times and level 3 rings 3 times. Levels 1 to 3 use one settling breath; 5 minutes and up use two, then hand the breath back.</p>
+<hr>
+<h3 id="drone-that-never-wavers-1" data-read>Drone that never wavers</h3>
+<p data-read>A KORG Alexandria organ holds D, A and D under the piano for 21 minutes, softened with a low-pass. Its level moves by about 1 dB over the whole track, it never dips under the voice, and it sits about 10 dB below the piano. I chose the organ because the pad and analog synths I tried swelled or faded over time (measured, not listened to). If it&#39;s too loud or quiet, the knob is <code>DRONE_DB</code> in <code>build.py</code>.</p>
+<hr>
+<h3 id="the-bell" data-read>The bell</h3>
+<p data-read>Arturia Augmented Mallets, preset &quot;Gentle Bells&quot;, one high A that fades in about 5 seconds. The voice introduces it (&quot;When you hear this sound, take it as a reminder. If your mind has wandered, gently come back to the breath.&quot;), rings it once, and after that it rings on a steady grid during the silences, never over the voice. Volume knob: <code>BELL_DB</code>.</p>
+<hr>
+<h3 id="how-its-built-1" data-read>How it&#39;s built</h3>
+<p data-read><code>levels.py</code> writes one script per level. <code>build.py</code> learned <code>[bell]</code>, <code>[fill]</code> (silences that stretch so the track hits its exact length), <code># drone:</code>, <code># bell_every:</code> and <code># fade_out:</code>. Rebuild everything with <code>python3 levels.py</code> then <code>build.py scripts/level-N.txt</code>.</p>
+<hr>
+<h3 id="not-listened-to-yet" data-read>Not listened to yet</h3>
+<p data-read>I can&#39;t hear the audio, so the drone and bell levels are set by measurement only. The drone could be too present, and the bell might feel too loud or too quiet against the piano. Tell me which and I&#39;ll move one knob.</p>
 
 </main>
 </body>
