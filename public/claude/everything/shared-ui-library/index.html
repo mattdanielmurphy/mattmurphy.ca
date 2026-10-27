@@ -47,6 +47,17 @@
 <hr>
 <h3 id="steppers-when-theres-no-slider" data-read>Steppers when there&#39;s no slider</h3>
 <p data-read>Knobs now shows Web Awesome&#39;s − / + steppers on a number field when the knob has no slider (no min and max). Knobs that have a slider keep a compact field without steppers, because the slider already does that job. The field is 150 px wide so the value isn&#39;t clipped. The look picker page is updated.</p>
+<h2 id="1805-arrow-keys-on-number-fields" data-read>18:05 Arrow keys on number fields</h2>
+<p data-read>Matt: every number field gets standard arrow-key increment and decrement with modifiers: nothing = 1, Shift = 10, Option = 0.1.</p>
+<hr>
+<h3 id="how-the-arrow-keys-work" data-read>How the arrow keys work</h3>
+<p data-read><code>kit/arrows.js</code> catches ↑/↓ on every number field on the page (kit fields and plain ones). It moves by the field&#39;s step, which is 1 when the field has none. Shift multiplies that by 10 and Option divides it by 10. So a normal field moves 1, 10 and 0.1, exactly as asked. The value is clamped to the field&#39;s min and max, and the change counts as a normal edit (live update, and Knobs undo).</p>
+<hr>
+<h3 id="fields-with-a-finer-step" data-read>Fields with a finer step</h3>
+<p data-read>A field whose step is 0.1 moves 0.1 / 1 / 0.01 instead, so a 0–1 opacity can&#39;t jump past its whole range in one press. I rejected fixed 1/10/0.1 everywhere for that reason. Say if you want fixed amounts instead.</p>
+<hr>
+<h3 id="smaller-fixes" data-read>Smaller fixes</h3>
+<p data-read>Hovering a Knobs number field shows the key hint. Knobs no longer shows trailing zeros (&quot;23.10&quot; is now &quot;23.1&quot;). Tested in Chrome: 12 → 13 → 23 → 23.1 → 23 → 22 → 12.</p>
 
 </main>
 </body>
