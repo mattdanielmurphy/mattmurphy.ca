@@ -114,6 +114,15 @@
 <li><span data-read><strong>Untried on screen:</strong> the smaller-window slide, real full-screen windows, and the ask-which-app flow. The geometry is unit-tested; the full-screen path has the most risk.</span></li>
 </ul>
 <p data-read><strong>Undo:</strong> revert 4a6704f in ~/.hammerspoon.</p>
+<h2 id="1240-dock-icon-when-the-panel-stands-alone" data-read>12:40 Dock icon when the panel stands alone</h2>
+<p data-read><strong>Asked:</strong> Matt: &quot;we need a dock icon eventually anyway, so figure it out&quot;.</p>
+<hr>
+<h3 id="what-the-dock-icon-does-now" data-read>What the Dock icon does now</h3>
+<p data-read>When you jump to a background utility, the panel puts the app back and turns on Hammerspoon&#39;s Dock icon, which also gives it a cmd-tab entry. The icon gets a custom tile drawn with <code>hs.dockicon.tileCanvas</code>: three little sliders with accent-coloured knobs, using only system colours (window background, tertiary label, control accent), so no new colours. Docking beside an app or closing the panel hides the icon again. If you&#39;ve turned Hammerspoon&#39;s Dock icon on yourself, the panel leaves it alone. Tested on screen with your clearance. Docked: Claude at 380,0 1540×1080, no icon. Jumping to Reload indicator: Claude back to 1920×1080, icon on. Closed: icon off.</p>
+<hr>
+<h3 id="what-it-still-cant-do" data-read>What it still can&#39;t do</h3>
+<p data-read>The Dock tile is ours, but cmd-tab and the hover label still show Hammerspoon&#39;s own icon and name, because the panel lives inside Hammerspoon. An icon that says &quot;Tweaks&quot; everywhere needs a small native app (hud-kit Swift, a WKWebView running the same page, talking to Hammerspoon), which is a new app. Given the freeze, it fits best as part of the Slub Utils app when the suite becomes one, rather than as a standalone project now. I didn&#39;t build it.</p>
+<p data-read><strong>Undo:</strong> revert this commit in ~/.hammerspoon (the &quot;Dock icon and cmd-tab entry&quot; one).</p>
 
 </main>
 </body>
