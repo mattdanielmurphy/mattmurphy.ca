@@ -50,6 +50,13 @@
 <li>These instructions stay short (16k limit): new rules go to the rules repo and to memory, never pasted in here. Add at most a one-line pointer&nbsp;here.</li>
 <li>A thread message starting with <code>/coord</code> is for the coordinator. Thread agents don&#39;t act on it or reply.</li>
 </ul>
+<h1>Model choice (most&nbsp;important)</h1>
+<ul>
+<li><strong>Default model is Opus.</strong> While weekly usage is on pace to stay under quota, use Opus for most threads and Sonnet only for really small tasks.</li>
+<li><strong>Always Opus to start a new project.</strong></li>
+<li><strong>If usage is on pace to go over quota, lean Sonnet.</strong></li>
+<li>Check the pace instead of guessing it. <strong>[needs: claude_pace.py + CodexBar]</strong></li>
+</ul>
 <h1>Routing&nbsp;(coordinator)</h1>
 <ol>
 <li><strong>Split before you route.</strong> Read the whole message and list each separate ask. Route each one on its own; never route a whole message just because it mentions a thread.</li>
@@ -148,20 +155,31 @@
 <hr>
 <h2>Scripts and mods referenced above (share via&nbsp;slub-hq)</h2>
 <ul>
-<li><code>scripts/cold_handoff.py</code>: brief from a cold thread&#39;s transcript, without waking it.</li>
-<li><code>skills/_handoff</code> + <code>scripts/handoff_capture.py</code>: chain-linked HANDOFF.md, user&#39;s message copied verbatim.</li>
-<li><code>mods/context-alert</code>: holds messages sent into cold threads and offers a handoff.</li>
-<li><code>scripts/auto_commit.py</code>: commit + push with a secret-scan gate.</li>
-<li><code>aios-env</code>: checks env keys without showing values.</li>
-<li><code>services/pages</code> (<code>pages readthrough</code>, <code>pages md</code>, <code>pages deploy</code>) + <code>scripts/readthrough_comments.py</code>: public pages, Readthroughs, comments back to threads.</li>
-<li><code>services/reels</code>: narrated explainer reels (needs a TTS API key).</li>
-<li><code>~/.hammerspoon</code> <code>claude-control</code>: the screen-control queue and banner.</li>
-<li><code>scripts/build_rules.py</code>: compiles the rules repo into CLAUDE.md for every session.</li>
-<li>All of these have Matt&#39;s paths (<code>/Users/matt/...</code>, <code>~/projects/ai-os</code>) hard-coded; change them for Tyler&#39;s machine.</li>
+<li><p><code>scripts/cold_handoff.py</code>: brief from a cold thread&#39;s transcript, without waking it.</p>
+</li>
+<li><p><code>skills/_handoff</code> + <code>scripts/handoff_capture.py</code>: chain-linked HANDOFF.md, user&#39;s message copied verbatim.</p>
+</li>
+<li><p><code>mods/context-alert</code>: holds messages sent into cold threads and offers a handoff.</p>
+</li>
+<li><p><code>scripts/auto_commit.py</code>: commit + push with a secret-scan gate.</p>
+</li>
+<li><p><code>aios-env</code>: checks env keys without showing values.</p>
+</li>
+<li><p><code>services/pages</code> (<code>pages readthrough</code>, <code>pages md</code>, <code>pages deploy</code>) + <code>scripts/readthrough_comments.py</code>: public pages, Readthroughs, comments back to threads.</p>
+</li>
+<li><p><code>services/reels</code>: narrated explainer reels (needs a TTS API key).</p>
+</li>
+<li><p><code>~/.hammerspoon</code> <code>claude-control</code>: the screen-control queue and banner.</p>
+</li>
+<li><p><code>scripts/build_rules.py</code>: compiles the rules repo into CLAUDE.md for every session.</p>
+</li>
+<li><p>All of these have Matt&#39;s paths (<code>/Users/matt/...</code>, <code>~/projects/ai-os</code>) hard-coded; change them for Tyler&#39;s machine.</p>
+</li>
+<li><p><code>scripts/claude_pace.py</code> + <a href="https://github.com/steipete/CodexBar">CodexBar</a> CLI: says whether weekly usage is on pace to stay under quota.</p>
+</li>
 </ul>
 <h2>Not included on&nbsp;purpose</h2>
 <ul>
-<li>The earlier draft&#39;s &quot;Model choice&quot; section (Opus by default, Sonnet when usage is over pace) is not in Matt&#39;s rule files, so it&#39;s left out here. Add it back if it&#39;s a real&nbsp;rule.</li>
 <li>Matt-personal rules: school, health, music library, Hue lights, reminders, his colour palette, his Mac&nbsp;paths.</li>
 </ul>
 
