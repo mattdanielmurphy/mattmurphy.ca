@@ -80,6 +80,19 @@
 </ul>
 <h2 id="1806-exporting-a-big-board-without-burning-tokens" data-read>18:06 Exporting a big board without burning tokens</h2>
 <p data-read>Matt asked whether pulling every card out of Plane costs a lot of tokens. It doesn&#39;t if done right: an agent writes a small script that calls Plane&#39;s REST API and saves everything to JSON/Markdown files. The script does the work, so the card contents never pass through the model; the token cost is just writing the script, the same for 40 cards or 4,000. The API returns cards in pages (about 100 per request) and allows 60 requests a minute, so thousands of cards take a minute or two. Going card by card through the chat connector would be the expensive way, and is the one to avoid. Not built yet; it&#39;s only worth writing if he ever leaves Plane.</p>
+<h2 id="1808-overview-linear-vs-plane" data-read>18:08 Overview: Linear vs Plane</h2>
+<p data-read>Matt asked for an overview. Shown as a side-by-side card in the thread. Rows and sources:</p>
+<ul>
+<li><span data-read>Free card limit: Linear 250 per workspace (earlier thread); Plane no stated cap (plane.so/pricing).</span></li>
+<li><span data-read>Free people: Linear unlimited members; Plane 12 per workspace.</span></li>
+<li><span data-read>Paid: Linear Basic about $10 per person per month (earlier thread); Plane Pro $6 yearly / $8 monthly per person.</span></li>
+<li><span data-read>Agents: both have an official Claude connector (Linear&#39;s is already set up; Plane&#39;s is mcp.plane.so, untested on Free).</span></li>
+<li><span data-read>Export: Linear yes; Plane Free no export button, API script instead.</span></li>
+<li><span data-read>Integrations on Free: Linear has GitHub/Slack; Plane Free has none.</span></li>
+<li><span data-read>Self-host: Linear no; Plane yes (Community Edition, heavy, no Linear importer).</span></li>
+<li><span data-read>Feel: Linear is faster and more polished; Plane is close but busier. This row is judgement, not measured.</span></li>
+</ul>
+<p data-read>Verdict unchanged: Plane wins for two boards with room for more people, mainly because of the card cap.</p>
 
 </main>
 </body>
