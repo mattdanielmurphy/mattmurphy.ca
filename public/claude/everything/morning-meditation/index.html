@@ -39,6 +39,20 @@
 <h3 id="not-tested-yet" data-read>Not tested yet</h3>
 <p data-read>I checked the files, levels and that the page serves them (HTTP 200, audio/mp4), but I haven&#39;t listened all the way through. Lock-screen playback on the iPhone is untested.</p>
 <p data-read><strong>Undo:</strong> revert commit f5a79ae5 in ai-os (removes the button); the page lives at <code>~/projects/pages/site/still</code>.</p>
+<h2 id="0305-voice-was-a-joke-ducking-too-strong" data-read>03:05 Voice was a joke, ducking too strong</h2>
+<p data-read><strong>Matt said:</strong> the Douglas voice is a hilariously bad fit (keep it as &quot;Meditation attempt #0&quot; for his brother), Marian is not too bad, and the ducking made the music vanish whenever the voice spoke. He&#39;ll pick a voice in the Speechify playground.</p>
+<hr>
+<h3 id="attempt-zero-is-kept" data-read>Attempt zero is kept</h3>
+<p data-read>The page now lists the morning track as &quot;Meditation attempt #0&quot; (an outtake), same audio and link (<code>#morning</code>).</p>
+<hr>
+<h3 id="ducking-is-now-a-fixed-3-db-dip" data-read>Ducking is now a fixed 3 dB dip</h3>
+<p data-read>Cause: a sidechain compressor at ratio 5 with a low threshold, plus loudnorm in one-pass mode, which rides the gain like an automatic level control. Together they pulled the music way down under every line. Now <code>build.py</code> draws a volume envelope: the music dips exactly 3 dB (<code>DUCK</code>), fading in 0.8 s before a line and out 2 s after (<code>DUCK_IN</code>, <code>DUCK_OUT</code>), and loudness is one static gain measured over the whole mix. The hypnosis track is rebuilt with it (music sits about 10 dB under the voice and no longer disappears).</p>
+<hr>
+<h3 id="check-in-button-hidden-for-now" data-read>Check-in button hidden for now</h3>
+<p data-read>The &quot;Or a 10-minute guided meditation&quot; button on the check-in page is hidden until there&#39;s a real meditation with a voice Matt picked, so he doesn&#39;t get the joke version at 7:45. Un-hide by removing <code>hidden</code> from <code>#bmed</code> in <code>services/checkin/template.html</code>.</p>
+<hr>
+<h3 id="next-step-waits-on-matt" data-read>Next step waits on Matt</h3>
+<p data-read>Once he names a voice from the Speechify playground, rebuild with <code>build.py scripts/morning-mindfulness.txt</code> after changing its <code># voice:</code> line (it renders to a new file name so attempt #0 stays), add it to the page and un-hide the button.</p>
 
 </main>
 </body>
