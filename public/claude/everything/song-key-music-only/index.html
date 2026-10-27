@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Song Key pill: music only, easy to dismiss (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · song-key-music-only</p>
+<h1 id="song-key-pill-music-only-easy-to-dismiss-2026-10-27" data-read>Song Key pill: music only, easy to dismiss (2026-10-27)</h1>
+<h2 id="0300-music-only-gate-and-dismiss-controls" data-read>03:00 Music-only gate and dismiss controls</h2>
+<p data-read><strong>Asked:</strong> the Song Key pill (Hammerspoon <code>modules/song_key.lua</code>) popped up for the scroll-to-read reel&#39;s voice. Make it fire only for music and easy to dismiss (Esc, click, auto-fade).</p>
+<p data-read><strong>Why it happened:</strong> the pill showed for anything in macOS Now Playing. Reels register there (title = reel title, app = Claude desktop or a browser), so a spoken reel looked like a song.</p>
+<hr>
+<h3 id="speech-check" data-read>Speech check</h3>
+<p data-read>The listener (<code>bin/song-key-listen</code>) now also reports <code>ler</code>: the share of 50 ms frames quieter than half the 20 s window&#39;s average. Speech pauses between words; music rarely drops out.</p>
+<p data-read>Measured on files on the Mac:</p>
+<table>
+<thead>
+<tr>
+<th>Audio</th>
+<th>ler</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reel voice (003, 004)</td>
+<td>0.48-0.51</td>
+</tr>
+<tr>
+<td>Reel voice over its music bed</td>
+<td>0.35-0.40</td>
+</tr>
+<tr>
+<td>Interviews, meeting recording, sound drops</td>
+<td>0.36-0.52</td>
+</tr>
+<tr>
+<td>Songs, jams, trap beat, vocal demo</td>
+<td>0.00-0.21</td>
+</tr>
+</tbody></table>
+<p data-read>Threshold 0.3 (tweak <code>ear.speechLer</code>). Two of the last three readings must agree. Rejected: key strength and chroma flatness/stability (overlap too much); ML speech classifiers (Essentia TensorFlow models aren&#39;t installed, heavier).</p>
+<hr>
+<h3 id="when-the-pill-shows" data-read>When the pill shows</h3>
+<ul>
+<li><span data-read>Apple Music or Spotify track found on Hooktheory/AcousticBrainz: shows at once.</span></li>
+<li><span data-read>Anything else (browser, etc.): waits until the ear hears music (~8-12 s).</span></li>
+<li><span data-read>Speech hides it; a quiet bar doesn&#39;t (no flicker).</span></li>
+<li><span data-read>Claude desktop audio (reels) is ignored outright.</span></li>
+<li><span data-read>If audio capture fails, it falls back to the old behaviour for songs found online.</span></li>
+</ul>
+<p data-read>The listener now runs while anything plays, not only while the pill is up, so it can decide before showing.</p>
+<hr>
+<h3 id="dismissing" data-read>Dismissing</h3>
+<ul>
+<li><span data-read>Click anywhere on the pill: hidden until the next song.</span></li>
+<li><span data-read>Esc: works for the first 8 s after it appears (tweak <code>dismiss.escSeconds</code>), shown by an &quot;ESC HIDES&quot; chip. Limited so Esc isn&#39;t stolen from other apps the whole time music plays.</span></li>
+<li><span data-read>Auto-fade after 25 s (tweak <code>dismiss.autoHide</code>, 0 = never).</span></li>
+<li><span data-read>Opening Hooktheory moved to a small ↗ in the corner (click used to open it).</span></li>
+</ul>
+<hr>
+<h3 id="untested--risks" data-read>Untested / risks</h3>
+<ul>
+<li><span data-read>Not tested live end to end: nothing was playing and it&#39;s ~3 am, so I didn&#39;t play audio on the Mac. Pure logic tested (<code>lua tests/song_key_test.lua</code>), the listener tested on real files, the module hot-reloaded cleanly, and with Chrome playing a spoken hypnosis track the pill stayed hidden.</span></li>
+<li><span data-read>Singer-songwriter tracks with lots of silence could read as speech; raise <code>ear.speechLer</code> if a real song gets hidden.</span></li>
+<li><span data-read>The keyboard&#39;s tonic colour in the pill is terracotta (<code>#e07a5f</code>), which breaks the colour rule; left alone because it&#39;s outside this ask.</span></li>
+</ul>
+<p data-read><strong>Undo:</strong> <code>git -C ~/.hammerspoon revert 7670653</code>.</p>
+
+</main>
+</body>
+</html>
