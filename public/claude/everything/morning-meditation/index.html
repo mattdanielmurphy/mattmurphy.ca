@@ -53,6 +53,20 @@
 <hr>
 <h3 id="next-step-waits-on-matt" data-read>Next step waits on Matt</h3>
 <p data-read>Once he names a voice from the Speechify playground, rebuild with <code>build.py scripts/morning-mindfulness.txt</code> after changing its <code># voice:</code> line (it renders to a new file name so attempt #0 stays), add it to the page and un-hide the button.</p>
+<h2 id="0440-meditation-attempt-1" data-read>04:40 Meditation attempt #1</h2>
+<p data-read><strong>Matt asked:</strong> for a second meditation attempt now, instead of waiting for a voice pick.</p>
+<hr>
+<h3 id="attempt-one-uses-marian" data-read>Attempt one uses Marian</h3>
+<p data-read>Same script as attempt #0, read by Marian (the voice he called &quot;not too bad&quot;) at speed 0.86, so it runs 11 min 53 s. Same Breath piano loop, with the new gentle 3 dB ducking. Script: <code>services/checkin/meditation/scripts/meditation-attempt-1.txt</code>. It&#39;s the top track on the page (<code>#morning</code>); attempt #0 moved to <code>#attempt0</code>.</p>
+<hr>
+<h3 id="music-a-bit-louder" data-read>Music a bit louder</h3>
+<p data-read>Bed raised from -13 to -10 dB (<code>MUSIC_DB</code> in <code>build.py</code>), because the sparse Breath loop sat almost 20 dB under the voice. Music peaks now land about 12 dB under the speech. The hypnosis track was not rebuilt with this.</p>
+<hr>
+<h3 id="check-in-button-back-on" data-read>Check-in button back on</h3>
+<p data-read>The check-in page&#39;s Breathe step shows &quot;Or a 12-minute guided meditation&quot; again, linking attempt #1. It appears from tomorrow&#39;s check-in. To hide it again, add <code>hidden</code> back to <code>#bmed</code> in <code>services/checkin/template.html</code>.</p>
+<hr>
+<h3 id="still-untested-by-ear" data-read>Still untested by ear</h3>
+<p data-read>Levels checked; I haven&#39;t listened through it.</p>
 
 </main>
 </body>
