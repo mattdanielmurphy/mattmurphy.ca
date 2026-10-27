@@ -196,6 +196,22 @@
 <li><span data-read>The global list (times, seconds, rename) still applies everywhere; page-specific ones are on top.</span></li>
 </ul>
 <p data-read>Still read oddly: single-symbol keys written as code, like <code>,</code> and <code>.</code>, are silent in speech (&quot;press to read faster&quot;). Could be fixed the same way (say &quot;comma&quot;, &quot;period&quot;) if Matt wants.</p>
+<h2 id="1245-no-browser-processing-find-and-replace-speech-fixes-panel-scrolling" data-read>12:45 No browser processing, find-and-replace speech fixes, panel scrolling</h2>
+<hr>
+<h3 id="voice-speed-no-browser-processing-at-all" data-read>Voice speed: no browser processing at all</h3>
+<p data-read>Matt: a good-sounding voice matters more than fine speed steps; no browser processing. Now every speed is its own Speechify recording played at exactly 1x: 75%, 100%, 125%, 150%, 175% and 200%. The slider and the <code>,</code> <code>.</code> keys move one step. Your old 135% became 125%. Smart skip&#39;s Hurry and Key points go one step up instead of stretching. Each step is made the first time anyone listens at it, so the first listen at a new speed waits a moment.</p>
+<hr>
+<h3 id="speech-fixes-moved-out-of-code" data-read>Speech fixes moved out of code</h3>
+<p data-read>Matt: &quot;our system&quot; shouldn&#39;t worry about this; use something like Jev (I read that as a fast AI model) or a simple find-and-replace, ideally an existing project.</p>
+<ul>
+<li><span data-read><strong>What I looked for:</strong> an existing open-source tool that makes text TTS-safe. Number/time/unit normalizers exist (<a href="https://github.com/NVIDIA/NeMo-text-processing">NVIDIA NeMo text processing</a> in Python; a .NET one, <a href="https://www.nuget.org/packages/Agash.TTSTextNormalization/0.1.0">Agash.TTSTextNormalization</a>), but none handles context words like &quot;Rename&quot; alone, and none is a small drop-in for our setup. So I went with the two things Matt named.</span></li>
+<li><span data-read><strong>Find and replace:</strong> the hand-written rules are gone from the voice code. <code>pages/speech-fixes.json</code> is a plain list (rename → renaim, → → right arrow, ← ↑ ↓ ⌘ ⌥ ⇧ ⌃ ↵). Anyone can add a line.</span></li>
+<li><span data-read><strong>AI per page:</strong> the background Claude pass (small model; it runs after publishing, so speed doesn&#39;t matter and no new key is needed) writes each page&#39;s own find-and-replace list. For this Readthrough it now drops the heading times, says &quot;0.05 seconds&quot;, &quot;350 milliseconds&quot;, &quot;escape&quot;, &quot;W P M&quot;, &quot;simba three point two&quot;, file paths in words, and so on.</span></li>
+<li><span data-read>Checked live with Whisper: the smart skip paragraph now starts &quot;Right arrow once…&quot;.</span></li>
+</ul>
+<hr>
+<h3 id="scrolling-in-tune" data-read>Scrolling in Tune</h3>
+<p data-read>Scrolling or touching inside Tune, the Pace panel, the section list or the reactions sheet no longer counts as scrolling the page, and those panels no longer pass their scroll on to the page when they reach the end. Tested: five wheel scrolls over Tune left the reading and the page untouched.</p>
 
 </main>
 </body>
