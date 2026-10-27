@@ -67,6 +67,20 @@
 <hr>
 <h3 id="still-untested-by-ear" data-read>Still untested by ear</h3>
 <p data-read>Levels checked; I haven&#39;t listened through it.</p>
+<h2 id="0450-smoother-quieter-voice" data-read>04:50 Smoother, quieter voice</h2>
+<p data-read><strong>Matt said (about Deep relaxation):</strong> the voice is too loud against the music and loud overall; it sounds a bit artifact-y (blamed the slowed speed); maybe run a subtle FabFilter or similar over it.</p>
+<hr>
+<h3 id="speed-back-to-natural" data-read>Speed back to natural</h3>
+<p data-read>Both Marian tracks (hypnosis and meditation #1) now use speed 1.0, so Speechify sends no rate change and reads at its natural pace. Slowing it (0.84–0.86) was the likely source of the artifacts. They got shorter: hypnosis 21 min, meditation 11 min.</p>
+<hr>
+<h3 id="fabfilter-on-the-voice" data-read>FabFilter on the voice</h3>
+<p data-read>New <code>fx.swift</code> hosts Audio Units offline (same approach as claude-ambient&#39;s <code>render_mix.swift</code>) and runs the voice bus through <code>voice_fx.json</code>: Pro-DS de-esser (4 dB max), Pro-C 2 in Clean style (threshold -26 dB, low ratio, soft 24 dB knee, auto gain) to even it out, and Pro-R 2 as a small, dark room at 11% mix to soften the TTS edges without mud. Plus a 70 Hz low cut. Edit <code>voice_fx.json</code> to change any of it; <code>swift fx.swift --list aumf:FC2p:FabF</code> prints a plugin&#39;s parameter names.</p>
+<hr>
+<h3 id="levels" data-read>Levels</h3>
+<p data-read>Music raised from -10 to -2 dB under the voice (<code>MUSIC_DB</code>), so voice peaks now sit about 8 dB above the music instead of 12+. The whole track is now -21 LUFS, about 5 dB quieter than before. Also fixed a hidden cause of extra loudness: ffmpeg&#39;s <code>alimiter</code> auto-levels by default, which had pushed earlier renders ~2 dB over target.</p>
+<hr>
+<h3 id="not-changed" data-read>Not changed</h3>
+<p data-read>Attempt #0 stays as it was (the joke). Untested by ear.</p>
 
 </main>
 </body>
