@@ -74,6 +74,18 @@
 <hr>
 <h3 id="untested" data-read>Untested</h3>
 <p data-read>Not tried on a real phone or by ear. Touch scrolling uses the same hold logic but was only tested with a mouse wheel.</p>
+<h2 id="0952-why-the-voice-sounds-like-a-log-and-the-fix-i-propose" data-read>09:52 Why the voice sounds like a log, and the fix I propose</h2>
+<p data-read>Matt: the voice reads things like &quot;09:20 Round 2: … Matt picked Readthrough, asked that his own scroll…&quot;, and no person reading him a report would talk like that.</p>
+<hr>
+<h3 id="cause" data-read>Cause</h3>
+<p data-read>Details files are written as an agent&#39;s log: third person (&quot;Matt asked&quot;), timestamps in headings, inline code, paths. The voice reads the page word for word, so it reads the log.</p>
+<hr>
+<h3 id="proposed-fix" data-read>Proposed fix</h3>
+<ol>
+<li><span data-read><strong>Write to Matt, not about him.</strong> Change the details-file rule: second person (&quot;You asked…&quot;, &quot;I changed…&quot;), plain spoken sentences, headings without the time. Agents write this text anyway, so no extra work, and the highlight stays exact because voice and page are the same words.</span></li>
+<li><span data-read><strong>Voice-only cleanup in the player&#39;s voice server.</strong> When making the audio, skip the timestamps in headings, skip code blocks and file paths (the highlight passes over them), and say symbols like <code>,</code> and <code>.</code> by name. Deterministic, no AI call.</span></li>
+</ol>
+<p data-read>Rejected: having an AI rewrite each block for speech at publish time. It would sound most natural, but the spoken words would no longer match the page, so the word highlight would drift, and every publish would cost an AI call.</p>
 
 </main>
 </body>
