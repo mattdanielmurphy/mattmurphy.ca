@@ -217,6 +217,15 @@
 <li><span data-read><code>speech-fixes.json</code> now also names bare punctuation used as keys: comma, period, semicolon, colon, slash, greater than, less than, plus, equals, question mark, exclamation mark. They only match a symbol standing on its own (like a key written as <code>,</code>), never punctuation inside a sentence. Checked live with Whisper: &quot;…comma and period for speed…&quot;.</span></li>
 <li><span data-read>Speeds are rendered on the fly: the first time anyone listens to a paragraph at a given speed, the voice server asks Speechify for it (about 1 to 3 seconds), then keeps it, so everyone after gets it instantly. &quot;Its own recording&quot; means a native Speechify render at that pace instead of the browser stretching the 100% one. The player also renders ahead (the next 160 words), so after the first paragraph the wait is usually hidden.</span></li>
 </ul>
+<h2 id="1340-halving-vercel-blob-uploads" data-read>13:40 Halving Vercel Blob uploads</h2>
+<p data-read>From the Vercel storage thread: Hobby Blob allows 2,000 uploads a month and locks for 30 days past that; October was at 445, mostly today, because each recording was 2 uploads and every speed is now its own recording.</p>
+<ul>
+<li><span data-read><strong>One upload per recording.</strong> <code>api/tts-vercel.ts</code> now saves a single <code>tts/&lt;key&gt;.json</code> holding the word timings and the mp3 (base64). The player turns it into a <code>blob:</code> URL and plays that (a plain <code>data:</code> URL stalled in Chrome, found in testing).</span></li>
+<li><span data-read><strong>No Blob API calls on reads.</strong> Cached recordings are fetched straight from the store&#39;s public address (worked out from the store token), so no <code>head()</code> and never <code>list()</code>. The response header <code>x-tts-read: direct</code> confirms it live.</span></li>
+<li><span data-read><strong>Old recordings still work.</strong> Ones saved before today (separate mp3 + json) are served as they are; nothing was re-recorded or deleted.</span></li>
+<li><span data-read>Moving the cache to Matt&#39;s VPS is waiting for his approval in the storage thread; not done here.</span></li>
+</ul>
+<p data-read>Tested live: a new 175% recording made in 1.3 s, served from cache on the second request, and the player read through two paragraphs at 200% from the new single-file recordings.</p>
 
 </main>
 </body>
