@@ -53,6 +53,32 @@
 <hr>
 <h3 id="design-c-parked-in-ideas" data-read>Design C parked in ideas</h3>
 <p data-read>Added to <code>~/projects/glass-tv/IDEAS.md</code> as the future director&#39;s-commentary mode, with the mockup link. Plan doc updated: <code>~/projects/glass-tv/docs/XRAY_PLAN.md</code>.</p>
+<h2 id="1305-design-b-built-and-live" data-read>13:05 Design B built and live</h2>
+<p data-read>Matt 👍&#39;d building B with recognition only on pause.</p>
+<hr>
+<h3 id="x-ray-works-in-iina" data-read>X-Ray works in IINA</h3>
+<p data-read>Tested inside the real IINA with a short muted clip made from TMDB stills of The Office S2E1: pausing on Pam and Jim put &quot;Pam Beesly / Jenna Fischer&quot; and &quot;Jim Halpert / John Krasinski&quot; tags on them within about a second, and playing again hid them. Glass TV&#39;s live server runs the new code (reinstalled with <code>./install.sh</code>).</p>
+<p data-read>How it works: the plugin (<code>iina-plugin/</code>) asks <code>127.0.0.1:4747/api/xray?t=&lt;paused time&gt;</code>. The server saves the paused frame through IINA&#39;s player socket, <code>bin/xray-faces</code> (Apple Vision) finds faces and makes aligned crops, SFace turns each into a fingerprint, and each is compared with that episode&#39;s TMDB cast photos (up to 3 per actor, top 20 billed). One face and one actor are paired at most once, best scores first.</p>
+<p data-read>Speed and memory: about 0.1 s per pause once the episode&#39;s cast is fingerprinted. That happens in the background when an episode starts (about 3 s, once per actor ever, saved on disk). The model uses about 120 MB only while in use and unloads after 5 idle minutes.</p>
+<p data-read>Accuracy on the 4 stills: every named face was right (Michael 0.62–0.64, Pam 0.56, Jim 0.36–0.41). A screaming, blurred Pam and two small background faces came back unknown. Nothing was named wrongly.</p>
+<hr>
+<h3 id="whats-not-tested-yet" data-read>What&#39;s not tested yet</h3>
+<ul>
+<li><span data-read>Tab, Return and X were tested only in a browser copy of the overlay, not by pressing keys in IINA (that would mean typing on Matt&#39;s Mac).</span></li>
+<li><span data-read>Only a local file was tried, not a stream. It should behave the same, since the frame comes from the player either way.</span></li>
+<li><span data-read>The photo in the Return card loads from TMDB; not checked inside IINA.</span></li>
+</ul>
+<hr>
+<h3 id="choices-and-why" data-read>Choices and why</h3>
+<ul>
+<li><span data-read>Face model: SFace from OpenCV&#39;s model zoo, chosen because it&#39;s Apache 2.0 (fine for the world). InsightFace&#39;s models were rejected: research-only licence.</span></li>
+<li><span data-read>Face finding: Apple Vision (built into macOS, no download).</span></li>
+<li><span data-read>Rules for naming a face, all in the Tweaks panel: likeness 0.36 or more, or 0.28 or more and clearly ahead of the next-best actor by 0.08.</span></li>
+<li><span data-read>Tags go above the head (a third of a face above the brow line), or under the chin when there&#39;s no room; overlapping tags get nudged apart.</span></li>
+<li><span data-read>Light and dark follow the system.</span></li>
+<li><span data-read>Just for Matt for now: it needs Glass TV, IINA and a free TMDB key.</span></li>
+</ul>
+<p data-read>Undo: <code>iina-plugin unlink</code>, <code>defaults delete com.colliderli.iina PluginEnabled.ca.mattmurphy.glass-tv.xray</code>, and revert commit 7ef031e in glass-tv.</p>
 
 </main>
 </body>
