@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Tweaks-first projects (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · tweaks-first-projects</p>
+<h1 id="tweaks-first-projects-2026-10-27" data-read>Tweaks-first projects (2026-10-27)</h1>
+<h2 id="0805-where-tweaks-stands-and-should-projects-be-built-around-it" data-read>08:05 Where Tweaks stands, and should projects be built around it</h2>
+<p data-read><strong>Asked:</strong> Matt, thinking out loud (no build, freeze on): where are we on Tweaks and on building new projects around it? Will it distract agents and make them worse? Idea: deterministic Python scripts make everything a tweak, and Claude only prunes (&quot;a developer would never change this&quot;) and organises.</p>
+<hr>
+<h3 id="tweaks-status-today" data-read>Tweaks status today</h3>
+<ul>
+<li><span data-read>Live: the ⌃⌥⌘T panel runs on the shared <strong>Knobs</strong> component (option A from the 2026-10-24 design, <code>~/projects/ui-mixer/knobs/</code>), with the likely set, folds, search, copy name, presets, Apply + rebuild. 11 Hammerspoon modules have tweaks files; hud-kit apps use <code>Tweaks.swift</code>.</span></li>
+<li><span data-read>Rule 1g already tells agents to declare feel knobs as they write code.</span></li>
+<li><span data-read>Not built: the scanner (<code>tweaks scan</code>), the Sonnet cleanup pass, the element picker, hover-to-highlight (parked idea), and the UI Mixer rail move onto Knobs (<a href="#cmsg_01CUPXyY9oUwKVDFREVDpYDr2LydtyRWx3KJfNEhQAUFst">UI Mixer onto Knobs</a> is waiting for review).</span></li>
+<li><span data-read>Sources: <code>docs/details/2026-10-24-tweaks-one-panel-design.md</code>, <code>IDEAS.md</code>.</span></li>
+</ul>
+<hr>
+<h3 id="does-it-burden-agents" data-read>Does it burden agents</h3>
+<p data-read>Mildly, and only if the rule asks for judgement on every literal. Today&#39;s rule asks agents to decide what&#39;s a feel value while coding, which is a small extra thought per number. The real risk is not &quot;worse at the job&quot; but drift: some agents forget, others over-knob. Moving the bulk of it to a script removes most of that cost. Agents then only write values as named constants at the top of a file (normal good practice anyway), and the tooling does the rest.</p>
+<hr>
+<h3 id="matts-idea-matches-the-planned-design" data-read>Matt&#39;s idea matches the planned design</h3>
+<p data-read>The 2026-10-24 design already had three layers: agent rule, dumb scanner, Sonnet cleanup. Matt&#39;s version shifts the weight onto the scanner, which is better: deterministic, free, repeatable, and runs as a hook or nightly job (systems over one-offs).</p>
+<p data-read>How the scanner would work: parse each source file (Lua, Swift, JS) for numeric, colour, bool and duration literals and top-level constants; skip obvious non-knobs (0, 1, array indexes, loop bounds, API constants, version numbers); write candidates to the tweaks file marked <code>candidate</code>. The cleanup pass (Sonnet, cheap) reads candidates and marks each keep / hide / drop with a reason, names and groups the keepers, writes notes. One diff per app for review. Drop decisions are remembered so they never come back.</p>
+<p data-read>Hard part: turning a literal into a knob means editing the code to read the tweak. That rewrite should be the script&#39;s job for named constants (mechanical), and the agent&#39;s only for inline literals.</p>
+<hr>
+<h3 id="options" data-read>Options</h3>
+<ol>
+<li><span data-read><strong>Recommended: scanner + prune pass, agents just name constants.</strong> Change the rule to &quot;put feel values in named constants at the top&quot;; a script wires constants to Tweaks; Sonnet prunes and organises. Least agent burden, most coverage.</span></li>
+<li><span data-read><strong>Keep today&#39;s rule, add the scanner only for old code.</strong> Smaller build; agents keep deciding while coding.</span></li>
+<li><span data-read><strong>Opt-in per project.</strong> Only apps Matt actually tunes (HUDs, reels, mixers) get Tweaks; everything else skips it. Lowest effort, least magic.</span></li>
+</ol>
+<p data-read>Rejected: &quot;everything is a tweak, no pruning&quot; (panel becomes a wall of 200 sliders; it fights the likely-set design).</p>
+<p data-read><strong>Untested:</strong> all of this is design; nothing built. <strong>Undo:</strong> nothing to undo.</p>
+
+</main>
+</body>
+</html>
