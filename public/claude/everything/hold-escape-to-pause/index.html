@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrU29oFz7biMueqgu5ErRq8y">
+<title>Hold Escape to pause Claude (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · hold-escape-to-pause</p>
+<h1 id="hold-escape-to-pause-claude-2026-10-27" data-read>Hold Escape to pause Claude (2026-10-27)</h1>
+<h2 id="1355-hold-esc-to-pause-quick-taps-pass-through" data-read>13:55 Hold Esc to pause, quick taps pass through</h2>
+<p data-read>Matt asked: Escape is too easy to hit by accident and stops Claude; holding Escape for a second should be what pauses it. He clarified he meant the take-control overlay (the claude-control banner), not the Claude app&#39;s own Escape, so the app is untouched.</p>
+<hr>
+<h3 id="hold-one-second-to-pause" data-read>Hold one second to pause</h3>
+<p data-read>While a claude-control banner or pill is up, pressing Escape no longer cancels at once. A small bar appears under the banner (&quot;Keep holding Esc to pause Claude&quot;) and fills. At 1 second Claude is paused: same as the old Esc (&quot;not now&quot;), the holder and the whole queue are cancelled.</p>
+<hr>
+<h3 id="keep-holding-to-stop" data-read>Keep holding to stop</h3>
+<p data-read>Keep holding to 2.5 seconds and the task is stopped (the old Esc Esc: the agent is blocked for 2 hours and its turn is interrupted). After letting go of a pause, a second 1-second hold within 3 seconds also stops it. The Stop and Not now buttons still work with one click. Banner labels now say &quot;hold Esc&quot; and &quot;keep holding Esc&quot;.</p>
+<hr>
+<h3 id="quick-taps-reach-your-app" data-read>Quick taps reach your app</h3>
+<p data-read>A tap shorter than a second is held back while it&#39;s timed, then re-sent to whatever app has focus when you let go, so Escape still works in other apps (it arrives a moment late, on key up). Key repeats during a hold are swallowed. If the banner goes away mid-hold, the bar is cleared.</p>
+<hr>
+<h3 id="tuning-knobs" data-read>Tuning knobs</h3>
+<p data-read>All three timings are in the ⌃⌥⌘T Tweaks panel under &quot;Claude Take-Control Banner&quot;: <code>timing.holdPause</code> (1s), <code>timing.holdStop</code> (2.5s), <code>timing.stopWindow</code> (3s).</p>
+<hr>
+<h3 id="how-it-was-tested" data-read>How it was tested</h3>
+<p data-read><code>~/.hammerspoon/tests/claude_control_hold_test.lua</code> feeds fake Escape events (never sent to the keyboard) into the banner&#39;s handler: a tap passes through and keeps the ticket going; a 1.3s hold pauses; a 2.8s hold pauses, then stops. Every check passed across runs. Not tested: a real physical key hold, which only Matt can do.</p>
+<p data-read>One test run hit a race (a leftover stop window caught a fake hold), which blocked this thread&#39;s session from asking for control for two hours; the test now refuses to feed an old handler. That block expires on its own (my attempt to unblock it was refused by the permission system). In one run the test banners flashed after the clearance ask failed (Hammerspoon was briefly unreachable).</p>
+<hr>
+<h3 id="rules-updated" data-read>Rules updated</h3>
+<p data-read><code>.rules/core_safety.md</code>, the compiled CLAUDE.md files and the wrapper&#39;s help text now describe hold-Esc instead of Esc / Esc Esc.</p>
+<h3 id="undo" data-read>Undo</h3>
+<p data-read><code>git -C ~/.hammerspoon revert 667b669</code>, then reload Hammerspoon.</p>
+
+</main>
+</body>
+</html>
