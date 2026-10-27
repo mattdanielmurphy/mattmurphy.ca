@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDr2jHi2AZakMR7HyV9dHdXiC">
+<title>Audio Hijack: Tyler hears himself through the ducker</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · audio-hijack-ducking</p>
+<h1 id="audio-hijack-tyler-hears-himself-through-the-ducker" data-read>Audio Hijack: Tyler hears himself through the ducker</h1>
+<h2 id="1420-what-i-understand-and-the-fix" data-read>14:20 What I understand and the fix</h2>
+<p data-read>Matt asked (via the coordinator): say how much I understand of his call setup, then find a routing where the ducker&#39;s trigger (Tyler + Matt&#39;s mic) never reaches Mic FX, only the ducked music and Matt&#39;s mic.</p>
+<p data-read>I read the session straight from <code>~/Library/Application Support/Audio Hijack 4/Sessions.plist</code> (session &quot;Facetime Call copy&quot;, saved 20:00 UTC) and the Ducking block&#39;s own definition inside the app (<code>Audio Hijack.app/Contents/Resources/markup/Blocks/Ducking.js</code>). I did not touch the screen or change anything.</p>
+<hr>
+<h3 id="what-the-session-does-today" data-read>What the session does today</h3>
+<ul>
+<li><span data-read><strong>Music</strong> → Ducking (the source that gets lowered).</span></li>
+<li><span data-read><strong>FaceTime (Tyler)</strong> → three places: a Channels block set to <em>Kill Right</em> → Recorder; the MacBook speakers; and the Ducking block (as the trigger).</span></li>
+<li><span data-read><strong>MacBook mic (Matt)</strong> → a Channels block set to <em>Kill Left</em> → Recorder; and straight to <strong>Mic FX</strong>.</span></li>
+<li><span data-read><strong>Ducking</strong> → Mic FX and the speakers.</span></li>
+<li><span data-read><strong>Recorder</strong> (MP3 256k, <code>~/Music/Audio Hijack</code>) → <strong>BlackHole 16ch</strong>.</span></li>
+</ul>
+<p data-read>So the recorder gets a two-sided file (Tyler on the left, Matt on the right), and BlackHole carries that same feed to whatever listens on it, which I take to be the call-transcript tool, with Audio Hijack&#39;s recording as the backup. Mic FX is the Loopback device FaceTime uses as its microphone, so it&#39;s what Tyler hears.</p>
+<hr>
+<h3 id="why-tyler-hears-himself" data-read>Why Tyler hears himself</h3>
+<p data-read>The Ducking block isn&#39;t a sidechain in the usual sense. Its own hint text says: &quot;Overlay audio will play through, while other sources have their volume ducked.&quot; The first source connected is the overlay (trigger), and once it passes the Overlay Threshold the block outputs it mixed in with the lowered music. Below the threshold it mutes the overlay. There&#39;s no setting to switch that off.</p>
+<p data-read>So Ducking → Mic FX sends Tyler back to Tyler (only when he&#39;s loud enough, which is why it may come and go). It also sends a gated second copy of Tyler to the speakers, on top of the direct FaceTime → speakers line.</p>
+<p data-read>A second issue: Matt&#39;s mic isn&#39;t connected to the Ducking block, so the music only ducks for Tyler, not for Matt.</p>
+<hr>
+<h3 id="the-fix-put-the-trigger-on-one-side-and-throw-that-side-away" data-read>The fix: put the trigger on one side and throw that side away</h3>
+<p data-read>The Ducking block keeps left and right separate, so we can park the trigger on the left channel, the music on the right, and then delete the left after ducking. Everything stays inside Audio Hijack; no Loopback changes are needed.</p>
+<ol>
+<li><span data-read><strong>Music → Channels &quot;Mono&quot; → Channels &quot;Kill Left&quot; → Ducking.</strong> The music now lives only on the right.</span></li>
+<li><span data-read><strong>FaceTime and the mic → one Channels &quot;Kill Right&quot; block → Ducking</strong>, connected <em>first</em> so it&#39;s the overlay. Both voices are now only on the left, and both trigger the duck.</span></li>
+<li><span data-read><strong>Ducking → Channels &quot;Copy Right&quot; → Mic FX and the speakers.</strong> Copy Right overwrites the left (the trigger) with the right (the music), so only the ducked music comes out, on both sides.</span></li>
+<li><span data-read><strong>Keep mic → Mic FX directly</strong> so Tyler still hears Matt at full level.</span></li>
+<li><span data-read><strong>Keep FaceTime → speakers directly</strong> so Matt still hears Tyler, and the recorder chain as it is.</span></li>
+</ol>
+<p data-read>Trade-off: the music sent into the call becomes mono. FaceTime sends mono voice audio anyway, so Tyler won&#39;t hear a difference. Matt hears mono music on his speakers too; if he wants stereo music locally, a second plain Music → speakers path can&#39;t be ducked by this block, so I&#39;d leave it mono.</p>
+<p data-read>Untested: whether the Ducking block measures the trigger level on the left side alone. It should (the trigger is just as loud on one side), but if ducking stops firing, lower the Overlay Threshold a little.</p>
+<hr>
+<h3 id="options-i-rejected" data-read>Options I rejected</h3>
+<ul>
+<li><span data-read><strong>Phase-invert Tyler to cancel him out.</strong> The Ducking block mutes the overlay below the threshold, so an inverted copy would be heard on its own at those times. Latency would also have to match exactly. Too fragile.</span></li>
+<li><span data-read><strong>A second Ducking block.</strong> It has the same play-through behaviour, so it moves the problem instead of solving it.</span></li>
+<li><span data-read><strong>Loopback channel tricks.</strong> Possible, but the Channels blocks do the same job in one place.</span></li>
+<li><span data-read><strong>Audio Hijack scripting.</strong> Scripts can start/stop sessions and toggle blocks, but there&#39;s no need for automation here.</span></li>
+</ul>
+<hr>
+<h3 id="how-id-apply-it-and-undo" data-read>How I&#39;d apply it, and undo</h3>
+<p data-read>Two ways: (a) I drive Audio Hijack on screen (needs Matt&#39;s clearance banner, about 3 minutes of mouse use), or (b) Matt quits Audio Hijack and I edit the session file directly (back up <code>Sessions.plist</code> first). The overlay is &quot;the first source connected&quot;, and the file doesn&#39;t clearly record which connection is first, so (a) is safer. Undo: the original &quot;Facetime Call&quot; session is untouched, and this is the &quot;copy&quot; session.</p>
+
+</main>
+</body>
+</html>
