@@ -4,34 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Ask to record FaceTime calls (2026-10-26)</title>
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrSZB1Kqu7kriBBc39vrKvRE">
+<title>FaceTime &quot;Record this call?&quot; prompt didn't show (2026-10-27)</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
 </head>
 <body>
 <main id="text">
 <p class="label">Claude · everything · facetime-record-prompt</p>
-<h1 id="ask-to-record-facetime-calls-2026-10-26" data-read>Ask to record FaceTime calls (2026-10-26)</h1>
-<h2 id="1500-record-this-call-prompt" data-read>15:00 Record-this-call prompt</h2>
-<p data-read><strong>What Matt asked:</strong> when a FaceTime call starts, ask whether to record the transcript (unless one is already running), and let him pick or type who the call is with. Keep the watcher light; make it live.</p>
-<p data-read><strong>What already existed:</strong> <code>~/.hammerspoon/modules/call_transcript.lua</code> was meant to start <code>call-transcript</code> automatically when a FaceTime call window appeared. It looked for a FaceTime window titled with the other person.</p>
+<h1 id="facetime-record-this-call-prompt-didnt-show-2026-10-27" data-read>FaceTime &quot;Record this call?&quot; prompt didn&#39;t show (2026-10-27)</h1>
+<h2 id="1420-prompt-missing-during-tyler-call" data-read>14:20 Prompt missing during Tyler call</h2>
+<p data-read>Matt was on a FaceTime call with Tyler and no &quot;Record this call?&quot; prompt appeared.</p>
 <hr>
-<h3 id="old-watcher-never-saw-calls" data-read>Old watcher never saw calls</h3>
-<p data-read>During today&#39;s call with Tyler the FaceTime window was still titled just &quot;FaceTime&quot;, so the old title check never fired. Today&#39;s recording was started some other way (likely the ⌃⌥⌘R hotkey). The window&#39;s accessibility tree does show the call: three levels down there is an element named &quot;FaceTime Video call&quot;, then a button titled with the other person (&quot;Tyler Murphy&quot;), and the End button (<code>leaveButton</code>). The End button vanishes when the call controls auto-hide, so the watcher keys on the &quot;FaceTime … call&quot; element and treats the End button as a backup.</p>
+<h3 id="transcript-started-by-hand" data-read>Transcript started by hand</h3>
+<p data-read>Ran <code>call-transcript start tyler --left Tyler --right Matt</code> at 14:13. It connected (BlackHole) and began writing <code>~/calls/2026-10-27-tyler.md</code> immediately. Wrote <code>~/calls/.transcript.owner</code> so the watcher treats this transcript as its own: it stops it when the call ends, which also saves it to Obsidian and slub-hq like a prompted recording would.</p>
 <hr>
-<h3 id="watcher-stays-light" data-read>Watcher stays light</h3>
-<p data-read>Every 3 seconds (tweakable), and only while FaceTime is open, it reads the top three levels of the FaceTime window: about 20 accessibility reads, measured at 15 to 22 ms. A 0.5 s AX timeout means a busy FaceTime can&#39;t stall Hammerspoon. No new process, no launchd job. Rejected: watching the mic or &quot;Audio and Video Controls&quot; menu extra (fires for Audio Hijack, Ableton and dictation too), and a Swift CoreAudio helper (an extra process for no gain).</p>
+<h3 id="watcher-crashed-at-154-pm" data-read>Watcher crashed at 1:54 pm</h3>
+<p data-read>Hammerspoon was alive (running since 11:37, never down). The console showed one error at 13:54:54: <code>hs.application.get(&quot;FaceTime&quot;)</code> returned something that wasn&#39;t an app, so <code>hs.axuielement.applicationElement</code> threw inside <code>tick()</code>. The poll loop reschedules itself only after <code>tick()</code> returns, so that one error ended the loop for good. Every call after 1:54 pm went unseen.</p>
 <hr>
-<h3 id="how-the-prompt-works" data-read>How the prompt works</h3>
-<p data-read>After two checks in a row see a call, and only if no transcript is running, a Hammerspoon chooser opens: &quot;FaceTime call: record it? Type a name or pick one (Esc = no)&quot;. Rows: the FaceTime caller&#39;s name, recent callers from <code>~/calls/</code> file names, then &quot;Don&#39;t record this call&quot;. Typing a name adds &quot;Record call with &lt;name&gt;&quot; at the top. Rows that would save to the same file (Tyler Murphy and Tyler) are listed once. It asks once per call and closes itself after 90 s. Picking a name runs <code>call-transcript start &lt;first-name&gt; --left &lt;Name&gt; --right Matt</code>. When the call ends it runs <code>call-transcript stop</code>, but only for a transcript it started; that ownership is kept in <code>~/calls/.transcript.owner</code>, so a Hammerspoon reload mid-call still stops it.</p>
-<hr>
-<h3 id="untested-parts" data-read>Untested parts</h3>
-<p data-read>The chooser itself hasn&#39;t been shown yet: Matt was on a call and it would have popped up over it. Detection, name, row list and the unit tests were all checked during the live call. An incoming call that hasn&#39;t been answered yet doesn&#39;t count as a call; the prompt comes once it connects. Audio-only calls are assumed to read &quot;FaceTime Audio call&quot; (the match is <code>FaceTime &lt;word&gt; call</code>).</p>
-<p data-read><strong>Knobs:</strong> ⌃⌥⌘T → &quot;Call transcripts&quot;: poll rate, debounce, prompt timeout, how many recent callers.</p>
-<p data-read><strong>Undo:</strong> <code>cd ~/.hammerspoon &amp;&amp; git revert 61dc091</code>, then reload Hammerspoon.</p>
-<h2 id="1156-its-live" data-read>11:56 It&#39;s live</h2>
-<p data-read>Matt replied &quot;go&quot;. The new module was already loaded: the Mac&#39;s overnight restart reloaded Hammerspoon, so no reload was needed (checked that the running copy has the new prompt code). No call or recording was running. The prompt window itself still hasn&#39;t been seen on screen; the try-it command below shows it without starting a recording, because picking a name only records while a FaceTime call is on.</p>
-<p data-read>Try it: <code>hs -c &#39;require(&quot;modules.call_transcript&quot;).ask(&quot;Tyler&quot;)&#39;</code></p>
+<h3 id="fix" data-read>Fix</h3>
+<ul>
+<li><span data-read><code>loop()</code> now runs <code>tick()</code> inside <code>pcall</code> and logs failures, so one bad check can&#39;t stop the watcher.</span></li>
+<li><span data-read><code>faceTimeCall()</code> checks the value really is an <code>hs.application</code> and wraps the AX call in <code>pcall</code>.</span></li>
+<li><span data-read>Reloaded just this module (no full Hammerspoon reload, nothing on screen). Verified: timer running, detection returns <code>true Tyler Murphy</code>.</span></li>
+<li><span data-read>Commit <code>a69fc62</code> in ~/.hammerspoon, pushed. Undo: <code>git revert a69fc62</code>.</span></li>
+</ul>
+<p data-read>Untested: the prompt itself showing on the next new call (the current call already has a recording, so the watcher correctly doesn&#39;t ask).</p>
 
 </main>
 </body>
