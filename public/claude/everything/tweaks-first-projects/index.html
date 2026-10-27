@@ -101,6 +101,19 @@
 <p data-read>30 keepers: the three symlinked modules (they need wiring in their own repos), song_key&#39;s 6 CFG values, and 12 in eye_breaks (constants used before its tweaks block). These are small hand jobs per module.</p>
 <p data-read><strong>Untested:</strong> I didn&#39;t drag any of the new knobs live on screen. The modules load and the tests pass, but you&#39;re the first to turn them.</p>
 <p data-read><strong>Undo:</strong> revert 70ba67e (wiring) and e98f3a1 (plain look) in ~/.hammerspoon.</p>
+<h2 id="1235-the-panel-docks-beside-its-app" data-read>12:35 The panel docks beside its app</h2>
+<p data-read><strong>Asked:</strong> Matt 👍&#39;d the 12:05 reply, which ended by asking for his 👍 on the docking logic. I took that as the go.</p>
+<hr>
+<h3 id="how-docking-works-now" data-read>How docking works now</h3>
+<p data-read>⌃⌥⌘T checks which app is in front. If that app has tweaks, the panel opens down the left edge of its screen, already showing them, and the app&#39;s window moves over. A window that fills the screen (within <code>dock.fullSlack</code> px) shrinks to the space that&#39;s left. A smaller one slides right, and narrows only if it has to. A window already clear of the panel stays put. A real full-screen window is taken out of full screen first and put back afterwards. ⌃⌥⌘T again, Esc, or the window&#39;s close button closes the panel and puts the app window back where it was. If you moved the window more than <code>dock.keepMoved</code> px while docked, it stays where you put it. The panel is now an ordinary window (it used to float above everything) and no longer follows focus, so cmd-tab leaves it behind. In an app with no tweaks, the panel opens with the ⌘J jump menu showing, so you can pick what to tweak. Picking an app with a window from the menu docks beside that app instead. Picking a background utility puts the docked app back, and the panel stays on its own. The panel&#39;s own knobs are &quot;Tweaks panel&quot; › <code>dock.width</code>, <code>dock.keepMoved</code> and <code>dock.fullSlack</code>. The frame logic is a pure function with its own test (<code>tests/tweaks_panel_dock_test.lua</code>).</p>
+<p data-read>Tested on screen, with your clearance: Claude was 1920×1080. The panel opened at 0,0 380×1080, Claude moved to 380,0 1540×1080, and after closing Claude was back to 1920×1080. The UI test and the docking test pass.</p>
+<hr>
+<h3 id="not-built-or-not-tried-yet" data-read>Not built or not tried yet</h3>
+<ul>
+<li><span data-read><strong>Dock icon when standing alone:</strong> Hammerspoon windows can&#39;t have their own Dock or cmd-tab entry. That needs a small native wrapper app around the same page, which is a separate build.</span></li>
+<li><span data-read><strong>Untried on screen:</strong> the smaller-window slide, real full-screen windows, and the ask-which-app flow. The geometry is unit-tested; the full-screen path has the most risk.</span></li>
+</ul>
+<p data-read><strong>Undo:</strong> revert 4a6704f in ~/.hammerspoon.</p>
 
 </main>
 </body>
