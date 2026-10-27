@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDr4CydL9T447XeHCwRtCccBz">
+<title>Quote queue bar covering typed text (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · quote-bar-overlap</p>
+<h1 id="quote-queue-bar-covering-typed-text-2026-10-27" data-read>Quote queue bar covering typed text (2026-10-27)</h1>
+<h2 id="1232-bar-moved-above-the-message-box" data-read>12:32 Bar moved above the message box</h2>
+<p data-read>Matt: the comment queuer (the &quot;❝ N queued · Queue ⏎ · Send all&quot; bar from the ⌥R quote tool) was drawn on top of the text he was typing in Claude&#39;s message box.</p>
+<hr>
+<h3 id="why-it-overlapped" data-read>Why it overlapped</h3>
+<p data-read>The bar in <code>~/.hammerspoon/modules/quote_comment.lua</code> was placed a fixed 130 px up from the bottom of Claude&#39;s window. An empty message box&#39;s top sits about 141 px up, so the bar just cleared it; as soon as the box grew taller with typed or dictated text (it grows upward), the box slid under the bar.</p>
+<hr>
+<h3 id="the-bar-now-rides-above-the-box" data-read>The bar now rides above the box</h3>
+<p data-read>The bar now reads the message box&#39;s position through Accessibility and sits 8 px above its top edge, right-aligned with it. While the bar shows, a light timer (every 0.25 s) re-reads the box and moves the bar as the box grows or shrinks; the timer stops when the bar hides. It never goes above the window&#39;s title area. If the box can&#39;t be found, it falls back to the old fixed spot.</p>
+<p data-read>Rejected: putting the bar beside the box (no room in a narrow pane) and hooking AX value-changed notifications (Claude re-creates the box element often, so a poll is more reliable and cheap).</p>
+<hr>
+<h3 id="knobs" data-read>Knobs</h3>
+<p data-read>Tweaks panel (⌃⌥⌘T) → &quot;Quote comments (⌥R)&quot;: <code>bar.lift</code> (gap above the box), <code>bar.inset</code> (in from the box&#39;s right edge), <code>bar.follow</code> (check interval). <code>bar.right</code> / <code>bar.bottom</code> are now only the fallback.</p>
+<hr>
+<h3 id="tested-and-untested" data-read>Tested and untested</h3>
+<p data-read>Tested: the computed spot with Claude&#39;s real box (bar ends 8 px above the box top, flush with its right edge), render, reload. Not tested live: watching it follow a growing box, since that needs typing in Matt&#39;s box.</p>
+<p data-read>Undo: <code>git -C ~/.hammerspoon revert HEAD</code>.</p>
+
+</main>
+</body>
+</html>
