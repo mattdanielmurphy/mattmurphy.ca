@@ -54,6 +54,14 @@ Then pick the model directly in the picker (Auto models ignore custom endpoints)
 <hr>
 <h3 id="still-untested" data-read>Still untested</h3>
 <p data-read>I didn&#39;t open Warp to check that it loaded the new endpoint. Warp&#39;s log shows no reload line, so it may need a restart. Undo: delete that block from <code>settings.toml</code>, or remove the endpoint in Warp settings.</p>
+<h2 id="1942-luna-only-terra-removed" data-read>19:42 Luna only, Terra removed</h2>
+<p data-read>Matt pointed out, with the Artificial Analysis Intelligence vs Cost chart, that GPT-6.1 Terra (max) sits below the Pareto line, while GPT-6 Luna (max) is on it. I had taken an article&#39;s claim that Terra&#39;s low and medium efforts are &quot;Pareto-optimal&quot; and ignored the chart; that was wrong for what he asked. He also said Luna is smart enough for his use.</p>
+<hr>
+<h3 id="terra-taken-out" data-read>Terra taken out</h3>
+<p data-read>I removed the <code>terra</code> model from the OpenRouter endpoint in <code>~/.warp/settings.toml</code>. The only custom model is now <code>openai/gpt-6-luna</code>, alias <code>luna</code>.</p>
+<hr>
+<h3 id="effort-is-not-max" data-read>Effort is not max</h3>
+<p data-read>The frontier point on his chart is Luna at max effort. Warp&#39;s code (<code>crates/ai/src/api_keys.rs</code>) always sends an empty reasoning effort for custom models, so OpenRouter&#39;s default effort applies, which is lower than max. A fix is an <a href="https://openrouter.ai/settings/presets">OpenRouter preset</a> that pins Luna to max effort, then using <code>@preset/&lt;name&gt;</code> as the model name in Warp. Not done yet; offered to Matt.</p>
 
 </main>
 </body>
