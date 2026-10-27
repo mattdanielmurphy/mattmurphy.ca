@@ -66,6 +66,17 @@
 <li><span data-read>Width: fixed at about 400 px, with its own tweak.</span></li>
 <li><span data-read>If you move or resize the app while the panel is open, closing still restores the original frame unless you moved it a lot. I&#39;d keep your new position then.</span></li>
 </ul>
+<h2 id="0850-scanner-built-panel-restyled-with-slub-ui" data-read>08:50 Scanner built, panel restyled with Slub UI</h2>
+<p data-read><strong>Asked:</strong> Matt 👍&#39;d the scanner. The shared UI library thread finished the &quot;Slub UI&quot; kit (<code>~/projects/ui-mixer/kit</code>, built on Web Awesome) and asked this thread to use it in the panel.</p>
+<hr>
+<h3 id="scanner-and-prune-results" data-read>Scanner and prune results</h3>
+<p data-read><code>~/.hammerspoon/bin/tweaks scan</code> reads every Hammerspoon module without AI. It picks up top-level constants (<code>local HOLD = 1.2</code>), named numeric fields (<code>alpha = 0.8</code>) and timer delays. It skips values that are already knobs, 0/1, hex marks, and names like PORT, VERSION and PATH. That found 457 candidates. <code>tweaks prune</code> asks Sonnet, per module and without tools, whether a developer would ever turn each value. Keepers get a key, a note and a slider range. Sonnet kept 149 and dropped 308, all with a short reason. Every decision is stored in <code>~/.hammerspoon/tweaks/candidates/&lt;module&gt;.json</code>, keyed by the surrounding code rather than the line number, so a decision is never asked twice. <code>tweaks report</code> lists the keepers. Spot check: claude_notify kept font sizes, radii, opacity and timings, and dropped icon geometry and hit areas. Tests: <code>tests/tweaks_scan_test.py</code>.</p>
+<p data-read>Not done: wiring the 149 keepers into the modules&#39; code (replacing each literal with <code>T(&quot;key&quot;)</code> plus a declaration). That&#39;s a per-module edit an agent should do and check, so I left it as the next step. Rule 1g now says to put feel values in named constants and lets the scanner find the rest.</p>
+<hr>
+<h3 id="panel-now-uses-slub-ui" data-read>Panel now uses Slub UI</h3>
+<p data-read>The panel inlines <code>vendor/slub-ui/slub-ui.js</code> and the chosen look&#39;s CSS (synced by <code>ui-mixer/knobs/sync.sh</code>, which now builds the kit too). The jump menu is <code>&lt;slub-jump&gt;</code>: ⌘J opens it, you type to filter, and it&#39;s grouped into Apps (the ones with focus bundle IDs) and Background utilities, each showing a knob count. Sliders, number fields, switches, colours, chips, search, preset fields and buttons all come from the kit. The panel&#39;s own hard-coded colours are gone; every colour comes from the look. The panel has its own tweaks entry, &quot;Tweaks panel&quot; › <code>look.style</code> (Hairline, Prairie or Synth chips), and changing it reopens the panel in the new look. Small fix in <code>tweaks.lua</code>: <code>choices</code> declared in code now get seeded into the file. The headless WebKit test passes all 23 checks in every look, light and dark. Hammerspoon reloaded fine.</p>
+<p data-read>Untested: I didn&#39;t open the real panel on your screen; you&#39;ll see it with ⌃⌥⌘T. The docking behaviour isn&#39;t built yet; it&#39;s still waiting for your 👍 on the logic.</p>
+<p data-read><strong>Undo:</strong> revert commit 729afa6 in ~/.hammerspoon and 70181b4 in ui-mixer.</p>
 
 </main>
 </body>
