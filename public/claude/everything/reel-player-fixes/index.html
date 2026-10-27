@@ -170,6 +170,23 @@
 <li><span data-read>Both → targets are preloaded, so neither should buffer.</span></li>
 </ul>
 <p data-read>Tested headless on a copy of this Readthrough: → → (slow) stayed on Everything moving one sentence each, a quick pair moved to Skip details, a second quick pair to Hurry, Esc back to Everything, and the panel closed after about 4 seconds.</p>
+<h2 id="1225-times-read-as-5-and-a-tool-for-tts-proof-text" data-read>12:25 Times read as &quot;5&quot;, and a tool for TTS-proof text</h2>
+<hr>
+<h3 id="what-was-wrong" data-read>What was wrong</h3>
+<p data-read>Speechify swallowed &quot;10:25&quot; (it spent a quarter of a second on it and Whisper heard nothing), so &quot;10:25 Buffering spinner&quot; came out as roughly &quot;5 buffering spinner&quot;. And &quot;re-name&quot; does make a little pause: that clip was 0.92 s against 0.75 s for the respelling &quot;renaim&quot;, which Whisper still hears as &quot;Rename&quot;.</p>
+<hr>
+<h3 id="fixed-now-live" data-read>Fixed now (live)</h3>
+<ul>
+<li><span data-read>A heading that starts with a time (the details-file style &quot;10:25 Topic&quot;) is read without the time; the highlight just passes over it.</span></li>
+<li><span data-read>Other times are said as words: 10:25 as &quot;10 25&quot;, 9:05 as &quot;9 oh 5&quot;, 3:00 as &quot;3 o&#39;clock&quot;.</span></li>
+<li><span data-read>&quot;0.05 s&quot; and &quot;350 ms&quot; are said as &quot;seconds&quot; and &quot;milliseconds&quot;.</span></li>
+<li><span data-read>Rename, renamed and renames are respelled &quot;renaim&quot;, &quot;renaimed&quot;, &quot;renaims&quot; (no hyphen, no pause).</span></li>
+</ul>
+<p data-read>Checked by transcribing each new clip with Whisper: &quot;Buffering Spinner&quot;, &quot;Rename.&quot;, &quot;It seeked 0.05 seconds before the word … waited 350 milliseconds.&quot; Only paragraphs with these words get new audio.</p>
+<hr>
+<h3 id="is-there-a-ready-made-tool" data-read>Is there a ready-made tool?</h3>
+<p data-read>Partly. Text normalizers (NVIDIA NeMo&#39;s text normalization, the one built into most TTS services) handle numbers, times, units and dates, which is what my rules above do for the cases we hit. Nothing off the shelf reliably catches words that are only ambiguous out of context, like &quot;Rename&quot; alone as a heading. Exact phonetic spelling would fix those, but Speechify only accepts it on its newer Simba 3.5 model (a <code>pronunciations</code> setting); our model, 3.2, takes only respellings.</p>
+<p data-read>Proposed: add a step to the background Claude pass that already rates sentences. It would list the words in each Readthrough a voice might misread (heteronyms, acronyms, jargon, one-word headings) with hyphen-free respellings, and the voice server would use them for that page only. No work for agents; the global list stays for repeat offenders. Waiting for Matt&#39;s 👍.</p>
 
 </main>
 </body>
