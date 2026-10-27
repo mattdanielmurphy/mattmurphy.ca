@@ -29,6 +29,9 @@
 <p data-read>The chooser itself hasn&#39;t been shown yet: Matt was on a call and it would have popped up over it. Detection, name, row list and the unit tests were all checked during the live call. An incoming call that hasn&#39;t been answered yet doesn&#39;t count as a call; the prompt comes once it connects. Audio-only calls are assumed to read &quot;FaceTime Audio call&quot; (the match is <code>FaceTime &lt;word&gt; call</code>).</p>
 <p data-read><strong>Knobs:</strong> ⌃⌥⌘T → &quot;Call transcripts&quot;: poll rate, debounce, prompt timeout, how many recent callers.</p>
 <p data-read><strong>Undo:</strong> <code>cd ~/.hammerspoon &amp;&amp; git revert 61dc091</code>, then reload Hammerspoon.</p>
+<h2 id="1156-its-live" data-read>11:56 It&#39;s live</h2>
+<p data-read>Matt replied &quot;go&quot;. The new module was already loaded: the Mac&#39;s overnight restart reloaded Hammerspoon, so no reload was needed (checked that the running copy has the new prompt code). No call or recording was running. The prompt window itself still hasn&#39;t been seen on screen; the try-it command below shows it without starting a recording, because picking a name only records while a FaceTime call is on.</p>
+<p data-read>Try it: <code>hs -c &#39;require(&quot;modules.call_transcript&quot;).ask(&quot;Tyler&quot;)&#39;</code></p>
 
 </main>
 </body>
