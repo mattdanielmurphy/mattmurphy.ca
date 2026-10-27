@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDr1cFFWChFn4QhnUK57CLQFM">
+<title>Restore LiteLLM for Warp (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · litellm-warp</p>
+<h1 id="restore-litellm-for-warp-2026-10-27" data-read>Restore LiteLLM for Warp (2026-10-27)</h1>
+<h2 id="1920-warp-can-talk-to-openrouter-directly" data-read>19:20 Warp can talk to OpenRouter directly</h2>
+<p data-read>Matt asked to get LiteLLM running again on the VPS, hooked to OpenRouter, and connected to Warp, using the &quot;Pareto frontier agent&quot; (he remembered it as GPT-6 Luna).</p>
+<hr>
+<h3 id="litellm-was-on-the-mac" data-read>LiteLLM was on the Mac</h3>
+<p data-read>The old LiteLLM proxy never ran on the VPS. It ran on the Mac as the launch agent <code>com.matt.agent.litellm</code> (port 8082, config <code>litellm/config.yaml</code>), and it was shelved on 2026-10-17 and switched off on 2026-10-21 (see <code>shelf/INDEX.md</code>). The VPS has no LiteLLM install and no Caddy route for one. The OpenRouter key line in <code>~/.zshrc</code> is also commented out, which is probably why the old routes stopped working.</p>
+<hr>
+<h3 id="warp-needs-a-public-url" data-read>Warp needs a public URL</h3>
+<p data-read>Warp&#39;s <a href="https://docs.warp.dev/agents/inference/custom-inference-endpoint.md">custom inference endpoint</a> sends requests through Warp&#39;s servers, so <code>localhost</code> and private addresses are rejected. A Mac-only LiteLLM can&#39;t work with Warp. Warp lists OpenRouter itself as a compatible endpoint.</p>
+<hr>
+<h3 id="why-skip-litellm" data-read>Why skip LiteLLM</h3>
+<p data-read>Pointing Warp straight at <code>https://openrouter.ai/api/v1</code> does the same job with no server to run, no public port to secure on the VPS, and no install (the LiteLLM image is over a gigabyte, and the VPS runs mail, Alby Hub and Minecraft). The project freeze also says to simplify rather than add. Rejected: LiteLLM in Docker on the VPS behind Caddy with a master key. It&#39;s only worth it if Matt wants one key for many tools or custom aliases/fallbacks.</p>
+<hr>
+<h3 id="pareto-is-a-router" data-read>Pareto is a router</h3>
+<p data-read>OpenRouter&#39;s model list has <code>openrouter/pareto-code</code> (&quot;Pareto Code Router&quot;): it picks from a shortlist of strong coding models ranked by Artificial Analysis coding scores. That matches &quot;Pareto frontier agent&quot;. <code>openai/gpt-6-luna</code> is a separate model (OpenAI&#39;s fast, cheap GPT-6 tier), and <code>~openai/gpt-luna-latest</code> always points at the newest Luna. Both support tool calling. Not verified: which model the Pareto router actually picks today.</p>
+<hr>
+<h3 id="values-for-warp" data-read>Values for Warp</h3>
+<p data-read>Warp &gt; Settings, search &quot;inference endpoint&quot; (Agents &gt; Warp Agent &gt; Custom inference), add a model:</p>
+<ul>
+<li><span data-read>Endpoint URL: <code>https://openrouter.ai/api/v1</code></span></li>
+<li><span data-read>API key: his OpenRouter key (he pastes it; agents never type keys)</span></li>
+<li><span data-read>Model 1: <code>openrouter/pareto-code</code>, alias <code>pareto</code></span></li>
+<li><span data-read>Model 2: <code>openai/gpt-6-luna</code>, alias <code>luna</code>
+Then pick the model directly in the picker (Auto models ignore custom endpoints). Switch with <code>/model pareto</code>.</span></li>
+</ul>
+<hr>
+<h3 id="untested" data-read>Untested</h3>
+<p data-read>Not run end to end: agents can&#39;t enter API keys, so no request went through Warp yet. Undo: delete the custom model in Warp settings. Nothing on the VPS or Mac was changed.</p>
+
+</main>
+</body>
+</html>
