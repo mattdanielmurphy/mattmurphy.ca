@@ -111,6 +111,26 @@
 <p data-read>Not heard by ear: the slow recording&#39;s pitch and the smoothness of the switch at 85% are checked only by measurement (the 70% recording is 1.42 times as long, as expected).</p>
 <h2 id="1025-buffering-spinner" data-read>10:25 Buffering spinner</h2>
 <p data-read>Matt asked for a buffering icon while the voice loads. The play button now turns into a spinning ring whenever reading is on but the voice hasn&#39;t started yet (first load, a new block, after a skip, or a voice or speed change), and goes back to ❚❚ the moment it speaks. Tested headless with a deliberately slow voice server: spinner for about 1.5 seconds, then speaking. Undo: revert the &quot;play button spins&quot; commit in ~/projects/pages and run <code>pages deploy</code>.</p>
+<h2 id="1045-smart-skip-built" data-read>10:45 Smart skip, built</h2>
+<p data-read>Matt approved smart skip and asked that the stages be visible and reversible.</p>
+<hr>
+<h3 id="how-it-works-now" data-read>How it works now</h3>
+<ul>
+<li><span data-read><strong>Ratings come for free.</strong> Every <code>pages readthrough</code> now starts a background job (about 45 seconds including the push) that asks Claude&#39;s small model, through the claude command on Matt&#39;s plan, to rate each sentence crucial, useful or detail and to pick one key phrase per paragraph where it matters. It writes <code>ratings.json</code> next to the page. Agents do nothing extra. If the text changes, old ratings are ignored until the new ones land.</span></li>
+<li><span data-read><strong>The Pace chip (top left) shows the stage</strong>: four dots and its name. Tapping it opens the four stages with a one-line explanation each, and you can pick any of them directly. That&#39;s how it works on a phone.</span></li>
+<li><span data-read><strong>→ skims more, ← skims less.</strong> Everything → Skip details → Hurry → Key points. ← steps back one stage without moving; only at Everything does ← go back a sentence. A small note names each stage as you enter it, with &quot;← to undo&quot;.</span></li>
+<li><span data-read><strong>Skip details</strong> and <strong>Hurry</strong> apply to the section you&#39;re in and wear off at the next section. If the skip itself lands in the next section, the stage moves with it. <strong>Hurry</strong> and <strong>Key points</strong> read 25% faster; your speed setting isn&#39;t changed.</span></li>
+<li><span data-read><strong>Skipped sentences stay on the page, faded.</strong> Tapping one reads it, then skimming carries on after it.</span></li>
+<li><span data-read><strong>Key phrases</strong> are underlined.</span></li>
+</ul>
+<p data-read>Readthroughs without ratings (or the scroll-read demo page) keep the plain → = next sentence.</p>
+<hr>
+<h3 id="also-fixed" data-read>Also fixed</h3>
+<p data-read>The section list on wide screens let long headings run into the text; they now cut off with &quot;…&quot; and the list scrolls.</p>
+<hr>
+<h3 id="untested-2" data-read>Untested</h3>
+<p data-read>Not tried on a phone or by ear. The ratings come from a small model, so some judgments will be off; tell me which ones and I&#39;ll tune the prompt in <code>pages/rate.ts</code>. All existing Readthroughs are being rated in the background now.</p>
+<p data-read>Undo: revert the &quot;smart skip&quot; commit in ~/projects/pages and run <code>pages deploy</code>.</p>
 
 </main>
 </body>
