@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrWASiEkz59ZnbSwws5nCx9P">
+<title>Jump Desktop vs RustDesk</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · jump-vs-rustdesk</p>
+<h1 id="jump-desktop-vs-rustdesk" data-read>Jump Desktop vs RustDesk</h1>
+<h2 id="1615-which-remote-desktop-to-use" data-read>16:15 Which remote desktop to use</h2>
+<p data-read>Matt asked &quot;Jump Desktop vs Rust Desk&quot; during a call with Tyler. Context I assumed (from the coordinator): reaching his Mac remotely, a planned mini PC at his parents&#39; on Tailscale for helping Dad, maybe from phone/Android, maybe shared with Tyler. Research only, nothing installed.</p>
+<hr>
+<h3 id="recommendation-in-one-line" data-read>Recommendation in one line</h3>
+<p data-read>Start with <strong>RustDesk over Tailscale using direct IP</strong> (free, no server needed). Buy <strong>Jump Desktop</strong> only if remoting into the Mac feels laggy or blurry.</p>
+<hr>
+<h3 id="cost-comparison" data-read>Cost comparison</h3>
+<ul>
+<li><span data-read><strong>RustDesk:</strong> free and open source on every platform. Paid Pro plans (roughly $10-24/month, sources disagree) only add a managed server with a web console, address book sync and user management. Not needed for one person.</span></li>
+<li><span data-read><strong>Jump Desktop:</strong> one-time app purchases, no subscription for personal use. Mac client about $35, iOS client about $15 (bought separately per platform). The host app (Jump Desktop Connect) and the Windows client are free. Prices are from secondary sources; check the App Store before buying.</span></li>
+</ul>
+<hr>
+<h3 id="tailscale-makes-the-vps-unnecessary" data-read>Tailscale makes the VPS unnecessary</h3>
+<p data-read>RustDesk normally uses an ID server plus a relay. With Tailscale, every machine has a stable private IP, and RustDesk&#39;s &quot;Enable direct IP access&quot; setting lets you connect straight to <code>100.x.x.x</code> peer to peer. So no RustDesk server on the VPS. Jump also works fine over Tailscale (connect by IP), and otherwise uses its own free connection service.</p>
+<p data-read>Rejected: self-hosting the RustDesk relay on the VPS. It&#39;s light, but Tailscale already solves what it does, and the VPS is important, so don&#39;t add load for nothing.</p>
+<hr>
+<h3 id="quality-on-the-mac" data-read>Quality on the Mac</h3>
+<p data-read>Jump&#39;s Fluid protocol is the known strength: sharp on retina, smooth at high frame rates, system audio, multi-monitor, good iPad/iPhone touch handling. RustDesk is good but generally less polished on a retina Mac (more compression blur, less smooth). Mac host audio on RustDesk has historically been patchy. Untested by me; Matt should judge after trying.</p>
+<hr>
+<h3 id="helping-dad" data-read>Helping Dad</h3>
+<p data-read>RustDesk is the better fit for the parents&#39; mini PC: free, works on Windows and Linux, has unattended access with a permanent password, and Dad can also start a session himself by reading out an ID if Tailscale is down. Jump also does Windows hosts for free but is less of a &quot;family support&quot; tool.</p>
+<hr>
+<h3 id="platforms-and-sharing-with-tyler" data-read>Platforms and sharing with Tyler</h3>
+<ul>
+<li><span data-read>RustDesk: Mac, Windows, Linux, iOS, Android (including Android TV builds). Tyler can use it free.</span></li>
+<li><span data-read>Jump: Mac, Windows, iOS, Android, but each client platform is a separate purchase per person.</span></li>
+</ul>
+<hr>
+<h3 id="untested-and-risky" data-read>Untested and risky</h3>
+<ul>
+<li><span data-read>Nothing was installed or tried. Quality claims come from general knowledge and reviews, not a test on Matt&#39;s machines.</span></li>
+<li><span data-read>Prices weren&#39;t confirmed on the official pages (search only found secondary sources).</span></li>
+<li><span data-read>Undo: nothing to undo.</span></li>
+</ul>
+<p data-read>Sources: rustdesk.com/pricing, realvnc.com/en/blog/rustdesk-pricing, App Store listing via appfollow.io, AnyViewer Jump Desktop articles.</p>
+
+</main>
+</body>
+</html>
