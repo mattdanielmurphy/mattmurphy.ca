@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Chrome tabs piling up (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · chrome-tabs</p>
+<h1 id="chrome-tabs-piling-up-2026-10-27" data-read>Chrome tabs piling up (2026-10-27)</h1>
+<h2 id="0730-research-what-to-do-about-chrome-tab-pile-up" data-read>07:30 Research: what to do about Chrome tab pile-up</h2>
+<p data-read><strong>Asked (via coordinator):</strong> a solution for Chrome tabs piling up (mass-wake risk, RAM). Ideas: Claude closes tabs it&#39;s nearly sure you&#39;re done with, sorts by date and groups them; experiment with display styles; can an extension replace Chrome&#39;s vertical tab bar? Project freeze is on, so research and options only, no build.</p>
+<h3 id="what-i-found-on-your-mac" data-read>What I found on your Mac</h3>
+<ul>
+<li><span data-read>70 tabs across 3 Chrome windows right now. 16 GB RAM, 29% free.</span></li>
+<li><span data-read>Chrome 156 (new enough for native vertical tabs).</span></li>
+<li><span data-read><strong>Auto Tab Discard is already installed</strong>, so idle tabs can already be unloaded from RAM. Memory Saver is on Chrome&#39;s default setting.</span></li>
+<li><span data-read>Nothing about tabs in ai-os IDEAS.md yet.</span></li>
+</ul>
+<hr>
+<h3 id="chrome-now-has-native-vertical-tabs" data-read>Chrome now has native vertical tabs</h3>
+<p data-read>Chrome shipped vertical tabs to stable in April 2026 (<a href="https://techcrunch.com/2026/04/07/chrome-is-finally-getting-vertical-tabs/">TechCrunch</a>, <a href="https://www.hongkiat.com/blog/chrome-vertical-tabs-reading-mode/">Hongkiat</a>, <a href="https://chromeunboxed.com/google-is-officially-rolling-out-native-vertical-tabs-to-the-stable-version-of-chrome/">Chrome Unboxed</a>). Turn it on by right-clicking the tab strip and choosing <strong>Show Tabs Vertically</strong>. It works with tab groups.</p>
+<hr>
+<h3 id="extensions-cannot-replace-the-tab-bar" data-read>Extensions cannot replace the tab bar</h3>
+<p data-read>No extension can remove or redraw Chrome&#39;s real tab strip. The closest an extension gets is the <strong>side panel</strong> (<code>chrome.sidePanel</code>), which can show its own tab list (grouped by date, by site, whatever) beside the page, while the real tabs stay where they are. That&#39;s how Tabs Outliner / &quot;vertical tabs&quot; extensions worked before Chrome shipped its own. So custom display styles are possible, but only as a side panel next to Chrome&#39;s own list. With native vertical tabs collapsed to icons, that&#39;s close to a replacement in practice.</p>
+<p data-read>What an extension <em>can</em> do: read every tab with its last-used time (<code>tab.lastAccessed</code>), close, move and group tabs (<code>chrome.tabs</code>, <code>chrome.tabGroups</code>), discard them to free RAM, and save a list before closing.</p>
+<hr>
+<h3 id="mass-wake-and-ram" data-read>Mass wake and RAM</h3>
+<p data-read>Discarded tabs (Memory Saver, Auto Tab Discard) use almost no RAM and only reload when you click them. The real risk is a restart restoring lots of tabs at once; fewer open tabs is the only full fix, which is why auto-closing with a record matters more than discarding.</p>
+<hr>
+<h3 id="option-1-zero-build-today" data-read>Option 1: zero build, today</h3>
+<p data-read>Turn on vertical tabs, set Memory Saver to Maximum (Settings &gt; Performance), and keep Auto Tab Discard. Fixes RAM, doesn&#39;t stop the pile.</p>
+<hr>
+<h3 id="option-2-tab-wrangler-existing-open-source" data-read>Option 2: Tab Wrangler (existing, open source)</h3>
+<p data-read><a href="https://github.com/tabwrangler/tabwrangler">Tab Wrangler</a> closes tabs you haven&#39;t touched for a set time (you pick, e.g. 1 day), never closes pinned or audio-playing tabs or a minimum count you set, and keeps every closed tab in a searchable list (its &quot;corral&quot;) so anything can be reopened. That meets the &quot;never close without a recoverable record&quot; safety rule. No Claude judgment, just time-based. Nothing to build.</p>
+<p data-read>Rejected as main pick: OneTab (manual, one big dump), The Great Suspender (old one was malware; forks only suspend, don&#39;t close), Arc/Dia-style auto-archive browsers (would mean leaving Chrome; Arc is in maintenance mode).</p>
+<hr>
+<h3 id="option-3-claude-tidies-your-tabs-build-after-the-freeze" data-read>Option 3: Claude tidies your tabs (build after the freeze)</h3>
+<p data-read>A small extension of your own plus a Claude pass:</p>
+<ul>
+<li><span data-read>Extension exports open tabs (title, URL, last used, group) to a local file and can close/group on command.</span></li>
+<li><span data-read>Once a day (or on demand), Claude reads that list and proposes: close (done with it), keep, or group (e.g. &quot;Today / This week / Older&quot;, or by topic).</span></li>
+<li><span data-read>Before closing anything it appends the tab to a closed-tabs archive (markdown, searchable by QMD), so nothing is lost.</span></li>
+<li><span data-read>A side-panel view for trying display styles (by date, by site, by topic). Per the UI-options rule, that view would start as 3–4 separately made design options before any code.
+Risk: Claude might close something you still wanted; the archive and a &quot;suggest first, close later&quot; first week cover that.</span></li>
+</ul>
+<hr>
+<h3 id="recommendation" data-read>Recommendation</h3>
+<p data-read>Do Option 1 now (2 minutes, no build), try Option 2 for a week, and only build Option 3 if time-based closing feels too dumb. That respects the freeze.</p>
+<p data-read>Undo: all settings are toggles; Tab Wrangler uninstalls cleanly and its list can be exported first.</p>
+
+</main>
+</body>
+</html>
