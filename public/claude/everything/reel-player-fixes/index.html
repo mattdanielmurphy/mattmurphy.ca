@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Reel player fixes (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · reel-player-fixes</p>
+<h1 id="reel-player-fixes-2026-10-27" data-read>Reel player fixes (2026-10-27)</h1>
+<h2 id="0855-highlighter-voices-arrow-keys-overhead-name" data-read>08:55 Highlighter, voices, arrow keys, overhead, name</h2>
+<p data-read>Matt asked: fix the highlighter&#39;s false start and snap-back, make it calmer, pick from about 10 Speechify voices with previews, arrow keys by sentence and paragraph, check what reels cost an agent, and a better name (&quot;Read along&quot;).</p>
+<hr>
+<h3 id="false-start-fix" data-read>False start fix</h3>
+<p data-read>The cause: with the voice on, the highlight kept walking at reading speed while the voice was still loading (about 1.5 to 3.5 seconds for a new block), then jumped back to the voice&#39;s word once audio started. A second, smaller snap: the player seeked 0.05 s before the word, so for a moment it showed the previous word.</p>
+<p data-read>The fix: while the voice is on, the highlight waits for the voice (loading, seeking, between blocks). It walks on its own only when the voice is off or failed. The voice can no longer show a word before the one it started on. Tested headless: the word index never went backwards, locally and on a live reel.</p>
+<hr>
+<h3 id="calmer-highlight-options" data-read>Calmer highlight options</h3>
+<p data-read>Four looks, switchable live in Tune, Highlight:</p>
+<ul>
+<li><span data-read><strong>Sentence</strong> (new default): a faint wash over the whole sentence, which moves once per sentence. The current word is in full ink.</span></li>
+<li><span data-read><strong>Ink</strong>: no shape at all. Upcoming words are pale and darken as they are read.</span></li>
+<li><span data-read><strong>Underline</strong>: a thin line glides under the word.</span></li>
+<li><span data-read><strong>Glide</strong>: the original moving highlight.</span></li>
+</ul>
+<p data-read>The pull and snap feedback during a big scroll still appears in every look. Rejected: building separate mockups first; the options are cheap to compare live in the real player, which is what the &quot;options before building&quot; rule is for.</p>
+<hr>
+<h3 id="voice-picker" data-read>Voice picker</h3>
+<p data-read>Tune, Voice lists 10 of Speechify&#39;s own staff picks for the simba-3.2 model, 5 women and 5 men: Beatrice (default), Harper, Imogen, Geffen, Carly, Wyatt, Edmund, Dominic, George, Oliver. The ▶ button plays Speechify&#39;s own sample clip (free, instant). Picking a voice re-reads from the current word in that voice; each block is made once per voice, then cached for everyone.</p>
+<p data-read>Only these 10 voices can be requested, so the voice endpoint stays closed. The list lives in <code>pages/tts.ts</code> (<code>VOICES</code>). The full English catalog (125 voices) is at <code>/api/tts?voices=all</code> if Matt wants more.</p>
+<hr>
+<h3 id="arrow-keys" data-read>Arrow keys</h3>
+<p data-read>Right and left move by sentence, down and up by paragraph. Back goes to the start of the current sentence first, and to the previous one if you just started it (like a music player&#39;s back button). A key hint sits at the bottom of Tune.</p>
+<hr>
+<h3 id="agent-overhead" data-read>Agent overhead</h3>
+<p data-read>Overhead is close to zero: one <code>pages reel &lt;details.md&gt;</code> command per reply, measured below. It renders the Markdown, commits one file to the mattmurphy.ca repo and pushes; Vercel deploys it. No voice is generated until someone presses play. Recent threads are already publishing reels (chrome-tabs, linear-board-questions, shared-ui-library and others).</p>
+<hr>
+<h3 id="name-options" data-read>Name options</h3>
+<p data-read>Read along (Matt&#39;s idea, recommended), Readthrough, Trail. Not renamed yet; waiting for Matt&#39;s pick.</p>
+<hr>
+<h3 id="untested-and-how-to-undo" data-read>Untested and how to undo</h3>
+<ul>
+<li><span data-read>Not tested on a real phone or by ear; the headless test checked timing, keys and layout only.</span></li>
+<li><span data-read>Undo: <code>git revert</code> the scroll-read commit in ~/projects/pages, then <code>pages deploy</code>.</span></li>
+</ul>
+
+</main>
+</body>
+</html>
