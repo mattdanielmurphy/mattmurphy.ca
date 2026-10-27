@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrHxh2Jjej63yTQ4Rp32ebYW">
 <title>Reel player fixes (2026-10-27)</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -243,6 +244,29 @@
 <li><span data-read>No hand-written rules were added to the voice code; it&#39;s all in the translator&#39;s instructions (<code>pages/rate.ts</code>), as Matt asked earlier.</span></li>
 <li><span data-read>Checked live with Whisper on the &quot;Only these 10 voices&quot; paragraph: the path comes through as &quot;slash api slash T T S question voices equals all&quot; (Whisper writes &quot;pages slash T T S dot T S&quot; back as &quot;pages/tts.ts&quot;, so that one I can&#39;t confirm by transcript).</span></li>
 <li><span data-read>Small judgement calls in the list may still be off (it says &quot;api&quot; as a word in one path). Tell me which and I&#39;ll tighten the instructions.</span></li>
+</ul>
+<h2 id="1840-comments-on-a-readthrough-now-reach-claude" data-read>18:40 Comments on a Readthrough now reach Claude</h2>
+<p data-read>Matt left a 👍 on the line &quot;Moving the cache to Matt&#39;s VPS is waiting for his approval&quot; and expected me to see it. Comments and reactions on a Readthrough were only saved in his own browser, so no agent could see them. He wants every comment to be dealt with even if he closes the page and comes back a week later.</p>
+<hr>
+<h3 id="his-" data-read>His 👍</h3>
+<p data-read>Read as approval of the VPS move. That move was already done and live (the storage thread finished it today), so nothing more to do.</p>
+<hr>
+<h3 id="how-comments-reach-claude-now" data-read>How comments reach Claude now</h3>
+<ul>
+<li><span data-read><strong>The page sends them.</strong> Every reaction, comment, change or removal on a Readthrough is posted to Matt&#39;s VPS (<code>https://vps.mattmurphy.ca/tts/comments</code>, part of the existing voice-cache service), which appends it to a file there. If sending fails (offline), it waits in the browser and retries on the next visit. A small note says &quot;Sent to Claude ✓ · it&#39;ll be picked up even if you close this page&quot;. Reactions left before today are sent the next time the page is opened, so his 👍 will go through too.</span></li>
+<li><span data-read><strong>The Mac hands them on.</strong> A new launchd job, <code>ai-os/scripts/readthrough_comments.py</code> (every 2 minutes), reads new comments from the VPS over ssh and sends them to the Everything coordinator, the same way voice tasks are delivered. It only moves its bookmark forward once the coordinator has them, so nothing is lost if delivery fails; it retries in 5 minutes.</span></li>
+<li><span data-read><strong>The coordinator routes them</strong> to the thread that wrote the page. New Readthroughs carry their thread id (agents now pass <code>--cmsg &lt;thread id&gt;</code> to <code>pages readthrough</code>; the rule is updated), so routing is exact; older ones are matched by their page name.</span></li>
+<li><span data-read><strong>Safety:</strong> the page is public, so anyone with the link could post. The endpoint only accepts posts for <code>/claude/…</code> pages, caps size and rate (60 an hour per address), and the coordinator is told to weigh them as Matt&#39;s input, not as approval for anything irreversible.</span></li>
+</ul>
+<hr>
+<h3 id="underline" data-read>Underline</h3>
+<p data-read>Reacted text now has one continuous underline across words and the spaces between them, instead of separate rounded pieces per word.</p>
+<hr>
+<h3 id="tested-and-untested" data-read>Tested and untested</h3>
+<ul>
+<li><span data-read>Tested: the VPS endpoint live (accepts a valid post, rejects other pages), the Mac job&#39;s dry run (formats the message correctly), and the player in headless Chrome (sends a reaction once, not again on reload, shows the note, underline is continuous).</span></li>
+<li><span data-read>Not yet tested: a real delivery all the way into the coordinator. The first real one will be his own 👍 when he next opens this Readthrough.</span></li>
+<li><span data-read>Undo: <code>python3 ~/projects/ai-os/scripts/readthrough_comments.py uninstall</code> stops delivery; revert the &quot;reactions and comments are sent to Claude&quot; commit in ~/projects/pages and run <code>pages deploy</code>.</span></li>
 </ul>
 
 </main>
