@@ -151,6 +151,8 @@
 <p data-read>Before, only the next paragraph&#39;s voice was fetched ahead. Now it also fetches the paragraphs holding the next sentence, the one after next, and wherever → would land in smart skip, and it downloads their audio files too (before, only the timing was fetched, so the audio still had to load when you jumped).</p>
 <h2 id="1135-pauses-between-short-sentences" data-read>11:35 Pauses between short sentences</h2>
 <p data-read>Cause: the voice comes in one recording per paragraph or heading, and moving to the next one meant swapping the audio file in the one player and waiting for it to load, so short paragraphs had a pause after each. Fix: a second, hidden player holds the next paragraph already loaded and takes over the moment the first one ends. The voice is also fetched ahead for the next 160 words, however many short sentences or paragraphs that spans. Measured: gaps between paragraphs are now 0 to 2 milliseconds (headless, on this Readthrough and the demo page).</p>
+<h2 id="1145-speed-keys-back-to-small-steps" data-read>11:45 Speed keys back to small steps</h2>
+<p data-read>Matt: 25% per key press was far too much; he meant the slider should snap to 25% marks. Now <code>,</code> and <code>.</code> change speed by 5% per press, and the speed slider accepts any value but snaps to 100%, 125% and the other 25% marks when you come within 5% of one. Tested: keys step 135 → 140 → 145; slider 97 and 103 both snap to 100, 112 stays 112.</p>
 
 </main>
 </body>
