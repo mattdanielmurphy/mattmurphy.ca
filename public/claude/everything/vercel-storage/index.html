@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Vercel storage warning (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · vercel-storage</p>
+<h1 id="vercel-storage-warning-2026-10-27" data-read>Vercel storage warning (2026-10-27)</h1>
+<h2 id="1045-what-is-using-vercel-and-what-to-do" data-read>10:45 What is using Vercel, and what to do</h2>
+<p data-read>Matt got a Vercel usage warning and doesn&#39;t want to pay. Asked: find what&#39;s using it, cull junk, propose how to stay free.</p>
+<hr>
+<h3 id="the-real-limit-is-uploads" data-read>The real limit is uploads</h3>
+<ul>
+<li><span data-read>The only Blob store is <code>pages-tts</code> (project matt-pages): 23 MB, 444 files. Hobby allows 1 GB, so size is fine.</span></li>
+<li><span data-read>The Hobby limit that bites is <strong>Blob advanced operations: 2,000 per month</strong> (every upload, copy or list counts). October so far: 445, and 408 of them happened today.</span></li>
+<li><span data-read>Each new Readthrough recording costs 2 uploads (the mp3 and a JSON of word timings), in <code>api/tts-vercel.ts</code>. Since today every speed (75–200%) is its own recording, so listening at a new speed re-records every paragraph.</span></li>
+<li><span data-read>On Hobby, going over does not bill you. Vercel <strong>locks Blob for 30 days</strong>, so every Readthrough voice would stop working until then.</span></li>
+<li><span data-read>No Vercel email about it was found in Gmail (searched <code>from:vercel newer_than:3d</code>), so the warning was probably a dashboard banner.</span></li>
+</ul>
+<hr>
+<h3 id="everything-else-is-far-from-its-limit" data-read>Everything else is far from its limit</h3>
+<p data-read>October totals for the whole account: edge requests 166k of 1M, function calls 101k of 1M, data out 650 MB of 100 GB, builds normal. Old deployments (40 for matt-pages) don&#39;t count toward any Hobby storage limit.</p>
+<hr>
+<h3 id="why-i-deleted-nothing" data-read>Why I deleted nothing</h3>
+<ul>
+<li><span data-read>Deleting blobs is free but saves nothing that matters (23 MB of 1 GB). Worse, it would force every deleted paragraph to be re-recorded, which costs more uploads, the exact thing that is running out.</span></li>
+<li><span data-read>Deleting old deployments frees nothing on Hobby and could break older unlisted links.</span></li>
+<li><span data-read>Rejected: <code>vercel blob list</code> to inspect files, because listing itself counts as an advanced operation.</span></li>
+</ul>
+<hr>
+<h3 id="the-fix-i-recommend" data-read>The fix I recommend</h3>
+<ol>
+<li><span data-read><strong>Now, small:</strong> save one file per recording instead of two (word timings inside the same file, or in the page&#39;s request), which halves uploads.</span></li>
+<li><span data-read><strong>Proper:</strong> move the voice cache off Vercel Blob to Matt&#39;s VPS (his rule: prefer the VPS before a third-party host). Uploads there are unlimited. Cloudflare R2 is the fallback (1M uploads/month free, 10 GB).</span></li>
+<li><span data-read><strong>Guard:</strong> a small daily check of <code>storage_blob</code> usage that warns at 1,500 uploads, so it never reaches the lock.</span></li>
+</ol>
+<p data-read>Handed to the Readthrough thread, since it owns <code>tts.ts</code> and the player, so two agents don&#39;t edit the same files.</p>
+<h3 id="how-to-undo" data-read>How to undo</h3>
+<p data-read>Nothing was changed or deleted.</p>
+
+</main>
+</body>
+</html>
