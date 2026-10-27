@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrBUqZFRKupeN6Z58eaeKoQH">
+<title>Glass TV's own player (Glass Player)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · glass-player</p>
+<h1 id="glass-tvs-own-player-glass-player" data-read>Glass TV&#39;s own player (Glass Player)</h1>
+<h2 id="1355-built-glass-player-and-merged-it" data-read>13:55 Built Glass Player and merged it</h2>
+<p data-read><strong>Asked:</strong> how hard it would be to give Glass TV its own player as nice as IINA, then build it in a worktree and merge after the polish thread.</p>
+<hr>
+<h3 id="how-hard-it-was" data-read>How hard it was</h3>
+<p data-read>IINA is a Mac shell around mpv, and mpv (with libmpv) was already installed through Homebrew. So the player uses the same engine and plays the same files. The work was the shell: a window, controls, keys and X-Ray. About a day for the essentials; IINA&#39;s extras (picture-in-picture, seek thumbnails, playlists, a big settings window) would be weeks and aren&#39;t needed for Glass TV&#39;s one-file-at-a-time flow.</p>
+<hr>
+<h3 id="what-was-built" data-read>What was built</h3>
+<ul>
+<li><span data-read><code>app/player/main.swift</code>: a Swift app that draws video with mpv&#39;s OpenGL render API on a CAOpenGLLayer, the same approach IINA uses. Built by <code>build-player.sh</code> into <code>bin/Glass Player.app</code>; <code>build.sh</code> now calls it.</span></li>
+<li><span data-read>It takes the same arguments Glass TV gave <code>iina-cli</code> (<code>--mpv-input-ipc-server</code>, <code>--mpv-start</code>, <code>--mpv-fs</code> …), so <code>src/player.ts</code> drives it over the same JSON socket: position tracking, credits detection and quitting at the credits are unchanged.</span></li>
+<li><span data-read>Controls: a dark frosted bar that fades after 2.5 s (tweak <code>player.controlsHideSeconds</code>): back/forward 5 s, play/pause, scrubber with chapter marks and a time bubble on hover, elapsed and remaining time, volume (remembered), audio and subtitle menus (hidden when there&#39;s nothing to pick), full screen. Title top left.</span></li>
+<li><span data-read>Keys: Space, ← → (5 s), ⇧← ⇧→ (30 s), ↑ ↓ volume, M, S, A, F, Esc. Listed in the Playback menu; every button has a tooltip with its key (discoverable).</span></li>
+<li><span data-read>Click pauses, double-click toggles full screen, scroll changes volume.</span></li>
+</ul>
+<hr>
+<h3 id="x-ray-kept-working" data-read>X-Ray kept working</h3>
+<p data-read>Glass Player asks <code>/api/xray</code> on pause and shows the plugin&#39;s own <code>overlay.html</code> in a see-through web view, with a tiny stand-in for IINA&#39;s message API, so there is one overlay page for both players. Key hints are moved up above the control bar. The web view is created on the first pause and released after 3 idle minutes to save memory.</p>
+<p data-read>Decision: hardware decoding uses <code>videotoolbox-copy</code> instead of plain <code>videotoolbox</code>. Plain mode can&#39;t produce the paused-frame screenshot X-Ray needs (tested: &quot;Input image format videotoolbox not supported&quot;). Copy mode still decodes on the GPU; it costs a little memory bandwidth.</p>
+<hr>
+<h3 id="iina-as-a-fallback" data-read>IINA as a fallback</h3>
+<p data-read>Settings has a new <strong>Player</strong> line: tap to switch between Glass Player and IINA (<code>settings.useIina</code>). If Glass Player isn&#39;t built, Glass TV falls back to IINA automatically.</p>
+<hr>
+<h3 id="tested" data-read>Tested</h3>
+<ul>
+<li><span data-read>Played a generated 3-minute test episode (two audio tracks, subtitles, a Credits chapter): video renders, controls and chapter marks show, IPC properties read correctly, screenshot for X-Ray works.</span></li>
+<li><span data-read>X-Ray against a stand-in server: two name tags drew in the right places.</span></li>
+<li><span data-read>End to end through a separate test copy of Glass TV: play from the library, position tracked, credits at 150 s detected from the chapter, the player quit itself at the credits and Glass TV recorded it as finished.</span></li>
+<li><span data-read>Unit tests: 20 pass.</span></li>
+</ul>
+<p data-read><strong>Not tested:</strong> a real streamed episode from Real-Debrid, real-face X-Ray inside Glass Player, full screen on a second display.</p>
+<hr>
+<h3 id="live-status-and-undo" data-read>Live status and undo</h3>
+<ul>
+<li><span data-read>Merged into <code>master</code> and pushed. Glass Player is built in <code>~/projects/glass-tv/bin/</code>.</span></li>
+<li><span data-read>Matt was watching something when it merged, so the server restarts by itself once nothing is playing (<code>tmp/restart-when-idle.sh</code>); the episode after that opens in Glass Player.</span></li>
+<li><span data-read>Undo: Settings → Player → tap to pick IINA, or <code>git revert 15fec43</code>.</span></li>
+</ul>
+
+</main>
+</body>
+</html>
