@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Morning meditation + hypnosis (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · morning-meditation</p>
+<h1 id="morning-meditation--hypnosis-2026-10-27" data-read>Morning meditation + hypnosis (2026-10-27)</h1>
+<h2 id="0245-meditation-and-hypnosis-tracks-built" data-read>02:45 Meditation and hypnosis tracks built</h2>
+<p data-read><strong>Asked:</strong> add a guided mindfulness meditation to the morning check-in (secular, science-driven teacher style, calm Speechify voice, a generative ambient bed with no AI music), plus one deep-relaxation hypnosis track. Give play links.</p>
+<hr>
+<h3 id="two-tracks-are-live" data-read>Two tracks are live</h3>
+<p data-read>Player page: <a href="https://matt-pages.vercel.app/3a22db06-7d4d-4779-adde-1e377c22caa3/">https://matt-pages.vercel.app/3a22db06-7d4d-4779-adde-1e377c22caa3/</a> (<code>#morning</code> and <code>#hypnosis</code> jump to each).</p>
+<ul>
+<li><span data-read><strong>Morning mindfulness</strong>, 10 min 19 s, voice Douglas (Speechify, tagged relaxed/meditation, American), speed 0.88.</span></li>
+<li><span data-read><strong>Deep relaxation</strong> (hypnosis), 22 min 21 s, voice Marian (Speechify, soft British female, tagged meditation), speed 0.84.</span></li>
+</ul>
+<hr>
+<h3 id="music-is-not-ai" data-read>Music is not AI</h3>
+<p data-read>Both beds come from <code>~/projects/claude-ambient/out/</code>: the 20-minute &quot;Breath&quot; loop (meditation) and the 22-minute &quot;Magicicada&quot; loop (hypnosis). They&#39;re real Arturia Augmented Grand Piano notes written by a Python score and rendered by an Audio Unit host, the same way as the Oct 22–23 ambient pieces. No generative-audio model is involved, so they fit the no-AI-music rule. I didn&#39;t add nature sounds: there&#39;s no non-AI field-recording source on hand, and the Breath loop is already the calm, sparse one.</p>
+<hr>
+<h3 id="how-the-script-was-written" data-read>How the script was written</h3>
+<p data-read>Meditation: original text in the style of a secular attention teacher. Breath anchor, then the key idea that noticing the wandering is the rep (cites the mind-wandering research finding that we&#39;re off-task nearly half the time), then sounds, thoughts as events that just appear, body check, open awareness, an intention for the day, and a gentle exit. No spiritual claims.</p>
+<p data-read>Hypnosis: safety line first (don&#39;t use while driving), three breaths, progressive relaxation head to feet, a 10-to-1 deepening count, staircase to a self-chosen safe place, four simple suggestions about calm, ~4.5 minutes of quiet music, then a 1-to-5 count back up to alert. It ends awake, not asleep, since it&#39;s for relaxation.</p>
+<hr>
+<h3 id="how-its-built" data-read>How it&#39;s built</h3>
+<p data-read><code>services/checkin/meditation/build.py</code> reads a script (one spoken line per line, <code>[pause N]</code> for music-only seconds), voices each line once via <code>services/reels/tts.py</code> (cached by text, so edits re-record only changed lines), places them on a timeline, lays the loop under them at -13 dB, ducks the music ~4 dB while the voice speaks, and normalizes to -18 LUFS (quiet, for headphones). Pauses measure about -30 dB mean; speech about -20 dB.</p>
+<hr>
+<h3 id="check-in-page-change" data-read>Check-in page change</h3>
+<p data-read>The Breathe step now has a secondary button &quot;Or a 10-minute guided meditation&quot; that opens the player page at the morning track in the browser (an Artifact page can&#39;t host the audio). Tapping it saves <code>meditation: true</code> in that day&#39;s page doc and the Done summary shows it. The daily job rebuilds the page from the template each morning, so it appears from tomorrow&#39;s check-in. Tests (ladder, daily, missed) pass.</p>
+<p data-read>Rejected: making the meditation a mandatory step (would lengthen every check-in; the habit ladder should grow it slowly instead), and embedding the audio in the Artifact (unreliable on iPhone, big asset).</p>
+<hr>
+<h3 id="not-tested-yet" data-read>Not tested yet</h3>
+<p data-read>I checked the files, levels and that the page serves them (HTTP 200, audio/mp4), but I haven&#39;t listened all the way through. Lock-screen playback on the iPhone is untested.</p>
+<p data-read><strong>Undo:</strong> revert commit f5a79ae5 in ai-os (removes the button); the page lives at <code>~/projects/pages/site/still</code>.</p>
+
+</main>
+</body>
+</html>
