@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrWTptzN455atXHTbqmNQBup">
 <title>Morning meditation + hypnosis (2026-10-27)</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -81,6 +82,26 @@
 <hr>
 <h3 id="not-changed" data-read>Not changed</h3>
 <p data-read>Attempt #0 stays as it was (the joke). Untested by ear.</p>
+<h2 id="1250-voice-louder-plus-a-plan-for-drone-chimes-and-levels" data-read>12:50 Voice louder, plus a plan for drone, chimes and levels</h2>
+<p data-read>Matt listened to meditation #1 (Marian): much better, but the voice is a touch too quiet against the music. He also wants a never-wavering drone, guiding chimes the voice introduces, difficulty levels, and a clear line between breathing exercises and mindfulness.</p>
+<hr>
+<h3 id="voice-is-louder-now" data-read>Voice is louder now</h3>
+<p data-read>The music bed sits 2.5 dB lower under the voice (<code>MUSIC_DB</code> in <code>services/checkin/meditation/build.py</code> went from -2 to -4.5). The voice itself and the final loudness (-21 LUFS) are unchanged, so the whole track doesn&#39;t get louder, only the balance moves toward the voice. I picked 2.5 dB because &quot;a touch&quot; usually means 2-3 dB, and the last two moves were 3 dB each way. Undo: set <code>MUSIC_DB</code> back to -2 and rebuild.</p>
+<hr>
+<h3 id="drone-that-never-wavers" data-read>Drone that never wavers</h3>
+<p data-read>Add a third layer under the piano bed: one sustained drone on the loop&#39;s root (and maybe its fifth), rendered from a real synth Audio Unit like the rest of claude-ambient. It is never ducked, never faded except at the very start and end, and sits at a fixed level. Only the piano layer dips under the voice. The artistic piano bed stays as it is on top.</p>
+<hr>
+<h3 id="chime-the-voice-introduces" data-read>Chime the voice introduces</h3>
+<p data-read>Early in the script the voice says something like &quot;when you hear this sound, take it as a reminder to come back to the breath&quot;, then plays the chime once. After that a <code>[chime]</code> tag in the script (or an automatic interval) plays it. The chime would be a soft bell or bowl tone from a real instrument (Arturia Augmented Mallets is already installed), not a generated sound.</p>
+<hr>
+<h3 id="difficulty-levels" data-read>Difficulty levels</h3>
+<p data-read>One script, many levels. Each level sets: total length, how long the silences are (a multiplier on every <code>[pause]</code>), how much instruction (lines tagged with the highest level they appear in get dropped above it), and how often the chime plays. Example: level 1 = 5 min, chime every 30 s, lots of guidance; level 5 = 20 min, chime every 3 min, mostly silence. The build makes one track per level and the player page gets a level picker.</p>
+<hr>
+<h3 id="breathing-is-not-mindfulness" data-read>Breathing is not mindfulness</h3>
+<p data-read>Mindfulness scripts get at most two or three settling breaths at the start, then the voice hands the breath back (&quot;let it do whatever it does on its own&quot;) and never directs it again. Attempt #1 already does this. Breath-pacing (sounds that guide in and out) becomes a separate kind of track, a breathing or relaxation exercise, never mixed into a mindfulness session.</p>
+<hr>
+<h3 id="untested-and-open" data-read>Untested and open</h3>
+<p data-read>The voice change is rebuilt and on the page, but nobody has listened to it yet. Nothing in the plan above is built.</p>
 
 </main>
 </body>
