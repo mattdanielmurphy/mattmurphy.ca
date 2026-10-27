@@ -43,6 +43,36 @@
 <p data-read>Handed to the Readthrough thread, since it owns <code>tts.ts</code> and the player, so two agents don&#39;t edit the same files.</p>
 <h3 id="how-to-undo" data-read>How to undo</h3>
 <p data-read>Nothing was changed or deleted.</p>
+<h2 id="1040-uploads-halved" data-read>10:40 Uploads halved</h2>
+<p data-read>The Readthrough thread shipped it: each recording is now one Blob upload (timings plus the mp3 in one JSON), and cache reads go straight to the public address with no head() or list() calls. I checked <code>api/tts-vercel.ts</code>: one <code>put()</code> per recording. Old two-file recordings still play; nothing was deleted. The VPS move still waits on Matt&#39;s 👍.</p>
+<h2 id="1215-voice-cache-moved-to-the-vps" data-read>12:15 Voice cache moved to the VPS</h2>
+<p data-read>Matt gave 👍 to moving the Readthrough voice cache to his VPS.</p>
+<hr>
+<h3 id="what-runs-on-the-vps" data-read>What runs on the VPS</h3>
+<ul>
+<li><span data-read><code>tts-cache.service</code> (systemd, like photon-bridge): a tiny Bun server on 127.0.0.1:8796, files in <code>~/data/tts-cache/</code> (one JSON per recording, mp3 inside). Source is in the pages repo, <code>vps/tts-cache/</code>.</span></li>
+<li><span data-read>Caddy routes <code>https://vps.mattmurphy.ca/tts/&lt;key&gt;.json</code> to it. Reads are public (same as Blob was). Saves need a secret token, generated fresh and stored only in <code>~/apps/tts-cache/.env</code> on the VPS and as <code>TTS_CACHE_TOKEN</code> in the matt-pages Vercel settings. Keys must be 20 hex characters; saves over 8 MB or with bad JSON are refused.</span></li>
+<li><span data-read>The VPS disk has 14 GB free; a recording is about 25–400 KB, so tens of thousands of paragraphs fit.</span></li>
+</ul>
+<hr>
+<h3 id="how-readthroughs-use-it" data-read>How Readthroughs use it</h3>
+<p data-read><code>api/tts-vercel.ts</code> now checks the VPS first, then Blob (for recordings made before today), and saves new recordings to the VPS only. If the VPS refuses or times out (8 s), it falls back to one Blob upload and logs it, so voices keep working if the VPS is down. Reads time out after 3 s.</p>
+<hr>
+<h3 id="tested-live" data-read>Tested live</h3>
+<ul>
+<li><span data-read>A fresh paragraph at 175% speed: recorded, saved on the VPS (new file appeared), and the second request was served from it.</span></li>
+<li><span data-read>An older recording still plays from Blob, with nothing new written.</span></li>
+<li><span data-read>Saving without the secret is refused (403).</span></li>
+</ul>
+<hr>
+<h3 id="left-as-is" data-read>Left as is</h3>
+<ul>
+<li><span data-read>The 23 MB of old recordings stay in Blob so old Readthroughs keep their voices; reading them costs no uploads. Emptying the store later would make those paragraphs re-record once, onto the VPS.</span></li>
+<li><span data-read>Not built: the daily usage warning. With uploads off Blob it should stay near zero.</span></li>
+<li><span data-read>The deploy shipped the working tree, which included the Readthrough thread&#39;s uncommitted inline-code pause change in <code>tts.ts</code> (Matt asked for that change).</span></li>
+</ul>
+<h3 id="how-to-undo-this-move" data-read>How to undo this move</h3>
+<p data-read>Revert the commit &quot;Readthrough voice cache moves to the VPS&quot; in the pages repo and run <code>pages deploy</code>; on the VPS, <code>sudo systemctl disable --now tts-cache</code> and restore <code>/etc/caddy/Caddyfile.bak-tts-cache</code>.</p>
 
 </main>
 </body>
