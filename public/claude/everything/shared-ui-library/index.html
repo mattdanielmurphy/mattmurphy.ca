@@ -37,6 +37,11 @@
 <li><span data-read>The Tweaks panel itself is unchanged until that thread adopts the kit.</span></li>
 </ul>
 <p data-read>Undo: <code>git revert</code> the two Slub UI commits in ui-mixer.</p>
+<h2 id="1752-plain-is-the-default-look" data-read>17:52 Plain is the default look</h2>
+<p data-read>Matt: it&#39;s between plain and hairline; plain is good enough for now, and it can change later.</p>
+<hr>
+<h3 id="plain-is-now-the-default" data-read>Plain is now the default</h3>
+<p data-read><code>build.ts</code> writes <code>dist/slub-ui.css</code> from <code>DEFAULT_LOOK = &#39;plain&#39;</code>. Hosts load that one file, so switching later (for example to hairline) is a one-word change and a rebuild. All looks stay in <code>looks/</code>. The Tweaks thread was told to use <code>slub-ui.css</code>.</p>
 
 </main>
 </body>
