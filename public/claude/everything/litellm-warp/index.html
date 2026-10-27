@@ -40,6 +40,20 @@ Then pick the model directly in the picker (Auto models ignore custom endpoints)
 <hr>
 <h3 id="untested" data-read>Untested</h3>
 <p data-read>Not run end to end: agents can&#39;t enter API keys, so no request went through Warp yet. Undo: delete the custom model in Warp settings. Nothing on the VPS or Mac was changed.</p>
+<h2 id="1917-added-openrouter-to-warps-settings-file" data-read>19:17 Added OpenRouter to Warp&#39;s settings file</h2>
+<p data-read>Matt meant &quot;the model on the cost-vs-intelligence Pareto frontier&quot;, not OpenRouter&#39;s router of that name (my misread). He asked whether I could add the endpoint myself, since settings are probably a text file.</p>
+<hr>
+<h3 id="frontier-pick-is-terra" data-read>Frontier pick is Terra</h3>
+<p data-read><a href="https://artificialanalysis.ai/articles/gpt-6-1-terra-pushes-the-cost-efficiency-frontier">Artificial Analysis, Oct 26</a>: GPT-6.1 Terra (released yesterday) now sits on the cost-efficiency frontier, and on the Coding Agent Index frontier at low and xhigh effort. It scores 48 on that index, 17 points above GPT-6 Luna (31). Luna is about 10× cheaper ($0.10/$0.50 per million tokens against $1/$5), so it&#39;s the cheap end of the curve, not the best value for agent work any more. I added both: <code>terra</code> (default pick) and <code>luna</code>. Warp can&#39;t set reasoning effort on a custom model, so OpenRouter&#39;s default applies.</p>
+<hr>
+<h3 id="settings-file-edit" data-read>Settings file edit</h3>
+<p data-read>Warp keeps the endpoint definition (name, URL, models) in <code>~/.warp/settings.toml</code> under <code>[agents.custom_endpoints.&quot;endpoint-&lt;uuid&gt;&quot;]</code>, read from Warp&#39;s open-source code (<code>crates/ai/src/api_keys.rs</code>). The API key lives separately in the macOS keychain, so the file alone can&#39;t hold it, and agents aren&#39;t allowed to type keys anyway. Backup of the file before the edit: <code>tmp/warp-settings.toml.bak-2026-10-27</code> in ai-os. Warp&#39;s own file isn&#39;t valid TOML 1.0 (it uses multi-line inline tables), so I validated only the new block.</p>
+<hr>
+<h3 id="why-the-old-setup-broke" data-read>Why the old setup broke</h3>
+<p data-read>Warp&#39;s log shows the deleted endpoint pointed at <code>https://macbook-pro:8082/v1</code>, a private address on the Mac. Warp sends requests from its own servers, so that address could never be reached.</p>
+<hr>
+<h3 id="still-untested" data-read>Still untested</h3>
+<p data-read>I didn&#39;t open Warp to check that it loaded the new endpoint. Warp&#39;s log shows no reload line, so it may need a restart. Undo: delete that block from <code>settings.toml</code>, or remove the endpoint in Warp settings.</p>
 
 </main>
 </body>
