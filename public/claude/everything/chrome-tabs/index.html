@@ -52,6 +52,32 @@ Risk: Claude might close something you still wanted; the archive and a &quot;sug
 <h3 id="recommendation" data-read>Recommendation</h3>
 <p data-read>Do Option 1 now (2 minutes, no build), try Option 2 for a week, and only build Option 3 if time-based closing feels too dumb. That respects the freeze.</p>
 <p data-read>Undo: all settings are toggles; Tab Wrangler uninstalls cleanly and its list can be exported first.</p>
+<h2 id="1845-built-tab-tidy-haiku-groups-tabs-closes-stale-ones" data-read>18:45 Built Tab Tidy (Haiku groups tabs, closes stale ones)</h2>
+<p data-read><strong>Asked:</strong> periodically run a script that calls Haiku to group tabs by date and topic, and closes tabs that are idle 24h and not particularly unique; new-to-you sites stay longer, YouTube closes much more safely, resource-heavy tabs close faster. Tabs he puts in a group are his &quot;save for later&quot; and must never be closed. &quot;Figure it out please&quot; = go.</p>
+<h3 id="how-it-reads-and-groups-your-tabs" data-read>How it reads and groups your tabs</h3>
+<p data-read>Only an extension can see tab groups and when each tab was last used (<code>chrome.tabs</code>, <code>chrome.tabGroups</code>, <code>tab.lastAccessed</code>); AppleScript sees titles and URLs only, and Chrome blocks remote debugging on your main profile. So: a small unpacked extension (<code>services/tab-tidy/extension</code>) plus a native helper (<code>host/tab_tidy_host.py</code>) that Chrome starts on each run. The helper calls Haiku through the <code>claude</code> CLI (your subscription; there is no Anthropic API key on the Mac). It lives inside ai-os, not a new repo, because of the project freeze.</p>
+<hr>
+<h3 id="the-closing-rules" data-read>The closing rules</h3>
+<ul>
+<li><span data-read>Never touched: tabs in your own groups (any group not named &quot;&lt;day&gt; · &lt;topic&gt;&quot;), pinned tabs, tabs playing sound, the tab you&#39;re on.</span></li>
+<li><span data-read>Empty New Tab pages and unused duplicates: after 1 hour.</span></li>
+<li><span data-read>YouTube: after 6 hours, no Haiku check.</span></li>
+<li><span data-read>Everything else: after 24 hours, halved (12h) for heavy sites still loaded in memory (Figma, Google Docs, Maps, social feeds, AI chats), tripled (72h) for sites you&#39;ve visited 3 times or fewer (from Chrome history).</span></li>
+<li><span data-read>Those 24h-type tabs then go past Haiku, which keeps anything specific and hard to re-find (a listing you&#39;re comparing, a thread, an order page, a half-done form). If Haiku fails, those tabs stay open; only the empty/duplicate/YouTube rules close.</span></li>
+<li><span data-read>&quot;Resource heavy&quot; uses a site list, because Chrome gives extensions no per-tab memory figure (that API is Dev-channel only). A tab Chrome has already put to sleep (discarded) doesn&#39;t count as heavy.</span></li>
+</ul>
+<hr>
+<h3 id="the-archive-and-dry-run" data-read>The archive and dry run</h3>
+<p data-read>Every closed tab is written to <code>private/tab-tidy/closed.md</code> (title + link + reason, private, not in git) before the extension is told to close it. It ships in <strong>dry run</strong>: grouping happens for real, but closes are only listed in <code>private/tab-tidy/dry-run.md</code>. I&#39;ll read the first dry run, show you what it would close, then switch closing on.</p>
+<hr>
+<h3 id="grouping" data-read>Grouping</h3>
+<p data-read>When 12+ loose tabs are open, it groups them per window by day last used (Today, Yesterday, weekday, Older) and Haiku topic; a topic needs 2+ tabs that day, the rest go to &quot;Misc&quot;. Oldest groups at the top, newest at the bottom (new tabs land at the bottom anyway). Groups older than yesterday are collapsed. Runs every 2 hours, and when you click its toolbar icon.</p>
+<hr>
+<h3 id="tested" data-read>Tested</h3>
+<p data-read>Fake-tab tests cover every rule, the Haiku-down fallback, dry run and the Chrome message format (<code>host/test_tab_tidy.py</code>). Haiku on your 70 real tab titles took 27s and gave sensible topics (Streaming, Dev, School, AI, Shopping, Music) and kept things like a Kijiji listing and an Amazon product you were comparing. <strong>Not yet tested inside Chrome</strong>: that needs you to load the extension.</p>
+<hr>
+<h3 id="knobs-and-undo" data-read>Knobs and undo</h3>
+<p data-read>All numbers are in the ⌃⌥⌘T Tweaks panel under Tab Tidy (<code>~/.hammerspoon/tweaks/tab_tidy.json</code>). Undo: remove the extension in chrome://extensions; your groups stay as they are and can be ungrouped by right-click. Closed tabs: reopen from closed.md or Chrome History.</p>
 
 </main>
 </body>
