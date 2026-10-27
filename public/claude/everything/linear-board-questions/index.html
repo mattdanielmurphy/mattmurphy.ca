@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Linear board questions (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · linear-board-questions</p>
+<h1 id="linear-board-questions-2026-10-27" data-read>Linear board questions (2026-10-27)</h1>
+<h2 id="0720-projects-vs-issues-free-tier-self-hosted-alternatives" data-read>07:20 Projects vs issues, free tier, self-hosted alternatives</h2>
+<p data-read>Matt asked three things: should many board issues be Linear Projects, what the free tier includes and how soon he&#39;d pay, and whether there&#39;s a free self-hostable alternative. I read every issue on team MAT through the Linear connector (it worked from the Mac), checked Linear&#39;s pricing page and docs, and searched for alternatives. Nothing was changed on the board.</p>
+<hr>
+<h3 id="which-issues-should-be-projects" data-read>Which issues should be projects</h3>
+<p data-read>Rule of thumb: a Linear <strong>Project</strong> is a body of work with several steps and (usually) an end; an <strong>Issue</strong> is one step. Several board cards are really projects with no steps inside them, which is why the board feels off.</p>
+<p data-read>Recommended to become projects (each gets its real next steps as issues):</p>
+<ul>
+<li><span data-read><strong>Slub Utils</strong> (MAT-10), <strong>Explainer reels</strong> (MAT-14), <strong>qwerty MIDI plugin</strong> (MAT-12), <strong>UI Mixer</strong> (MAT-15), <strong>Live call transcript with Tyler</strong> (MAT-31), <strong>Morning check-in and habit ladder</strong> (MAT-23), <strong>ai-os agent setup</strong> (MAT-30), <strong>Daily mini crossword</strong> (MAT-13).</span></li>
+<li><span data-read><strong>Each course</strong> as a project: PHIL 120 (MAT-5), CMPUT 174 (MAT-6), World Music (MAT-7). Then the World Music autoethnography (due Oct 30), Lab 5, the midterms etc. become dated issues inside them, so due dates show up properly.</span></li>
+<li><span data-read><strong>Life OS</strong> (MAT-34) and <strong>Mac inventory</strong> (MAT-29) could be projects later, once they have steps.</span></li>
+</ul>
+<p data-read>Better as an <strong>Initiative</strong> (Linear&#39;s grouping above projects): <strong>Slub company with Tyler</strong> (MAT-9), holding the Slub projects. Initiatives may be limited on the free plan; check before relying on them.</p>
+<p data-read>Stay as issues: every parked idea (MAT-35..41), and one-offs like monthly budget, part-time job, pickleball, the dictation re-test, the palette pick (MAT-16), HUD slots review (MAT-32).</p>
+<p data-read>There&#39;s already one project, &quot;atlas calculator&quot;, sitting in Backlog with nothing in it.</p>
+<hr>
+<h3 id="trade-off-of-moving-to-projects" data-read>Trade-off of moving to projects</h3>
+<p data-read>Projects don&#39;t use the team&#39;s columns (Idea / Planned / Live on Mac / Paused / Done). They have their own project statuses (Backlog, Planned, In progress, Paused, Completed, Canceled), and custom project statuses need the Business plan. So the main board would show steps, and a separate Projects view would show the projects. Converting is reversible; nothing is lost.</p>
+<hr>
+<h3 id="free-tier-limits" data-read>Free tier limits</h3>
+<p data-read>From <a href="https://linear.app/pricing">linear.app/pricing</a> and the <a href="https://linear.app/docs/billing-and-plans">billing docs</a>:</p>
+<ul>
+<li><span data-read>250 issues, 2 teams, unlimited members, 10 MB per upload. All members are admins.</span></li>
+<li><span data-read>Next plan is Basic at $10 per user per month (yearly), so $10/month for Matt alone. Basic raises teams to 5.</span></li>
+<li><span data-read>If over 250 on Free: nothing is deleted, you just can&#39;t create new issues.</span></li>
+<li><span data-read>Matt has 39 issues total (4 are Linear&#39;s canceled welcome cards). At ~10 new cards a week that&#39;s roughly 5 months to 250 if nothing is ever archived.</span></li>
+<li><span data-read>Archiving: I could not confirm from Linear&#39;s current page whether archived issues count toward the 250. If they don&#39;t (secondary sources suggest archiving keeps you free), turning on auto-archive for Done/Canceled keeps him free indefinitely. Worth a 2-minute test when near the cap.</span></li>
+<li><span data-read>Projects themselves aren&#39;t issues, so moving things into projects doesn&#39;t cost issue slots by itself; the steps inside them do.</span></li>
+</ul>
+<hr>
+<h3 id="self-hosted-alternatives" data-read>Self-hosted alternatives</h3>
+<ul>
+<li><span data-read><strong><a href="https://plane.so">Plane</a></strong> Community Edition: the closest to Linear (issues, cycles, modules, pages), AGPL, Docker. Heavy: needs Postgres, Redis, a queue and object storage; docs suggest about 2 CPUs and 4 GB RAM. That&#39;s &quot;big&quot; for his VPS, so it needs his OK first.</span></li>
+<li><span data-read><strong><a href="https://vikunja.io">Vikunja</a></strong>: one small Go binary plus a database, kanban boards, light enough to be little risk on the VPS. Much less polished than Linear.</span></li>
+<li><span data-read><strong><a href="https://huly.io">Huly</a></strong>: all-in-one (Linear + Notion + Slack), very heavy to self-host.</span></li>
+</ul>
+<p data-read>Sources: <a href="https://openalternative.co/alternatives/linear">openalternative.co</a>, <a href="https://toolradar.com/guides/best-open-source-project-management-tools">toolradar</a>.</p>
+<hr>
+<h3 id="my-recommendation" data-read>My recommendation</h3>
+<p data-read>Stay on Linear free. He&#39;s at about 15% of the cap, and agents already park ideas there through the Linear connector; switching would mean rebuilding that. Revisit only if he nears 250 and archiving doesn&#39;t free slots. If he still wants self-hosting, Vikunja is the safe one for the VPS; Plane needs a 👍 because of its size.</p>
+<p data-read>Untested: whether archived issues count toward 250; whether Initiatives are on the free plan.</p>
+<p data-read>Undo: nothing changed.</p>
+
+</main>
+</body>
+</html>
