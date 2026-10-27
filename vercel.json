@@ -24,6 +24,10 @@
 		{
 			"source": "/claude/:project/:thread",
 			"destination": "/claude/:project/:thread/index.html"
+		},
+		{
+			"source": "/coordinator-instructions",
+			"destination": "/coordinator-instructions/index.html"
 		}
 	],
 	"headers": [
