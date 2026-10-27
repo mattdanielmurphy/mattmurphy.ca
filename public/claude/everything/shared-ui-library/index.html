@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Shared UI library (Slub UI)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · shared-ui-library</p>
+<h1 id="shared-ui-library-slub-ui" data-read>Shared UI library (Slub UI)</h1>
+<h2 id="0845-kit-built-three-looks-to-pick-from" data-read>08:45 Kit built, three looks to pick from</h2>
+<p data-read>What Matt asked: a new shared UI library all his apps use, built on a strong foundation, with good sliders, inputs and a jump menu for the Tweaks panel. Then (08:15): don&#39;t worry about colour; it should look good with any colour, using saturation/brightness/opacity modifiers.</p>
+<hr>
+<h3 id="foundation-web-awesome" data-read>Foundation: Web Awesome</h3>
+<p data-read>Web Awesome 3.14 (MIT, the successor to Shoelace) is free, accessible web components themed entirely by CSS tokens. It works in plain HTML, in the Hammerspoon webview (no React needed), and in React (it ships wrappers). Rejected: Mantine, because it is React-only, and the Tweaks panel, Knobs, UI Mixer and pages are all plain JS, so Mantine would force a React rewrite of each. Swift apps keep hud-kit.</p>
+<p data-read>The kit lives in <code>~/projects/ui-mixer/kit/</code> next to Knobs, not in a new repo, because of the project freeze. <code>bun kit/build.ts</code> makes one offline bundle (<code>dist/slub-ui.js</code>, 368 KB) plus one CSS file per look.</p>
+<hr>
+<h3 id="jump-menu" data-read>Jump menu</h3>
+<p data-read><code>&lt;slub-jump&gt;</code> is a small composite on Web Awesome&#39;s popup and input: a button showing the current app, ⌘J to open, type to filter, grouped list (Apps / Background utilities), arrow keys, Enter, Esc or a click outside to close. Its keys are printed in its footer (discoverable rule).</p>
+<hr>
+<h3 id="any-colour-works" data-read>Any colour works</h3>
+<p data-read><code>kit/seed.css</code> derives every shade from <code>--slub-accent</code>, using OKLCH relative colours. Lightness per step is fixed to Web Awesome&#39;s own scale, so text contrast stays the same whatever the colour. <code>--slub-vivid</code> scales saturation, and <code>--slub-tint</code> sets how much the accent tints the greys. The trade-off is that the seed&#39;s own brightness is ignored: a bright yellow comes out olive, because yellow text on white can&#39;t be read. Tested with teal, yellow, magenta and near-black, light and dark.</p>
+<hr>
+<h3 id="three-looks-made-separately" data-read>Three looks, made separately</h3>
+<p data-read>Per the options-first rule, three separate agents each made one look from their own brief: <strong>hairline</strong> (lab instrument: hairlines, tick thumb, mono digits), <strong>prairie</strong> (soft: rounded type, pill fields, big round thumbs) and <strong>synth</strong> (hardware faceplate: condensed caps, fader caps, LED switch). Plain is Web Awesome untouched, for reference.</p>
+<hr>
+<h3 id="knobs-uses-it-automatically" data-read>Knobs uses it automatically</h3>
+<p data-read>When the kit is loaded, Knobs rows use the kit&#39;s slider, number field, switch, colour picker, chips and search. Without the kit they fall back to plain inputs. The UI Mixer check still passes.</p>
+<hr>
+<h3 id="untested" data-read>Untested</h3>
+<ul>
+<li><span data-read>Nothing has been checked in the real Hammerspoon webview yet. The screenshots come from Chrome. The Tweaks thread will see it there first.</span></li>
+<li><span data-read>The Tweaks panel itself is unchanged until that thread adopts the kit.</span></li>
+</ul>
+<p data-read>Undo: <code>git revert</code> the two Slub UI commits in ui-mixer.</p>
+
+</main>
+</body>
+</html>
