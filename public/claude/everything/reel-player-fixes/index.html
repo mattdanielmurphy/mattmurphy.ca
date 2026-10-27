@@ -187,6 +187,15 @@
 <h3 id="is-there-a-ready-made-tool" data-read>Is there a ready-made tool?</h3>
 <p data-read>Partly. Text normalizers (NVIDIA NeMo&#39;s text normalization, the one built into most TTS services) handle numbers, times, units and dates, which is what my rules above do for the cases we hit. Nothing off the shelf reliably catches words that are only ambiguous out of context, like &quot;Rename&quot; alone as a heading. Exact phonetic spelling would fix those, but Speechify only accepts it on its newer Simba 3.5 model (a <code>pronunciations</code> setting); our model, 3.2, takes only respellings.</p>
 <p data-read>Proposed: add a step to the background Claude pass that already rates sentences. It would list the words in each Readthrough a voice might misread (heteronyms, acronyms, jargon, one-word headings) with hyphen-free respellings, and the voice server would use them for that page only. No work for agents; the global list stays for repeat offenders. Waiting for Matt&#39;s 👍.</p>
+<h2 id="1235-automatic-respellings-for-the-voice" data-read>12:35 Automatic respellings for the voice</h2>
+<p data-read>Matt confirmed: reword only what the voice says; the page keeps the normal English.</p>
+<ul>
+<li><span data-read>The background Claude pass that rates sentences now also lists words a voice would genuinely get wrong in that Readthrough, with a respelling (<code>say</code> in ratings.json). The voice server applies them only to that page&#39;s audio; the page text never changes.</span></li>
+<li><span data-read>The first prompt over-flagged (it respelled &quot;Speechify&quot; as &quot;Speechifye&quot; and &quot;Readthrough&quot; as &quot;Reedthroo&quot;, which could make things worse). I tightened it: only real problems (ambiguous one-word headings, heteronyms, lowercase acronyms, file names, made-up names), respellings must be plain English or spaced letters, never hyphens. This Readthrough now gets: Rename → renaim, wpm → W P M, ratings.json → ratings dot jay son.</span></li>
+<li><span data-read>Checked live with Whisper: the paragraph with &quot;wpm&quot; is now heard as &quot;20 WPM&quot;.</span></li>
+<li><span data-read>The global list (times, seconds, rename) still applies everywhere; page-specific ones are on top.</span></li>
+</ul>
+<p data-read>Still read oddly: single-symbol keys written as code, like <code>,</code> and <code>.</code>, are silent in speech (&quot;press to read faster&quot;). Could be fixed the same way (say &quot;comma&quot;, &quot;period&quot;) if Matt wants.</p>
 
 </main>
 </body>
