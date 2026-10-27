@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Rotoscope video transmissions (no diffusion)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · rotoscope-video-transmissions</p>
+<h1 id="rotoscope-video-transmissions-no-diffusion" data-read>Rotoscope video transmissions (no diffusion)</h1>
+<h2 id="2330-research-non-diffusion-rotoscope-options" data-read>23:30 Research: non-diffusion rotoscope options</h2>
+<p data-read>Matt&#39;s idea: film himself in character as &quot;video transmissions&quot; for Glass TV and Slub marketing videos, then auto-rotoscope into a clean, precise, editor-effect look. Hard rule: no diffusion or generative imagery. Freeze is on, so this is research only; nothing built.</p>
+<hr>
+<h3 id="three-pipelines" data-read>Three pipelines</h3>
+<ul>
+<li><span data-read><strong>A · Flat vector cut-out (recommended first).</strong> Robust Video Matting (RVM) cuts him out (people-specific, has temporal memory so hair edges stay steady; Core ML models exist, light on RAM). Then a 3-frame mask median, bilateral filter + posterize to a palette locked for the whole clip, VTracer per frame (colour vectoriser, unlike potrace which is black/white only), SVG rendered back to PNGs, edited in Resolve. Locked palette and fixed tracer settings are the anti-flicker trick. Would be a small Python script.</span></li>
+<li><span data-read><strong>B · All in an editor.</strong> Resolve Studio Magic Mask + Fusion posterize/edges, or After Effects Roto Brush 3 + Cartoon effect. Zero code, quickest to try, but reads more &quot;filter&quot; than vector. Magic Mask needs paid Studio.</span></li>
+<li><span data-read><strong>C · Tracked vector puppet.</strong> Draw a character once; Adobe Character Animator (lip sync + face tracking) or the free MediaPipe plugin for TouchDesigner drives it. Zero flicker, cleanest, but no longer looks like him.</span></li>
+</ul>
+<hr>
+<h3 id="rejected-or-secondary" data-read>Rejected or secondary</h3>
+<ul>
+<li><span data-read>SAM 2: great for props and click-to-select objects, but hard masks without soft hair edges, and slower. Good as a helper for objects he holds.</span></li>
+<li><span data-read>MediaPipe segmentation: fast and live, edges too wobbly for final output.</span></li>
+<li><span data-read>EbSynth: not diffusion (texture synthesis from painted keyframes); listed for a hand-painted variant, but it&#39;s brushy, not vector-clean.</span></li>
+<li><span data-read>Potrace line art (look 3): very clean on the silhouette; interior edge lines flicker, so keep to outline + few lines.</span></li>
+</ul>
+<hr>
+<h3 id="mac-fit" data-read>Mac fit</h3>
+<p data-read>M2 Pro, 16 GB. RVM (MobileNet) and MediaPipe are light; SAM 2 tiny works but is slow. All offline batch jobs, no real-time need.</p>
+<hr>
+<h3 id="page-and-parking" data-read>Page and parking</h3>
+<ul>
+<li><span data-read>Page: <a href="https://matt-pages.vercel.app/80515747-765c-4a4c-ba8a-f8a6a5aefaeb/">https://matt-pages.vercel.app/80515747-765c-4a4c-ba8a-f8a6a5aefaeb/</a> (<code>~/projects/pages/site/roto-looks</code>). Pictures are hand-drawn SVG mockups, labelled as such, not real renders. Apothecary palette (cobalt, camphor), Chivo + Martian Mono. Checked light/dark screenshots and orphans at 5 widths.</span></li>
+<li><span data-read>Linear: MAT-41 (labels Parked idea, Slub). slub-hq IDEAS.md and new glass-tv IDEAS.md got a line each.</span></li>
+</ul>
+<hr>
+<h3 id="untested" data-read>Untested</h3>
+<p data-read>Flicker and quality ratings are estimates from how each method works, not measured on footage. Next step when unparked: a 10-second test clip through pipeline A.</p>
+
+</main>
+</body>
+</html>
