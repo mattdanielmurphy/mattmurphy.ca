@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="cmsg_01CUPXyY9oUwKVDFREVDpYDrDgWt2o2SH9uNNVjxsL4LJt">
+<title>Clean Testing account for Respondus LockDown Browser</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · everything · respondus-testing-account</p>
+<h1 id="clean-testing-account-for-respondus-lockdown-browser" data-read>Clean Testing account for Respondus LockDown Browser</h1>
+<h2 id="1750-setup-scripts-ready" data-read>17:50 Setup scripts ready</h2>
+<p data-read>Matt asked (via the coordinator) for a clean macOS account so nothing in the background trips LockDown Browser before the CMPUT 174 test (due Thu Oct 29, 20:00; midterm Nov 5 also uses Respondus). Goal is compliance, never hiding anything.</p>
+<h3 id="what-already-existed" data-read>What already existed</h3>
+<p data-read>A &quot;Testing&quot; account (uid 503, admin) was created at 17:37 today but has never been logged into. LockDown Browser 2.1.5 is installed in /Applications.</p>
+<hr>
+<h3 id="what-starts-for-every-user" data-read>What starts for every user</h3>
+<ul>
+<li><span data-read>/Library/LaunchAgents start in every account: Little Snitch agent, Arturia Software Center, Adobe ARMDC helper, Jump Desktop Connect agent, Rogue Amoeba arkaudiod, two Zoom updaters.</span></li>
+<li><span data-read>/Library/LaunchDaemons run as root once for the whole Mac, so they can&#39;t be skipped per user. The one that matters is Jump Desktop Connect&#39;s service (remote access), which runs as root right now.</span></li>
+<li><span data-read>Login items (Hammerspoon, Keyboard Maestro, Raycast, etc.) are per user, so Testing has none.</span></li>
+</ul>
+<hr>
+<h3 id="how-testing-skips-them" data-read>How Testing skips them</h3>
+<p data-read><code>launchctl disable gui/503/&lt;label&gt;</code> writes a per-user override, so the agent never starts in Testing and keeps running in Matt&#39;s account. It only works while Testing is logged in (the gui/503 domain doesn&#39;t exist otherwise; tested: &quot;Domain does not support specified action&quot;), so setup.sh runs inside Testing with Testing&#39;s password. Skipped: Jump agent, both Zoom updaters, Arturia, Adobe. Kept on purpose: Little Snitch agent (without it Little Snitch can&#39;t prompt about LockDown&#39;s connections, which could silently block it) and arkaudiod (audio helper; removing it could break mic/webcam). The dry run will show whether LockDown objects to either.</p>
+<p data-read>Rejected: editing the vendor plists (updates overwrite them, and it would affect Matt&#39;s account), and a guard wrapper per agent (more moving parts than the built-in override).</p>
+<hr>
+<h3 id="prefs-copied" data-read>Prefs copied</h3>
+<p data-read>Trackpad (tap to click, three-finger drag, gestures, speed 3), keyboard repeat 5/15, natural scrolling, auto dark mode, en_CA, Dock with only LockDown Browser + Safari (128 px, auto-hide). Display arrangement is already shared Mac-wide. Safari&#39;s homepage lives in its sandbox container; the script tries to set it and falls back to telling Matt to set it in Safari Settings.</p>
+<hr>
+<h3 id="pre-test-check" data-read>Pre-test check</h3>
+<p data-read>pretest_check.sh lists other logged-in users and any risky app or helper from any user (remote access, screen/audio capture, automation, launchers, AI apps, VMs). Run in Matt&#39;s account it flagged 24, which is the point: on test day Matt must log out of his own account (not just switch users), because fast user switching keeps all his apps running. <code>--pause-jump</code> stops the root Jump Connect service until <code>--resume-jump</code> or a restart (this affects the whole Mac briefly).</p>
+<hr>
+<h3 id="untested" data-read>Untested</h3>
+<p data-read>setup.sh only ran as a dry run (Testing hasn&#39;t been logged into). Whether LockDown objects to Little Snitch, arkaudiod or Jump&#39;s root service is unknown until the dry run with LockDown&#39;s practice/Help Center check.</p>
+<h3 id="undo" data-read>Undo</h3>
+<p data-read><code>bash /Users/Shared/testing-account/setup.sh --undo</code> inside Testing re-enables the agents. Deleting the Testing account in System Settings removes everything else.</p>
+
+</main>
+</body>
+</html>
