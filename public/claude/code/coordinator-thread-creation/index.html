@@ -71,6 +71,34 @@
 <li><span data-read>A rule so the coordinator hands itself off before it hits the cap (e.g. at ~25 threads started), and tells Matt plainly when start fails instead of guessing. Also tell Tyler about the cap, since he&#39;ll use the same one-coordinator setup. Not done yet; offered to Matt.</span></li>
 </ul>
 <p data-read>Undo: nothing changed on the Mac.</p>
+<h2 id="2200-added-the-25-thread-handoff-rule" data-read>22:00 Added the 25-thread handoff rule</h2>
+<p data-read><strong>Asked:</strong> Matt said yes to a rule so the coordinator hands itself off before it hits the thread limit.</p>
+<hr>
+<h3 id="where-the-rule-now-lives" data-read>Where the rule now lives</h3>
+<ul>
+<li><span data-read><code>.rules/core_safety.md</code>, Coordinator Routing section: &quot;Hand the coordinator chat off before 30 threads&quot;. Compiled into <code>CLAUDE.md</code> / <code>GEMINI.md</code> with <code>build_rules.py</code>.</span></li>
+<li><span data-read><code>docs/coordinator/project-instructions-slim.md</code> (the local copy of the Everything project instructions): one short line, 5,008 chars total, well under the 16k limit.</span></li>
+<li><span data-read><code>docs/shared/coordinator-instructions.md</code> (Tyler&#39;s copy) plus its public page mattmurphy.ca/coordinator-instructions, republished.</span></li>
+</ul>
+<hr>
+<h3 id="what-the-rule-says" data-read>What the rule says</h3>
+<ul>
+<li><span data-read>Count threads this coordinator chat has started. At 25: finish routing, write a <code>/_handoff</code>, and ask Matt in one line to open a new coordinator chat with the paste prompt.</span></li>
+<li><span data-read>25, not 30: leaves room for a few starts while Matt gets to it, and the limit of 30 is inferred, not documented.</span></li>
+<li><span data-read>If a start fails with &quot;could not be made this thread&#39;s session and was closed&quot;: retry once at most, then say plainly the chat likely hit its limit. No guessing other causes, no 7 retries.</span></li>
+<li><span data-read>Rejected: having the coordinator open a new coordinator chat itself. It has no tool for that; only Matt can open a chat in the project.</span></li>
+</ul>
+<hr>
+<h3 id="what-matt-still-has-to-do" data-read>What Matt still has to do</h3>
+<ul>
+<li><span data-read>The live coordinator reads the project instructions on claude.ai, which I can&#39;t edit from the Mac. Matt pastes the one line into the Everything project instructions (text in the reply). I didn&#39;t drive the web UI because he&#39;s on a call and it changes a project setting.</span></li>
+</ul>
+<hr>
+<h3 id="rule-guard-false-alarm" data-read>Rule-guard false alarm</h3>
+<ul>
+<li><span data-read>The take-control guard blocked a Bash edit because it saw Python&#39;s <code>open(p)</code> and read it as the macOS <code>open</code> command. Nothing touched the screen; I made the edits with the file editor instead. Worth a small guard fix sometime (ignore <code>open(</code> inside Python heredocs).</span></li>
+</ul>
+<p data-read>Undo: remove the bullet from <code>.rules/core_safety.md</code>, the line from the slim instructions and Tyler&#39;s doc, then <code>build_rules.py</code>.</p>
 
 </main>
 </body>
