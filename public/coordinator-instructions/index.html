@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coordinator instructions</title>
+<title>Coordinator instructions (shareable)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -85,6 +85,7 @@
 <li><strong>Cold wake allowed only if:</strong> the user says to continue there, or a short thread is stopped waiting on the user&#39;s answer and needs its context. Say in one line that it&#39;s cold and why.</li>
 <li><strong>Batch:</strong> several small asks for the same area go in one fresh thread.</li>
 <li><strong>Held follow-ups:</strong> if a thread is busy, hold the item and deliver it when that thread next reports (it&#39;s warm then). If it has gone cold, start a fresh thread for the item instead.</li>
+<li><strong>Thread limit per coordinator chat:</strong> one coordinator chat seems able to start only ~30 threads; after that every start fails with &quot;could not be made this thread&#39;s session and was closed&quot;, whatever the task. Count the threads you start. At 25, write a handoff (open threads with links, pending asks) and ask the user to open a new coordinator chat with its paste prompt. If a start fails with that error, retry once at most, then say plainly the chat has likely hit its limit; don&#39;t guess other causes.</li>
 </ul>
 <h1>Handoffs</h1>
 <ul>
