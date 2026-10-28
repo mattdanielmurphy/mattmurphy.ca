@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Leaving Projects for Claude Code: the short version (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · coordinator-migration-short</p>
+<h1 id="leaving-projects-for-claude-code-the-short-version-2026-10-27" data-read>Leaving Projects for Claude Code: the short version (2026-10-27)</h1>
+<h2 id="what-you-need-to-know" data-read>What you need to know</h2>
+<h3 id="threads-can-keep-going-with-no-handoffs" data-read>Threads can keep going with no handoffs</h3>
+<p data-read>Claude Code can compact a big thread just before its cache expires, so the thread carries on in the same place. It only does this in the terminal, but your desktop mod can trigger the same compaction.</p>
+<h3 id="dont-hand-off-every-expired-thread" data-read>Don&#39;t hand off every expired thread</h3>
+<p data-read>Your own test on Oct 23 found that resuming an expired thread remembered more than a handoff did (7.5 vs 5.8 out of 10), at about the same cost below 250k tokens. Handoffs only pay off for very big threads.</p>
+<h3 id="leaving-projects-saves-tokens-on-every-thread" data-read>Leaving Projects saves tokens on every thread</h3>
+<p data-read>A new project thread starts at 134k tokens. A new Code-tab thread starts at 60k.</p>
+<h3 id="the-code-tab-already-has-most-of-a-coordinator" data-read>The Code tab already has most of a coordinator</h3>
+<p data-read>One session can start threads on a chosen model, message threads that are still warm, and gets woken when each one finishes.</p>
+<h3 id="the-plan" data-read>The plan</h3>
+<ol>
+<li><span data-read>Your mod compacts big threads just before they expire. This helps your project threads today too.</span></li>
+<li><span data-read>One pinned Coordinator session in the Code tab, running your routing rules.</span></li>
+<li><span data-read>Voice tasks and the Shelf feed into it.</span></li>
+<li><span data-read>Run it next to Everything for a few days, then switch.</span></li>
+</ol>
+<h3 id="what-youd-lose" data-read>What you&#39;d lose</h3>
+<p data-read>Threads that run with the Mac off, and the phone&#39;s card view. On your phone you&#39;d see a list of sessions instead.</p>
+<h3 id="not-tested-yet" data-read>Not tested yet</h3>
+<p data-read>Whether the mod&#39;s timer still fires while the desktop app sits idle.</p>
+<h3 id="what-you-need-to-do" data-read>What you need to do</h3>
+<p data-read>Reply 👍 to build step 1.</p>
+
+</main>
+</body>
+</html>
