@@ -127,6 +127,20 @@
 <hr>
 <h3 id="tested-3" data-read>Tested</h3>
 <p data-read>Home checked headless with a copy of your real library (Nathan for You, Planet Earth, South Park) and the full click-through (onboarding to end of night) passes up to the break-glass wait step, which needs <code>glass.waitMinutes=0</code> and was already outside this change. 22 tests pass. Live at 20:44 (server restarted while nothing played, app reinstalled). Undo: <code>git revert 8d2dc98</code>.</p>
+<h2 id="2130-player-inside-the-glass-tv-window-and-the-real-full-screen-fix" data-read>21:30 Player inside the Glass TV window, and the real full-screen fix</h2>
+<p data-read><strong>Asked:</strong> the player shouldn&#39;t be its own app (windowed, it should play inside Glass TV), and full screen still showed the video small in the middle with a big border.</p>
+<hr>
+<h3 id="the-real-full-screen-cause" data-read>The real full-screen cause</h3>
+<p data-read>Reproduced on your 4K screen: in full screen the player&#39;s window stayed 892 points wide while the screen was 1920, so the black window background filled the screen and the video sat in the middle. The control bar was told to be &quot;window width minus 32 px&quot; at a priority higher than the window&#39;s own sizing, with a cap of 860 px, so Auto Layout held the whole window at 892 points. Its priority is now below the window&#39;s (490), and after the fix the picture measured 3840×2160 in full screen. The two earlier fixes (frame size from the layer, redraw on resize) were real but not the cause. Also: the video&#39;s shape is no longer forced while in full screen, and every resize redraws even when paused.</p>
+<hr>
+<h3 id="plays-inside-glass-tv" data-read>Plays inside Glass TV</h3>
+<p data-read>The player is now shared code (<code>app/player/core.swift</code>) that runs inside the Glass TV window, over the page. The page asks the server to play, the server hands the app the same arguments it used to give the separate player, the app plays it in its own window, and the server joins the control socket when it appears (so position, credits and X-Ray work as before). Full screen is entered and left with the Glass TV window; when the episode ends the page underneath shows the end screen. A Playback menu in Glass TV lists the keys, plus &quot;Stop and go back&quot; (⌘.). The separate Glass Player app is only used when Glass TV runs in a browser instead of its app.</p>
+<hr>
+<h3 id="tested-4" data-read>Tested</h3>
+<p data-read>Embedded player in a test window: plays, goes full screen at 3840×2160, back to windowed, and on quit it leaves and the page is back. Standalone full screen also measured 3840×2160. 22 tests pass. <strong>Not tested:</strong> a full play through the real Glass TV app (you were watching, so I didn&#39;t take over the app).</p>
+<hr>
+<h3 id="what-you-need-to-do" data-read>What you need to do</h3>
+<p data-read>Quit and reopen Glass TV once after your current episode, so the new app is running. The server restarts by itself when nothing is playing. Older app windows keep using the separate player until then. Undo: <code>git revert 3d4b153</code>.</p>
 
 </main>
 </body>
