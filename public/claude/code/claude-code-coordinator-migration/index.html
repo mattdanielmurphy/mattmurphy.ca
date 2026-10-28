@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Moving the coordinator from Projects to Claude Code (2026-10-27)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · claude-code-coordinator-migration</p>
+<h1 id="moving-the-coordinator-from-projects-to-claude-code-2026-10-27" data-read>Moving the coordinator from Projects to Claude Code (2026-10-27)</h1>
+<h2 id="2230-research-threads-that-never-need-a-handoff-and-a-diy-coordinator" data-read>22:30 Research: threads that never need a handoff, and a DIY coordinator</h2>
+<p data-read>Matt asked (Code tab): he has decided to try leaving the &quot;Everything&quot; project for Claude Code with our own setup. Keep the best of the Projects coordinator (one place to ask, it routes and picks the model) plus everything from ai-os. He wants a thread to just keep going: no visible handoffs, and if he writes into an expired thread, the handoff (if any) happens behind the scenes in the same interface. Failing that, the handoff should happen automatically and the new thread open by itself. New word: a <strong>chain</strong> is a set of threads linked by handoffs. Research first; he has questions of his own still to come.</p>
+<p data-read>Nothing was built. This entry is research and a proposed plan.</p>
+<p data-read>What I read first:</p>
+<ul>
+<li><span data-read><code>docs/details/2026-10-23-diy-coordinator-vs-projects.md</code> (<code>claude --bg</code>, <code>claude agents --json</code>, inbox sockets, <code>claude -p --cloud</code>).</span></li>
+<li><span data-read><code>docs/details/2026-10-26-claude-code-instead-of-projects.md</code> (feature-by-feature mapping, hybrid plan).</span></li>
+<li><span data-read>The 2026-10-22/23 cold-handoff evaluation and benchmark thread (session <code>8ef9547e</code>): resume vs handoff, measured on real threads.</span></li>
+<li><span data-read><code>docs/coordinator/project-instructions-slim.md</code>, the coordinator routing rules in <code>.rules/core_safety.md</code>, and the <code>context-alert</code> mod (<code>mods/context-alert/hooks/register.tsx</code>).</span></li>
+<li><span data-read>Claude Code docs and changelog (sources at the end), and Claude Code 2.1.308 as installed.</span></li>
+</ul>
+<hr>
+<h3 id="same-thread-no-handoff" data-read>Same thread, no handoff</h3>
+<p data-read><strong>Short answer: yes, this is possible in the desktop app, and it doesn&#39;t need handoffs at all for an expired cache.</strong></p>
+<ul>
+<li><span data-read><strong>Claude Code already does this, but only in the terminal.</strong> Since v2.1.299 (Oct 14), &quot;a 200K+ token conversation left idle for about 54 minutes is compacted before its one-hour prompt cache expires, so your next message doesn&#39;t reprocess it all&quot;. The thread keeps its identity and continues from a summary. Settings: <code>idleCompaction</code> (on/off), <code>CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS</code> (the 200K floor).</span></li>
+<li><span data-read><strong>It never runs in the desktop app.</strong> The docs say &quot;in a terminal session&quot;, and the Oct 23 benchmark found it had fired 0 times across 230 transcripts on this Mac, all of which run through the desktop app.</span></li>
+<li><span data-read><strong>Our mod can do the same thing in the desktop app.</strong> The mods API has <code>$.session.compact({ instructions })</code> (&quot;the same call <code>/compact</code> makes&quot;, works between turns) and <code>$.session.usage()</code> (context size, free to call). So <code>context-alert</code> can watch each thread, and at about 50 minutes idle, while the cache is still warm and cheap to read, compact a big thread with instructions like &quot;keep every rule and correction Matt gave word for word, the current task and the next step&quot;. When Matt writes again, the same thread simply continues.</span></li>
+<li><span data-read><strong>Why compacting while warm is the cheap moment:</strong> reading a warm 250k context costs a tenth of normal input; re-reading it after expiry costs a 1-hour cache write (twice normal input). The docs warn that compacting right after a cold resume is the expensive case, so the timing matters.</span></li>
+<li><span data-read><strong>Auto-compaction still covers the other limit.</strong> When a thread nears its context window, Claude Code compacts it automatically (<code>autoCompactEnabled: true</code> here). Together, a thread can run indefinitely.</span></li>
+</ul>
+<p data-read>What this means for <strong>chains</strong>: if threads compact in place, most chains collapse into one thread. A chain then only appears when work is deliberately moved to a new thread (a different folder or project, or a split), and the coordinator records the link.</p>
+<hr>
+<h3 id="resuming-beats-handoff-below-250k" data-read>Resuming beats handoff below 250k</h3>
+<p data-read>The premise &quot;obviously I want a handoff if the cache expired&quot; doesn&#39;t hold up in the data.</p>
+<ul>
+<li><span data-read><strong>Benchmark on 6 real cold threads (Oct 23):</strong> resuming scored 7.5/10 on recall (always 6–8); the Sonnet handoff scored 5.8 (2–8, one handoff took a declined message as its new task). Mean cost: resume $1.63, handoff $1.29 at list price.</span></li>
+<li><span data-read><strong>Cost depends on size:</strong> below about 200k tokens the two cost about the same; above about 250k the handoff saves roughly $0.90.</span></li>
+<li><span data-read><strong>The current handoff writer is nearly blind in project threads:</strong> <code>cold_handoff.py</code> drops tool calls when exporting, and in a project thread Claude&#39;s replies are tool calls, so Sonnet saw only 2–13k characters of 200–290k-token threads.</span></li>
+<li><span data-read><strong>Measured again today (threads since Oct 20):</strong> 70 cold resumes in project threads, median context 220k, 43 of them over 200k. Code-tab threads had only 2 cold resumes.</span></li>
+</ul>
+<p data-read>So the best order is: compact while warm (no cost spike, keeps the thread); if a thread goes cold anyway (Mac asleep, app closed), resume it below ~250k; only above ~250k move to a fresh context, and even that can happen in the same thread (see below).</p>
+<p data-read><strong>Same-tab fallback for a big cold thread (needs a test):</strong> a mod can intercept a prompt before it reaches the model (<code>prompt.submit</code> → <code>{ drop }</code>), run Sonnet on the transcript file outside the session, then submit the brief plus Matt&#39;s message back into the same session (<code>$.prompt.submit({ text, asUser: true })</code>). Whether the mod can also clear the old context first (<code>$.command.run</code> with <code>/clear</code>) is not documented; if it can&#39;t, the fallback is a new session opened automatically.</p>
+<hr>
+<h3 id="leaving-projects-saves-on-every-thread" data-read>Leaving Projects saves on every thread</h3>
+<ul>
+<li><span data-read><strong>A fresh project thread starts at a median of 134k tokens; a fresh Code-tab thread at 60k</strong> (353 project threads and 71 Code threads since Oct 20, first request each).</span></li>
+<li><span data-read>That ~74k difference is paid on every new thread and on every cold resume. At last week&#39;s pace it dwarfs what any handoff saves.</span></li>
+<li><span data-read>Projects&#39; coordinator also works &quot;from recent messages, recent threads, and project memory rather than its full history&quot; (docs), and every cloud thread gets project instructions capped at 16k. Our own coordinator has neither limit.</span></li>
+<li><span data-read>The 30-threads-per-coordinator-chat cap that hit on Oct 27 is a Projects limit; nothing in the Code tab docs mentions one (not verified).</span></li>
+</ul>
+<hr>
+<h3 id="coordinator-parts-already-in-the-code-tab" data-read>Coordinator parts already in the Code tab</h3>
+<p data-read>The desktop Code tab already has most of a coordinator built in. A session (the coordinator) can:</p>
+<ul>
+<li><span data-read><strong>Start threads</strong> with <code>start_session</code>: title, folder (<code>cwd</code>), worktree or not, permission mode, and <strong>model and effort</strong> (same family as the coordinator or cheaper). These are &quot;linked sessions&quot; shown as rows in the sidebar.</span></li>
+<li><span data-read><strong>Be woken when a thread finishes</strong>: the app continues the parent session with a note quoting the thread&#39;s report whenever a linked session ends a turn. This is Projects&#39; &quot;wakes on thread events&quot;.</span></li>
+<li><span data-read><strong>Send follow-ups to a warm thread</strong> with <code>SendMessage</code> (arrives as a labelled message, starts a turn if idle).</span></li>
+<li><span data-read><strong>Switch a thread&#39;s model</strong> (<code>set_session_model</code>), <strong>rename</strong> it, <strong>archive</strong> it, file it in <strong>sidebar groups</strong> (a group per area or chain), <strong>pin</strong> it, mark it <strong>unread</strong> (= waiting on you).</span></li>
+<li><span data-read><strong>Clear an idle thread it started</strong> (<code>clear_session</code>, the <code>/clear</code> command) and send it a brief, so a fresh context lives in the same sidebar row. Refused while Matt has that thread open on screen or pinned.</span></li>
+<li><span data-read><strong>Reach the phone</strong>: Remote Control serves desktop sessions to the Claude mobile app and claude.ai/code.</span></li>
+</ul>
+<p data-read>Also available, but not the first choice:</p>
+<ul>
+<li><span data-read><strong>Agent teams</strong> (experimental, <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>): a lead with teammates, shared task list, idle notifications. Teammates aren&#39;t restored after a resume and live inside the lead&#39;s process, so they don&#39;t suit a coordinator that runs for weeks.</span></li>
+<li><span data-read><strong>Agent view / <code>claude --bg</code></strong> (research preview): background sessions under a supervisor, <code>claude agents --json</code> for state, inbox sockets for scripts. Terminal-native, so it gets idle compaction for free, but it loses the desktop app&#39;s mods, panes and browser. Plan B if the desktop route disappoints.</span></li>
+</ul>
+<hr>
+<h3 id="what-projects-does-that-wed-rebuild" data-read>What Projects does that we&#39;d rebuild</h3>
+<table>
+<thead>
+<tr>
+<th>Projects feature</th>
+<th>Our version</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>One conversation that routes everything</td>
+<td>A pinned &quot;Coordinator&quot; Code session in <code>~/projects</code>, with the routing rules from <code>.rules/</code></td>
+<td>Have the parts</td>
+</tr>
+<tr>
+<td>Picks thread model and effort</td>
+<td>Coordinator picks per task using <code>claude_pace.py</code> (Opus by default, Sonnet when the week runs hot or the task is tiny)</td>
+<td>Have the parts</td>
+</tr>
+<tr>
+<td>Reuses warm threads, starts new ones otherwise</td>
+<td>Same rule as today (scope, last turn &lt; 45 min, &lt; ~40 messages), but cold threads are resumed below ~250k instead of handed off</td>
+<td>Rule change</td>
+</tr>
+<tr>
+<td>Wakes when threads finish</td>
+<td>Desktop linked-session notes</td>
+<td>Built in</td>
+</tr>
+<tr>
+<td>Overview: working / waiting on you / ready / idle / resolved</td>
+<td>Sidebar groups, unread dots and pins; later the Shelf reading a local registry</td>
+<td>Partly built in</td>
+</tr>
+<tr>
+<td>Project memory and instructions</td>
+<td><code>.rules/</code>, CLAUDE.md, memory, QMD</td>
+<td>Have it, no 16k cap</td>
+</tr>
+<tr>
+<td>Phone access</td>
+<td>Remote Control</td>
+<td>Have it, but as a session list, not cards</td>
+</tr>
+<tr>
+<td>Emoji quick replies</td>
+<td>Mod band buttons on the Mac; typed &quot;👍&quot; on the phone</td>
+<td>Gap on phone</td>
+</tr>
+<tr>
+<td>Cloud threads that run with the Mac off</td>
+<td><code>start_session</code> with <code>target: &quot;cloud&quot;</code> for tasks that only need GitHub</td>
+<td>Partial (no local files)</td>
+</tr>
+<tr>
+<td>Thread limit per coordinator chat (~30)</td>
+<td>None known</td>
+<td>Better</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="proposed-design" data-read>Proposed design</h3>
+<ol>
+<li><span data-read><strong>Threads that never go cold (mod).</strong> In <code>context-alert</code>: at ~50 min idle, if the context is over a threshold (start at Anthropic&#39;s 200k; a Tweaks knob), call <code>$.session.compact</code> with instructions that keep Matt&#39;s rules, corrections, current task and next step. Show a small corner note &quot;compacted while idle&quot;. Drop the hold-and-👍 flow for cold threads under ~250k: they just resume. Above ~250k and cold: same-tab brief if the mod can clear, else open a new session automatically. This also helps today, because project threads on the Mac run in the desktop app and load the same mod.</span></li>
+<li><span data-read><strong>The coordinator (one Code session).</strong> Pinned, Remote Control on, runs on Opus at low effort (it must be Opus to start Opus threads). Its prompt is the routing section of <code>.rules/</code> plus a small registry file it keeps (thread id, title, chain, area, folder, model, state, last turn), so its own compactions never lose track of open threads.</span></li>
+<li><span data-read><strong>Front doors.</strong> Voice tasks (<code>send_task</code> in the Mac connector) post to the coordinator instead of pasting into the project chat; the Shelf reads the registry instead of hearthbot.</span></li>
+<li><span data-read><strong>Trial side by side</strong> for a few days with Everything still running, then switch.</span></li>
+</ol>
+<hr>
+<h3 id="build-steps" data-read>Build steps</h3>
+<ol>
+<li><span data-read><strong>Idle compaction in the mod</strong> (an hour or two, plus a real test on one big thread). Highest value, smallest change, works before any migration.</span></li>
+<li><span data-read><strong>Coordinator session</strong> (an afternoon): routing prompt, registry, pace-based model choice, a test with three real tasks.</span></li>
+<li><span data-read><strong>Front doors and Shelf</strong> (a day): voice inbox to the coordinator, Shelf on the registry.</span></li>
+<li><span data-read><strong>Benchmark compaction vs resume</strong> with the existing bench method, so the 200k / 250k thresholds come from data.</span></li>
+</ol>
+<hr>
+<h3 id="keeping-it-portable" data-read>Keeping it portable</h3>
+<p data-read>Matt&#39;s worry is lock-in, especially for Slub. What keeps this flexible:</p>
+<ul>
+<li><span data-read><strong>The brain stays in plain files</strong>: rules in <code>.rules/</code> (already compiled into CLAUDE.md, AGENTS.md for Codex and GEMINI.md), the thread registry as JSON, briefs and details as markdown. Any agent can read them.</span></li>
+<li><span data-read><strong>Harness-specific calls stay thin</strong>: <code>start_session</code>, <code>SendMessage</code> and the mod are the only Claude-Code-only parts; a Codex or Gemini CLI adapter could use the same registry later.</span></li>
+<li><span data-read><strong>Stay inside the official harness for subscription use</strong>: Anthropic restricted Opus on subscriptions through third-party tools (OpenCode, OpenClaw) earlier this year, and <code>--bare</code> / Agent SDK paths authenticate with an API key. Building on Claude Code itself avoids that wall; a custom SDK app would bill at API prices.</span></li>
+<li><span data-read>Projects, by contrast, keeps the coordinator&#39;s behaviour, thread list and limits on Anthropic&#39;s side, with no public API (the Shelf problem).</span></li>
+</ul>
+<hr>
+<h3 id="untested-and-risky" data-read>Untested and risky</h3>
+<ul>
+<li><span data-read>Whether a mod&#39;s timer fires while a desktop session sits idle and unfocused, and whether the app keeps that session&#39;s process alive. If not, compaction needs a different trigger (e.g. a launchd job that messages the session, which would cost a turn).</span></li>
+<li><span data-read>Whether <code>$.command.run</code> can run <code>/clear</code> from a mod (needed for the same-tab fallback on big cold threads).</span></li>
+<li><span data-read>Quality of compaction summaries vs full resume: not measured yet (step 4).</span></li>
+<li><span data-read>Whether linked-session wake-ups reach the coordinator when Matt is talking to it from the phone over Remote Control (it runs in the desktop app, so probably yes).</span></li>
+<li><span data-read>Compaction on threads Matt never returns to is wasted usage; the 200k threshold keeps that rare, and the cost is about a tenth of the context plus the summary.</span></li>
+<li><span data-read>The desktop app must be open and the Mac awake; Projects cloud threads didn&#39;t need that.</span></li>
+</ul>
+<hr>
+<h3 id="rejected" data-read>Rejected</h3>
+<ul>
+<li><span data-read><strong>Auto-handoff on every expired cache</strong>: loses recall (5.8 vs 7.5) and costs about the same below 250k.</span></li>
+<li><span data-read><strong>Keep-warm pings</strong> (a tiny message every ~55 min): adds junk turns to every thread and makes the model reply each time.</span></li>
+<li><span data-read><strong>Agent teams as the coordinator</strong>: experimental, teammates aren&#39;t restored after a resume.</span></li>
+<li><span data-read><strong>A custom Agent SDK app</strong>: API pricing and third-party-harness restrictions.</span></li>
+<li><span data-read><strong>Switching everything at once</strong>: no cloud threads and no phone cards on day one.</span></li>
+</ul>
+<hr>
+<h3 id="sources" data-read>Sources</h3>
+<ul>
+<li><span data-read>Claude Code changelog (2.1.299 idle compaction, 2.1.302 <code>/config</code> row, 2.1.304 resume warning): <a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md">https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md</a></span></li>
+<li><span data-read>Prompt caching in Claude Code: <a href="https://code.claude.com/docs/en/prompt-caching">https://code.claude.com/docs/en/prompt-caching</a></span></li>
+<li><span data-read>Mods reference (<code>$.session.compact</code>, <code>$.session.usage</code>, <code>prompt.submit</code>): <a href="https://code.claude.com/docs/en/plugins/mods/reference">https://code.claude.com/docs/en/plugins/mods/reference</a></span></li>
+<li><span data-read>Projects docs: <a href="https://code.claude.com/docs/en/claude-projects">https://code.claude.com/docs/en/claude-projects</a></span></li>
+<li><span data-read>Agent view: <a href="https://code.claude.com/docs/en/agent-view">https://code.claude.com/docs/en/agent-view</a></span></li>
+<li><span data-read>Agent teams: <a href="https://code.claude.com/docs/en/agent-teams">https://code.claude.com/docs/en/agent-teams</a></span></li>
+<li><span data-read>Cross-session messaging: <a href="https://code.claude.com/docs/en/cross-session-messaging">https://code.claude.com/docs/en/cross-session-messaging</a></span></li>
+<li><span data-read>Hooks: <a href="https://code.claude.com/docs/en/hooks">https://code.claude.com/docs/en/hooks</a></span></li>
+<li><span data-read>Third-party idle-compaction write-up: <a href="https://www.remio.ai/post/claude-code-idle-compaction-saves-cache-but-resumes-from-a-summary">https://www.remio.ai/post/claude-code-idle-compaction-saves-cache-but-resumes-from-a-summary</a></span></li>
+<li><span data-read>Third-party harness restrictions (blog, unverified): <a href="https://ucstrategies.com/news/why-developers-are-suddenly-turning-against-claude-code/">https://ucstrategies.com/news/why-developers-are-suddenly-turning-against-claude-code/</a></span></li>
+</ul>
+<hr>
+<h3 id="undo" data-read>Undo</h3>
+<p data-read>Nothing to undo: research only. <code>VISION.md</code> got a short entry for the idea.</p>
+
+</main>
+</body>
+</html>
