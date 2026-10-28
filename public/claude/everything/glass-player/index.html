@@ -112,6 +112,21 @@
 <hr>
 <h3 id="tested-2" data-read>Tested</h3>
 <p data-read>Explore API returned 10 shelves of 20; IMDb link lookup worked; home checked headless in light and dark (peek visible, IMDb button on hover, no errors); 22 tests pass; app and player build. Live at 19:38 (server restarted while nothing played; app reinstalled). Undo: <code>git revert 80f67e3</code>.</p>
+<h2 id="2045-new-look-after-readthrough-and-the-library-wall" data-read>20:45 New look after Readthrough and the library wall</h2>
+<p data-read><strong>Asked:</strong> the app felt clinical and sterile (light mode especially; posters look bad on anything white), the fonts were disliked, take inspiration from Readthrough, poster gaps were off, and the library should be option C&#39;s cards with buttons on every card plus parts of A.</p>
+<hr>
+<h3 id="the-new-look" data-read>The new look</h3>
+<p data-read>Taken from Readthrough&#39;s player (<code>pages/site/scroll-read/player/player.css</code>): Onest for text and Martian Mono for labels, its dark palette (#10120f background, #171a16 surfaces, hairline #2d302b), the lilac accent (#c9a3df) and the lilac-to-pink gradient on the main buttons, pill-shaped buttons and chips, softer 10–12 px corners. Applied to every screen through the shared tokens in <code>web/base.css</code>, and to the X-Ray overlay.</p>
+<p data-read><strong>Decision you may veto:</strong> there is one palette now, the dark one, in both system appearances. You said posters don&#39;t look good against anything white, so I didn&#39;t make a lighter variant. If you want a light mode back, it would be a mid-tone one, not white.</p>
+<hr>
+<h3 id="the-library-wall" data-read>The library wall</h3>
+<p data-read>Option C&#39;s layout (1 title fills the area; 3 = one big card plus two stacked; up to 8 tile in two rows; more than 8 scroll in rows of four) with option A&#39;s info on every card, always visible: &quot;Up next&quot; or &quot;Continue&quot;, the logo (dark logos turned white), the episode chip, IMDb rating and year, and Play/Resume plus Pick episode. Hover adds the IMDb and remove buttons. A thin gradient line shows progress. The separate &quot;Pick up where you left off&quot; shelf is gone since the cards show it. Backdrops and logos come from metahub by IMDb id (the server now looks up IMDb ids for library items); without a backdrop the poster is used blurred with a sharp copy; without a logo, the title in type.</p>
+<hr>
+<h3 id="poster-gaps" data-read>Poster gaps</h3>
+<p data-read>Gaps went from 6 to 12 px and poster corners from 3 to 8 px (knobs <code>ui.posterGap</code>, <code>ui.posterRadius</code>; the wall&#39;s own gap is 10 px).</p>
+<hr>
+<h3 id="tested-3" data-read>Tested</h3>
+<p data-read>Home checked headless with a copy of your real library (Nathan for You, Planet Earth, South Park) and the full click-through (onboarding to end of night) passes up to the break-glass wait step, which needs <code>glass.waitMinutes=0</code> and was already outside this change. 22 tests pass. Live at 20:44 (server restarted while nothing played, app reinstalled). Undo: <code>git revert 8d2dc98</code>.</p>
 
 </main>
 </body>
