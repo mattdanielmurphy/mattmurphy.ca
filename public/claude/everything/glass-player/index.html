@@ -94,6 +94,24 @@
 <li><span data-read><strong>Not tested:</strong> the add-on subtitles inside a visible Glass Player window (Hammerspoon was unreachable for screen clearance; tested with the same engine headless).</span></li>
 <li><span data-read>Live: server restarted at 18:28 while nothing was playing. Undo: <code>git revert 3f7404a</code>.</span></li>
 </ul>
+<h2 id="1940-explore-feed-peek-scrollbars-and-imdb-browser" data-read>19:40 Explore feed, peek, scrollbars and IMDb browser</h2>
+<p data-read><strong>Asked:</strong> Explore should come from Cinemeta and any catalog add-on (replacing TMDB trending), not be folded, peek below a library that fills the first screen with a hero, macOS scrollbars, and an IMDb button opening a clean in-app browser.</p>
+<hr>
+<h3 id="explore-from-add-ons" data-read>Explore from add-ons</h3>
+<p data-read>Explore now lists every catalog of every installed add-on that needs no extra input (Cinemeta&#39;s Popular and Featured, plus your Netflix, HBO Max, Disney+ and Prime Video shelves from the catalog add-on you added), then genre shelves from the first catalog that offers genres (knob <code>home.exploreGenreRows</code>, default 8; <code>home.explorePerShelf</code>, default 20). Titles already in your library are left out. Cinemeta is now a default add-on (installed once; removing it keeps it removed). A new catalog add-on shows up here by itself. Shelf labels name the add-on when more than one add-on fills Explore. The old TMDB trending is gone from home (TMDB still powers search and artwork).</p>
+<hr>
+<h3 id="unfolded-with-a-peek" data-read>Unfolded with a peek</h3>
+<p data-read>Explore is a normal section now, no fold. The library area takes at least the first screen minus a peek (<code>ui.explorePeek</code>, default 190 px), so Explore&#39;s heading, first shelf label and the tops of its posters show at the bottom. The hero that fills that space is still to come (three options being made).</p>
+<hr>
+<h3 id="scrollbars" data-read>Scrollbars</h3>
+<p data-read>The rows had <code>scrollbar-width: thin</code>, which draws WebKit&#39;s old non-native bar. Removing it gives the normal macOS overlay scrollbars (they appear while scrolling, per System Settings).</p>
+<hr>
+<h3 id="imdb-button-and-clean-browser" data-read>IMDb button and clean browser</h3>
+<p data-read>Hovering a poster shows a small IMDb button (top right). It asks the server for the title&#39;s IMDb id (own id, Cinemeta id, or a TMDB lookup) and opens it in a reusable in-app window (<code>app/browser.swift</code>): about 40 ad and tracker hosts are blocked with a WebKit content blocker, IMDb ad slots, &quot;More like this&quot;, news, video gallery, sign-in promos and the footer are hidden, videos don&#39;t autoplay. Back/forward/open-in-browser buttons sit in the title bar (⌘[ ⌘] work, Go menu). Outside the app it opens a normal browser tab.</p>
+<p data-read><strong>Not verified:</strong> how clean IMDb actually looks. IMDb shows a robot check to automated browsers, so I couldn&#39;t load it in a test; the hidden-element list is best-effort. Tell me what still distracts and I&#39;ll hide it.</p>
+<hr>
+<h3 id="tested-2" data-read>Tested</h3>
+<p data-read>Explore API returned 10 shelves of 20; IMDb link lookup worked; home checked headless in light and dark (peek visible, IMDb button on hover, no errors); 22 tests pass; app and player build. Live at 19:38 (server restarted while nothing played; app reinstalled). Undo: <code>git revert 80f67e3</code>.</p>
 
 </main>
 </body>
