@@ -15,7 +15,7 @@
 <h1 id="morning-check-in-as-a-phone-call-pipecat-spike">Morning check-in as a phone call (Pipecat spike)</h1>
 <p data-read>&lt;!-- readthrough project=code --&gt;</p>
 <h2 id="1350-spike-result-and-recommendation">13:50 Spike result and recommendation</h2>
-<p data-read>Matt asked whether the morning check-in can be a call, ideally FaceTime Audio, on Pipecat. Built only a throwaway test; nothing is live.</p>
+<p data-read>You asked whether your morning check-in can be a call, ideally FaceTime Audio, on Pipecat. Built only a throwaway test; nothing is live.</p>
 <hr>
 <h3 id="recommendation-twilio-first">Recommendation: Twilio first</h3>
 <table>
@@ -47,14 +47,14 @@
 <td>Yes, looks like a real call</td>
 <td>Best</td>
 <td>US$99 a year Apple developer fee, plus an app to build</td>
-<td>Later, only if phone audio bothers him</td>
+<td>Later, only if phone audio bothers you</td>
 </tr>
 <tr>
 <td>WebRTC link</td>
 <td>No: a notification, not a ring</td>
 <td>Best</td>
 <td>Low</td>
-<td>Rejected: doesn&#39;t get him out of bed</td>
+<td>Rejected: doesn&#39;t get you out of bed</td>
 </tr>
 </tbody></table>
 <hr>
@@ -62,19 +62,19 @@
 <p data-read>Real Speechify voice (Marian) and real Deepgram speech-to-text inside Pipecat, with a simulated 200-second room recording. Not tested: a real phone call, a real microphone, or a Claude conversation.</p>
 <ul>
 <li><span data-read><strong>Latency:</strong> first voice audio arrives in 0.22 seconds, every line. Claude&#39;s reply time will add to this and wasn&#39;t measured.</span></li>
-<li><span data-read><strong>Silence:</strong> with the mic open, breaths and a cough caused no false turn, but quiet muttering did. With the mic off during scripted phases there were no false turns, and speech-to-text heard him correctly right after 178 seconds off.</span></li>
+<li><span data-read><strong>Silence:</strong> with the mic open, breaths and a cough caused no false turn, but quiet muttering did. With the mic off during scripted phases there were no false turns, and speech-to-text heard you correctly right after 178 seconds off.</span></li>
 <li><span data-read><strong>Timeout:</strong> Pipecat&#39;s default ends a pipeline after 300 idle seconds, which would kill a long meditation. Read from the code, not tested; turn it off or keep it fed.</span></li>
-<li><span data-read><strong>Pronunciation:</strong> back-transcribed lines were right, except course codes read as numbers (&quot;CMPUT 201&quot; became &quot;two hundred and one&quot;). A small word list fixes those. Transcription can&#39;t judge the feel; only his ears can.</span></li>
+<li><span data-read><strong>Pronunciation:</strong> back-transcribed lines were right, except course codes read as numbers (&quot;CMPUT 201&quot; became &quot;two hundred and one&quot;). A small word list fixes those. Transcription can&#39;t judge the feel; only your ears can.</span></li>
 <li><span data-read><strong>Design this implies:</strong> breathing and meditation are pre-rendered audio played into the call with the mic off, so timing is exact and Pipecat only handles the check-in.</span></li>
 </ul>
 <hr>
 <h3 id="cost-for-a-15-minute-morning">Cost for a 15-minute morning</h3>
-<p data-read>Twilio: 15 × (US$0.014 + $0.0044) = $0.28, plus the $1.15 a month number. Speech-to-text comes from his Deepgram credit, Speechify from his existing plan (exact rate not checked), and Claude is cents from his Max API credit. Roughly US$10 a month.</p>
+<p data-read>Twilio: 15 × (US$0.014 + $0.0044) = $0.28, plus the $1.15 a month number. Speech-to-text comes from your Deepgram credit, Speechify from your existing plan (exact rate not checked), and Claude is cents from your Max API credit. Roughly US$10 a month.</p>
 <hr>
 <h3 id="blockers">Blockers</h3>
-<p data-read>Needs a new Twilio account (paid, so asking first). No Anthropic API key is set yet; the Max credit has to be claimed. The Deepgram key in ai-os <code>.env</code> has a stray character and returns 401 until it&#39;s removed; the spike stripped it in memory, and the file wasn&#39;t changed.</p>
+<p data-read>Needs a new Twilio account (paid, so asking first). No Anthropic API key is set yet; the Max credit has to be claimed. The Deepgram key in your ai-os <code>.env</code> has a stray character and returns 401 until it&#39;s removed; the spike stripped it in memory, and the file wasn&#39;t changed.</p>
 <h2 id="1410-free-options-for-the-call">14:10 Free options for the call</h2>
-<p data-read>Matt rejected Deepgram for voice and wants Groq speech-to-text and a free Twilio replacement. The voice was already Speechify, so nothing changes there. Groq swaps in for speech-to-text, but it transcribes after he stops talking, so replies start slightly later. Telegram is the free candidate: a second user account can place a real ringing call, though bots can&#39;t, and it needs a spare number. Twilio&#39;s trial credit is a free way to test a real phone call, not a lasting answer.</p>
+<p data-read>You rejected Deepgram for voice and want Groq speech-to-text and a free Twilio replacement. The voice was already Speechify, so nothing changes there. Groq swaps in for speech-to-text, but it transcribes after you stop talking, so replies start slightly later. Telegram is the free candidate: a second user account can place a real ringing call, though bots can&#39;t, and it needs a spare number. Twilio&#39;s trial credit is a free way to test a real phone call, not a lasting answer.</p>
 
 </main>
 </body>
