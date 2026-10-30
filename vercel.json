@@ -28,6 +28,10 @@
 		{
 			"source": "/coordinator-instructions",
 			"destination": "/coordinator-instructions/index.html"
+		},
+		{
+			"source": "/agent-brief-2026-w44",
+			"destination": "/agent-brief-2026-w44/index.html"
 		}
 	],
 	"headers": [

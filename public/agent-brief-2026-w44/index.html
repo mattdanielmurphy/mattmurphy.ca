@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent brief 2026-W44</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light dark;
+    --bg: #f8f8f7; --text: #35322b; --muted: #686359; --rule: #d6d4d0; --accent: #1251b4; --mark: #e5eefb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1a1916; --text: #d7d5d1; --muted: #969187; --rule: #36322c; --accent: #6192e1; --mark: #001c5c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.6 "Atkinson Hyperlegible", system-ui, sans-serif; text-wrap: pretty; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem 5rem; }
+  h1, h2, h3 { font-family: "Familjen Grotesk", system-ui, sans-serif; line-height: 1.2; text-wrap: balance; letter-spacing: -0.01em; }
+  h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);
+    margin: 2.75rem 0 0.75rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+  h1 + p { color: var(--muted); }
+  a { color: var(--accent); }
+  strong { font-weight: 700; }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: 0.4rem 0; }
+  li::marker { color: var(--accent); }
+  code { font-size: 0.9em; background: var(--mark); padding: 0.1em 0.3em; border-radius: 3px; }
+  pre { overflow-x: auto; background: var(--mark); padding: 0.75rem; border-radius: 4px; }
+  pre code { background: none; padding: 0; }
+  blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 3px solid var(--accent); color: var(--muted); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+  table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+  th, td { border-bottom: 1px solid var(--rule); padding: 0.4rem 0.6rem; text-align: left; }
+</style>
+</head>
+<body>
+<main>
+<h1>Agent brief ·&nbsp;2026-W44</h1>
+<p><strong>Short week.</strong> You have deadlines and two midterms coming up, so this brief has only the top 3 items and no lesson. Lesson 1 waits for next week.</p>
+<h2>What changed that affects&nbsp;you</h2>
+<h3><a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md">Claude Code 2.1.314: idle compaction in the Code tab</a></h3>
+<p>When a conversation over 200K tokens sits idle, the Code tab now summarizes it. If the prompt cache has expired by your next message, it uses that&nbsp;summary.</p>
+<p><strong>Why it matters to you:</strong> this is most of what your context-alert mod does for big idle threads. Check whether the mod&#39;s compaction can be retired (ai-os, committed stage: it removes a piece you maintain).</p>
+<p>Rating: Not interesting · Interesting · Extremely&nbsp;interesting</p>
+<h2>Could replace something you&nbsp;built</h2>
+<p>The idle compaction above clears the &quot;committed&quot; bar for ai-os. Nothing else this week cleared a project&#39;s&nbsp;bar.</p>
+<h2>HN worth your&nbsp;time</h2>
+<h3><a href="https://news.ycombinator.com/item?id=50284255">Claude Code re-sends each background agent&#39;s transcript for its status line</a></h3>
+<p>A write-up measured from Claude Code&#39;s OpenTelemetry export: the 3–5 word status line for background agents re-sends the full transcript about every 30 seconds. In their data it was ~16% of spend. They also share a preload hack to turn it&nbsp;off.</p>
+<p><strong>Why it matters to you:</strong> you run many side sessions at once, so this may be part of your weekly usage. Read it, but don&#39;t install the hack. Check your own usage first (<code>claude_pace.py</code>), and look at an official setting if one appears. It&#39;s also a live example of the observability idea in your rules plan.</p>
+<p>Rating: Not interesting · Interesting · Extremely&nbsp;interesting</p>
+<h3><a href="https://news.ycombinator.com/item?id=50258868">Here be monsters: what do you still need to know when agents do the work?</a></h3>
+<p>An essay (15 min) on which fundamentals still matter when agents write the code: depth in a few areas, breadth everywhere, and learning the rest just in&nbsp;time.</p>
+<p><strong>Why it matters to you:</strong> it fits your goal of becoming near-expert at agentic systems without studying everything. It&#39;s also a good frame for the syllabus.</p>
+<p>Rating: Not interesting · Interesting · Extremely&nbsp;interesting</p>
+<hr>
+<p>Rate items or comment by telling the Coordinator: <code>brief: &lt;your note&gt;</code>.</p>
+
+</main>
+</body>
+</html>
