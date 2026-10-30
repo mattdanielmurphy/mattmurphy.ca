@@ -12,25 +12,25 @@
 <body>
 <main id="text">
 <p class="label">Claude · code · readthrough-float</p>
-<h1 id="readthrough-float" data-read>Readthrough float</h1>
-<h2 id="2255-first-version" data-read>22:55 First version</h2>
-<h3 id="what-was-asked" data-read>What was asked</h3>
+<h1 id="readthrough-float">Readthrough float</h1>
+<h2 id="2255-first-version">22:55 First version</h2>
+<h3 id="what-was-asked">What was asked</h3>
 <p data-read>Readthrough opens by itself in a floating window tied to Claude&#39;s window, per thread, closable, with tweak knobs.</p>
-<h3 id="how-it-works" data-read>How it works</h3>
+<h3 id="how-it-works">How it works</h3>
 <ul>
 <li><span data-read><code>~/.hammerspoon/modules/readthrough_float.lua</code>: a small standard utility window (native drag, resize, close button; Esc closes when focused), placed over the right of Claude&#39;s window (never the sidebar), frame remembered. Shows only while Claude or the float is in front. Per thread: switching hides it, switching back reshows it, closed stays closed until the next publish. Knobs in ⌃⌥⌘T &quot;Readthrough float&quot; (width, height share, right/top offsets, fade in/out).</span></li>
 <li><span data-read>Thread detection: new ai-os mod <code>mods/visible-session</code>. The desktop app only draws a thread&#39;s prompt band while that thread is on screen, so the mod writes the session id to <code>~/.hammerspoon/tmp/claude_visible_session</code> and calls <code>visible(id)</code> on change. Window title is just &quot;Claude&quot; and walking Claude&#39;s AX tree is far too slow (it hung Hammerspoon), so both were rejected.</span></li>
 <li><span data-read>Publish signal: asked the readthrough-hook session to call <code>hs -c &#39;require(&quot;modules.readthrough_float&quot;).published(url, sessionId)&#39;</code> after each publish.</span></li>
 </ul>
-<h3 id="untested--risky" data-read>Untested / risky</h3>
+<h3 id="untested--risky">Untested / risky</h3>
 <ul>
 <li><span data-read>Hammerspoon crashed at 22:43 during my AX probe (before the new module loaded) and is not running; it needs relaunching. The float itself has not been seen on screen yet.</span></li>
 <li><span data-read>Mod loads in new/restarted Claude sessions; unverified that band renders fire on every thread switch.</span></li>
 <li><span data-read>No shared Lua HUD-movement module exists (hud-kit is Swift), so it uses a native window for drag/resize; no snap-to-centre.</span></li>
 </ul>
-<h3 id="undo" data-read>Undo</h3>
+<h3 id="undo">Undo</h3>
 <p data-read>Remove the <code>safeRegister(&quot;modules.readthrough_float&quot;)</code> line in <code>~/.hammerspoon/init.lua</code>; delete <code>mods/visible-session</code>.</p>
-<h2 id="2320-less-detail-layered-readthrough" data-read>23:20 Less detail, layered Readthrough</h2>
+<h2 id="2320-less-detail-layered-readthrough">23:20 Less detail, layered Readthrough</h2>
 <p data-read>You wanted details files shorter and less technical, with more detail only when you ask for it, and the Readthrough to open and start talking by itself when a reply lands.</p>
 <ul>
 <li><span data-read>Saved as a global rule: medium detail by default, no back-end talk unless asked, deeper bits in a &quot;More&quot; layer.</span></li>
@@ -38,7 +38,14 @@
 <li><span data-read>The player&#39;s own settings sit behind its &quot;Tune&quot; button (bottom right), not in the ⌃⌥⌘T panel yet. Bringing them into the panel is part of the plan below.</span></li>
 <li><span data-read>Planned player behaviour is waiting for your 👍 (see the reply).</span></li>
 </ul>
-
+<h2 id="2350-the-readthrough-now-talks-you-through-each-reply">23:50 The Readthrough now talks you through each reply</h2>
+<p data-read>When an agent replies, the float opens on the newest reply and starts talking right away. You don&#39;t need to press anything. It no longer reads out the page title or the headings, just the text, so it sounds more like someone explaining.</p>
+<p data-read>Each part has a small &quot;Hold Enter for more detail&quot; button. Hold Enter, or click it, and that part&#39;s extra detail opens and gets read out next. Right arrow and the other keys work exactly as before.</p>
+<p data-read>If a new reply lands while it&#39;s still reading, the new one waits and starts when the current one finishes. Switching threads pauses it.</p>
+<button type="button" class="more-hint">Hold <kbd>Enter</kbd> for more detail</button><div class="more">
+<p data-read>This section is itself a test of the new layout: you&#39;re hearing this only because you asked for more. Agents write the extra layer under a &quot;More&quot; heading, and it stays folded until you ask. Pages published before tonight keep the old behaviour until they&#39;re published again.</p>
+<p data-read>Not tested yet: whether the float can start sound on its own without a first click. If it can&#39;t, you&#39;ll see &quot;Tap anywhere to start reading&quot; the first time.</p>
+</div>
 </main>
 </body>
 </html>
