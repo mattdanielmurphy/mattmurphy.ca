@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_7e01e2ce-dec5-4307-8c9a-5134e50132dd">
+<title>Readthrough float</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · readthrough-float</p>
+<h1 id="readthrough-float" data-read>Readthrough float</h1>
+<h2 id="2255-first-version" data-read>22:55 First version</h2>
+<h3 id="what-was-asked" data-read>What was asked</h3>
+<p data-read>Readthrough opens by itself in a floating window tied to Claude&#39;s window, per thread, closable, with tweak knobs.</p>
+<h3 id="how-it-works" data-read>How it works</h3>
+<ul>
+<li><span data-read><code>~/.hammerspoon/modules/readthrough_float.lua</code>: a small standard utility window (native drag, resize, close button; Esc closes when focused), placed over the right of Claude&#39;s window (never the sidebar), frame remembered. Shows only while Claude or the float is in front. Per thread: switching hides it, switching back reshows it, closed stays closed until the next publish. Knobs in ⌃⌥⌘T &quot;Readthrough float&quot; (width, height share, right/top offsets, fade in/out).</span></li>
+<li><span data-read>Thread detection: new ai-os mod <code>mods/visible-session</code>. The desktop app only draws a thread&#39;s prompt band while that thread is on screen, so the mod writes the session id to <code>~/.hammerspoon/tmp/claude_visible_session</code> and calls <code>visible(id)</code> on change. Window title is just &quot;Claude&quot; and walking Claude&#39;s AX tree is far too slow (it hung Hammerspoon), so both were rejected.</span></li>
+<li><span data-read>Publish signal: asked the readthrough-hook session to call <code>hs -c &#39;require(&quot;modules.readthrough_float&quot;).published(url, sessionId)&#39;</code> after each publish.</span></li>
+</ul>
+<h3 id="untested--risky" data-read>Untested / risky</h3>
+<ul>
+<li><span data-read>Hammerspoon crashed at 22:43 during my AX probe (before the new module loaded) and is not running; it needs relaunching. The float itself has not been seen on screen yet.</span></li>
+<li><span data-read>Mod loads in new/restarted Claude sessions; unverified that band renders fire on every thread switch.</span></li>
+<li><span data-read>No shared Lua HUD-movement module exists (hud-kit is Swift), so it uses a native window for drag/resize; no snap-to-centre.</span></li>
+</ul>
+<h3 id="undo" data-read>Undo</h3>
+<p data-read>Remove the <code>safeRegister(&quot;modules.readthrough_float&quot;)</code> line in <code>~/.hammerspoon/init.lua</code>; delete <code>mods/visible-session</code>.</p>
+
+</main>
+</body>
+</html>
