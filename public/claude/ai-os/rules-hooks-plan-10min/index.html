@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Rules → hooks: everything being built, in ten minutes</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · ai-os · rules-hooks-plan-10min</p>
+<h1 id="rules--hooks-everything-being-built-in-ten-minutes">Rules → hooks: everything being built, in ten minutes</h1>
+<p data-read>&lt;!-- readthrough project=ai-os --&gt;</p>
+<p data-read>This is the middle version of the plan. The <a href="PLAN-summary.md">short version</a> is a minute; the <a href="PLAN.md">full plan</a> is about an hour. This one walks through every piece that will be built, in the order it gets built, what it means for you, and where you might want to say no.</p>
+<h2 id="the-idea-in-one-breath">The idea in one breath</h2>
+<p data-read>Right now, every agent in ai-os starts by reading about seventeen thousand words of rules, and agents in your other projects read an older copy of about four thousand words that has drifted out of date. Some rules, like the school rule and the project freeze, never reach those other projects at all. Long rule files don&#39;t work well: agents skim them, forget them, and apply the shouty ones too hard.</p>
+<p data-read>The plan flips this around. Agents will load a short core of about fifty-five lines. Everything else arrives at the exact moment it matters, through hooks: small scripts that run when an agent is about to do something, or when it finishes a reply. A hook can block something dangerous, slip in a reminder, or nudge the agent to finish a step it skipped.</p>
+<p data-read>The plan also deletes a lot. Deleting matters as much as building.</p>
+<h2 id="step-zero-a-text-clean-up-no-code">Step zero: a text clean-up, no code</h2>
+<p data-read>Before anything is built, the rules get cleaned. Dead rules are deleted. Rules that contradict each other get fixed, for example the different versions of the rm rule and the &quot;ask before undo&quot; rule. The contradicting memory files go too.</p>
+<p data-read>The biggest change here is a single &quot;act or wait&quot; rule. Today there are about six rules that say &quot;wait for Matt&quot; and four that say &quot;just do it&quot;, and they collide. That collision is the main reason agents end replies by asking for your OK when they didn&#39;t need to. The new rule says plainly when an agent acts on its own and when it stops to ask.</p>
+<p data-read>The school rule, the freeze and act-or-wait also get copied into your global settings right away, so every project sees them, not only ai-os.</p>
+<p data-read>One more change: the rule &quot;save every new rule in three places&quot; goes. That rule is what caused the drift. From now on there&#39;s one place, and a build step copies it everywhere.</p>
+<p data-read><strong>For you:</strong> fewer &quot;can I go ahead?&quot; questions, starting almost immediately.</p>
+<p data-read><strong>Possible veto:</strong> pushes to main stop asking you at all, except the crossword, which stays protected.</p>
+<h2 id="step-one-fill-the-gaps-in-the-guards-that-already-work">Step one: fill the gaps in the guards that already work</h2>
+<p data-read>You already have four hooks that work well. The hang guard has stopped seventy-seven risky commands, and the screen-input guard has stopped forty-six unapproved actions. This step adds to them rather than rebuilding them.</p>
+<p data-read>First, a school guard. When an agent tries to edit a file in one of your school folders, you get asked first. This protects you from an agent quietly rewriting graded work.</p>
+<p data-read>Second, a few more patterns for the hang guard, so a Hammerspoon reload can&#39;t freeze a thread.</p>
+<p data-read>Third, the screen-input guard becomes strict: if Hammerspoon isn&#39;t answering, no input happens, ever. It also starts covering Chrome and computer-use actions, which slipped past it thirty-one times.</p>
+<p data-read>Fourth, secret files get one line in settings that blocks agents from reading them.</p>
+<p data-read><strong>For you:</strong> you&#39;ll see a prompt when an agent touches school files.</p>
+<p data-read><strong>Possible veto:</strong> that school prompt. If it gets annoying during a clean-up you asked for, there will be an &quot;approved for this session&quot; switch.</p>
+<h2 id="step-two-the-end-of-turn-checker">Step two: the end-of-turn checker</h2>
+<p data-read>This is the main new piece: one small program that runs every time an agent finishes a reply. It looks for a short list of mistakes.</p>
+<p data-read>There&#39;s an honest limit here. By the time this check runs, you&#39;ve already seen the reply, and read-aloud may already be speaking it. A hook can&#39;t un-send it. So the checks split in two.</p>
+<p data-read>Checks that lead to an action happen right away: if the agent forgot to commit and push, wrote a broken Actions line, didn&#39;t report a voice task back, or claimed it saved a rule when it didn&#39;t, the turn continues and the agent fixes it.</p>
+<p data-read>Checks about writing, like a reply that ran too long or used shorthand, become a quiet reminder on the agent&#39;s next turn. That way you never read or hear the same reply twice.</p>
+<p data-read>This runs in &quot;shadow&quot; mode first: it logs what it would have done, without doing it, for three days. It only goes live if it&#39;s right at least nine times out of ten and gives fewer than one false nudge a day. It also has a kill switch.</p>
+<p data-read><strong>For you:</strong> replies should get shorter, and Actions lines should stop having one-word buttons.</p>
+<h2 id="step-three-saving-rules-and-handing-off-work">Step three: saving rules and handing off work</h2>
+<p data-read>When an agent tries to &quot;remember&quot; a rule by putting it in memory instead of a rule file, it gets a reminder to save it properly. When it writes a rule file, it&#39;s reminded to run the build. When a coordinator starts a new thread, it&#39;s told how fast your weekly usage is going, so it picks the right model.</p>
+<p data-read>The forwarder that sends your voice tasks to the coordinator also gets tested end to end, so delivery doesn&#39;t depend on an agent reading a file at the right moment.</p>
+<h2 id="step-four-a-pack-just-for-coordinators">Step four: a pack just for coordinators</h2>
+<p data-read>Coordinators get their own set of rules, loaded when they start and again after their memory is compacted. Today a compacted coordinator has to remember a file it read hours ago, and often doesn&#39;t. Workers and coordinators will now see different rules, each only what their job needs.</p>
+<h2 id="the-pause-is-it-working">The pause: is it working?</h2>
+<p data-read>After step four, everything stops for a check. The same scripts that measured today&#39;s problems run again on the week since the checker went live. You get one simple before-and-after table: how often agents asked for OKs they didn&#39;t need, how long replies were, how many one-word buttons there were, and how many complaints you made.</p>
+<p data-read>The targets: OK-asks drop from about fifteen percent of replies to under five. Long worker replies drop from about half to under a fifth. One-word buttons go to zero. School edits without your OK go to zero.</p>
+<p data-read><strong>If those numbers are fixed, everything after this is optional.</strong> That&#39;s deliberate. The plan admits it&#39;s a new system to maintain, which bends the project freeze a little, and this pause keeps it honest.</p>
+<h2 id="steps-five-and-on-if-you-want-them">Steps five and on, if you want them</h2>
+<p data-read>Step five moves the remaining rules into one file each, and adds the cheap safety blocks, like no rm outside temp folders, no npm, no system temp folder and private GitHub repos only. Agents already follow these well, so these are insurance, not fixes.</p>
+<p data-read>Step five-b is a rules dashboard: one local page showing every rule, whether it&#39;s on, and how often it fires. You flip rules on or off from your Tweaks panel, not a new app.</p>
+<p data-read>Step six adds small rule packs that load by situation: one for building interfaces, one for Hammerspoon, one for school, and reminders that only fire when you say certain things, like mentioning a reminder or music.</p>
+<p data-read>Step seven shrinks the always-loaded rules to about sixty lines. A rule only leaves that core after its replacement hook has run for a week, one rule at a time.</p>
+<p data-read>Step eight gives the central coordinator four &quot;judges&quot;: a model that checks, in the background, whether the coordinator did something like analysis it should have handed off. They run in shadow for a week, and stay only if you agree with nine of ten of their calls.</p>
+<p data-read>Step nine is the learning loop, which is your watcher idea made smaller. Every turn quietly records evidence. Once a week, one review proposes at most three rule changes, each tested, for your 👍. A heartbeat line makes sure it can&#39;t die silently, the way older systems did.</p>
+<p data-read>From then on, agents can also write &quot;beta&quot; rules that go live without your OK. They can only add reminders, never block anything or loosen another rule. There can be at most five, each is tagged, and each expires after three weeks unless you keep it.</p>
+<p data-read>Step ten is Tyler. Rules get sorted into circles: a shared core for you, Tyler and Kristy; Slub rules both of you agree on; your recommended rules, which arrive switched off on Tyler&#39;s Mac until he says yes to each; and your private rules, which never leave your Mac. His agent explains each offered rule in plain English.</p>
+<h2 id="the-decisions-you-might-veto">The decisions you might veto</h2>
+<p data-read>There are six, all in the short version.</p>
+<p data-read>One: details files are only written when a reply runs long, and Readthroughs and reels only when you ask. This one is a real change from today.</p>
+<p data-read>Two: one act-or-wait rule replaces ten, and pushes stop asking you.</p>
+<p data-read>Three: the four interface design steps become one: three real examples, you pick one, then it&#39;s built.</p>
+<p data-read>Four: learning runs weekly, not every turn, with at most three changes for you.</p>
+<p data-read>Five: agent edits in school folders ask you first.</p>
+<p data-read>Six: beta rules can run without your OK, inside those strict limits.</p>
+<p data-read>Two more decisions only you can make: when the freeze ends, and the colour palette. Until the palette is picked, the colour rules can&#39;t really be enforced.</p>
+<h2 id="the-risks">The risks</h2>
+<p data-read>The biggest is a bug in the end-of-turn checker breaking every session. It&#39;s guarded by failing open, a kill switch, shadow mode and replay tests.</p>
+<p data-read>Next, reminders turning into wallpaper that agents ignore, the way the long rule files did. They&#39;re kept short, shown once, and reviewed weekly.</p>
+<p data-read>Blocks can teach agents workarounds, so blocks stay few and the known workarounds are tested.</p>
+<p data-read>Writing reminders always arrive one turn late. That&#39;s a real limit; reply quality stays mostly judgment.</p>
+<p data-read>And the system itself could become a project. The pause after step four is there so it can stop as soon as it has done its job.</p>
+
+</main>
+</body>
+</html>
