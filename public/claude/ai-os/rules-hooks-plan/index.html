@@ -1,0 +1,1542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Rules → hooks: the merged plan (D)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · ai-os · rules-hooks-plan</p>
+<h1 id="rules--hooks-the-merged-plan-d" data-read>Rules → hooks: the merged plan (D)</h1>
+<p data-read>Written 2026-10-29. This is a design only: no rule, hook or setting was changed. It merges <a href="A-architecture.md">A-architecture.md</a> (how), <a href="B-audit.md">B-audit.md</a> (which rules deserve to live) and <a href="C-evidence.md">C-evidence.md</a> (which rules break, and when), all xhigh second passes. It also draws on the slub-hq README, <code>setup/core.md</code>, today&#39;s call notes (<code>slub-hq/notes/calls/2026-10-29.md</code>), <code>.rules/*.md</code>, <code>~/.claude/CLAUDE.md</code>, <code>docs/coordinator/code-coordinator.md</code> and <code>~/.claude/settings.json</code>. There is no slub-hq <code>VISION.md</code>.</p>
+<p data-read>The short version for Matt is <a href="PLAN-summary.md">PLAN-summary.md</a>.</p>
+<hr>
+<h2 id="0-in-short" data-read>0. In short</h2>
+<ol>
+<li><p data-read><strong>Deletion matters as much as hooks.</strong> Most sessions get the wrong text (B §3.1): ai-os sessions load ~17,000 words, every other project gets a ~4,100-word hand-kept copy that has drifted, and six topic files reach no session at all. The school rule and the freeze are missing outside ai-os. Step 0 is a text clean-up, before any code.</p>
+</li>
+<li><p data-read><strong>The costliest failures happen at two moments</strong> (C): sending work to another thread (already guarded since 10-30) and the end of a turn. Rollout goes in C&#39;s cost order: the school guard and the end-of-turn &quot;don&#39;t ask for OKs you don&#39;t need&quot; check come first. Rules that agents already follow (bun, secrets, rm, <code>/tmp</code>) come later, because those hooks are insurance.</p>
+</li>
+<li><p data-read><strong>One &quot;act or wait&quot; rule replaces ten.</strong> Today six &quot;wait&quot; rules and four &quot;just do it&quot; rules collide. A hook can only enforce one side, so the rule has to be clear before the check exists.</p>
+</li>
+<li><p data-read><strong>Architecture: A&#39;s design, made smaller at the start.</strong> One rule per Markdown file. Five channels, cheapest first: native deny, path packs, one dispatcher, a few gated model judges, and a core of 60 lines or fewer. The runtime knows the session&#39;s role and who reads the reply. The four guards that work today stay as they are until the dispatcher has proven itself.</p>
+</li>
+<li><p data-read><strong>New finding: an end-of-turn check can&#39;t un-send a reply.</strong> Claude Code shows the reply before the Stop hook runs. So checks that lead to an <em>action</em> (commit and push, fix the Actions line, report a voice task) continue the turn. Checks about <em>prose</em> (length, shorthand, bare paths) remind the agent on its next turn instead of making Matt read and hear the reply twice.</p>
+</li>
+<li><p data-read><strong>The per-reply details file, Readthrough and reel go.</strong> A details file is written only when a reply overflows its budget; Readthroughs and reels are made on request. The ritual died on its own when the coordinator moved to the Code tab, with zero complaints (C).</p>
+</li>
+<li><p data-read><strong>Matt&#39;s watcher idea becomes a weekly tuner, not a live layer.</strong> Every turn records evidence for free. Once a week one review proposes at most 3 tested rule changes for Matt&#39;s 👍. A heartbeat line makes sure it can&#39;t die unnoticed the way Hermes&#39;s curator and <code>transcript_evaluator.py</code> did.</p>
+</li>
+<li><p data-read><strong>Tyler gets rules by circles.</strong> The shared core is live for both of them. Matt&#39;s recommended defaults arrive switched off until Tyler says Yes. Matt-only rules never leave Matt&#39;s Mac. This follows today&#39;s call decision: &quot;Matt&#39;s own rules never apply to Tyler automatically.&quot;</p>
+</li>
+<li><p data-read><strong>Added after Matt&#39;s reply (2026-10-29):</strong></p>
+<ul>
+<li><span data-read><strong>Beta rules (§3.10):</strong> agent-written rules can go live without a 👍, but only as tagged, capped, expiring add-ons. They can never block anything or relax another rule.</span></li>
+<li><span data-read><strong>A local rules dashboard (§3.11):</strong> v0 at the reassess gate, v1 after the registry migration. Toggles go through the Tweaks panel.</span></li>
+<li><span data-read><strong>The advisor rule (§4.4 C):</strong> coordinators get a reminder to send big asks to an advisor first.</span></li>
+</ul>
+<p data-read>Sources: Matt&#39;s message in <code>docs/coordinator/asks/2026-10-29-rules-dashboard-learning.md</code> (parts 1–3, 6) and the advisor&#39;s critique in <code>…-advisor-answer.md</code> (§2, §3, §6).</p>
+</li>
+</ol>
+<hr>
+<h2 id="1-honest-assessment" data-read>1. Honest assessment</h2>
+<p data-read><strong>What&#39;s right about the current system.</strong></p>
+<ul>
+<li><span data-read>Most rules are good preferences that come from real incidents.</span></li>
+<li><span data-read>Where hooks exist, they work. The hang guard denied 77 risky commands and the input guard denied 46 unapproved screen actions. The forgetting kept happening, but none of it reached Matt (C).</span></li>
+<li><span data-read>Many text rules are followed fine: commit and push (3 of 185 editing sessions never committed), bun, secrets, quiz menus after their rule. Those don&#39;t need new hooks urgently.</span></li>
+</ul>
+<p data-read><strong>What&#39;s wrong.</strong> Four problems, in order of weight:</p>
+<ol>
+<li><span data-read><strong>Distribution.</strong> The same rule exists in up to three hand-kept copies (<code>.rules/</code>, <code>~/.claude/CLAUDE.md</code>, memory), and they now disagree on rm, the freeze, undo and approvals (B §3.2). The rule &quot;save every new rule in three places&quot; is what creates the drift.</span></li>
+<li><span data-read><strong>Contradictions.</strong> The act/wait muddle (B §3.6) is the root of C&#39;s top behavioural failure. Some rules also fight Claude Code&#39;s own built-in instructions (&quot;commit only when asked&quot;, &quot;publish as Artifacts&quot;, &quot;ask with menus&quot;). Text loses those fights, so those rules need hooks most.</span></li>
+<li><span data-read><strong>Size and style.</strong> About 40% of the text is incident stories and dated amendments. The Gemini-era ALL-CAPS &quot;invariants&quot; make models over-apply rules.</span></li>
+<li><span data-read><strong>Growth.</strong> About 100 commits touched <code>.rules/</code> in 10 days. With no budget, any clean-up regrows within weeks. A line budget enforced by the compiler matters more than any single hook.</span></li>
+</ol>
+<p data-read><strong>What hooks will not fix.</strong></p>
+<ul>
+<li><span data-read>Clarity, taste, honest takes, and knowing when a fork is real. These stay judgment.</span></li>
+<li><span data-read>A hook can tell an agent its reply was 240 words. It can&#39;t make the next reply good.</span></li>
+<li><span data-read>Some &quot;asked for an OK&quot; moments are caused by Claude Code&#39;s auto-mode safety check, not by the agent (C: about 16 replies). Permission allow-rules fix those, not hooks.</span></li>
+</ul>
+<p data-read><strong>The migration itself breaks the freeze a little.</strong> About 60 rule files, a compiler, a dispatcher and tests make a new system to maintain. It&#39;s justified because it <em>removes</em> about 90% of the always-loaded text and cuts Matt&#39;s corrections. To keep it honest, the rollout has a stop-and-reassess gate after step 4 (§5). If C&#39;s numbers have improved by then, the remaining steps are optional.</p>
+<p data-read><strong>This is Slub in miniature.</strong> On today&#39;s call Matt and Tyler named the core Slub product as a coordinator that gives each task only the rules it needs. This system is that, for one person. Its firing log (<code>fired.jsonl</code>) is product research; keep it.</p>
+<hr>
+<h2 id="2-where-a-b-and-c-disagreed-and-what-i-picked" data-read>2. Where A, B and C disagreed, and what I picked</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>A says</th>
+<th>B says</th>
+<th>C says</th>
+<th>Picked, and why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Rollout order</td>
+<td>Infrastructure first: skeleton, port 4 guards, denies, then Stop checks</td>
+<td>Delete dead rules first</td>
+<td>The cost order: sends (done), OKs, school, handoffs, length, Actions</td>
+<td><strong>C&#39;s cost order, with A&#39;s safety rails and B&#39;s deletion as step 0.</strong> The first fixes ride on existing guards, so no infrastructure has to exist before value lands.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Port the 4 working guards into the dispatcher in step 1</td>
+<td>Yes</td>
+<td>—</td>
+<td>They work (77 and 46 denials)</td>
+<td><strong>No, port them last (optional).</strong> It adds risk for about 10 ms of speed. A&#39;s own first pass said the same.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Low-evidence denies (rm, npm, <code>/tmp</code>, <code>gh --private</code>)</td>
+<td>Early (step 2)</td>
+<td>Block</td>
+<td>Mostly followed; no harm found</td>
+<td><strong>Later (step 5), as a cheap port of the tested Codex guard.</strong> It&#39;s insurance. Secret reads are the exception: one <code>permissions.deny</code> line, no code, so they go early.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Details file on every reply</td>
+<td>Pending</td>
+<td>Overflow-only, or auto-generated at session end</td>
+<td>Enforce it or drop it; it died silently</td>
+<td><strong>Overflow-only; Readthroughs and reels on request; no auto-generator.</strong> Transcripts are already exported and searchable in QMD, which covers autopsies. Nobody missed the ritual. <em>Veto candidate.</em></td>
+</tr>
+<tr>
+<td>5</td>
+<td>How end-of-turn checks act</td>
+<td>Continue the turn via <code>additionalContext</code></td>
+<td>Block once</td>
+<td>Block once</td>
+<td><strong>Split by check type</strong> (§3.6). Action checks continue the turn. Prose checks remind on the next turn, because the long reply has already been shown and read aloud.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Input guard when Hammerspoon is unreachable</td>
+<td>Pick one</td>
+<td>Matt decides</td>
+<td>—</td>
+<td><strong>Fail closed.</strong> Matt&#39;s latest words (10-28, after a test moved his mouse) say so. The deny message tells the agent how to get Hammerspoon back.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Who gets the model judge for &quot;asked an OK it didn&#39;t need&quot;</td>
+<td>Coordinators only, async</td>
+<td>—</td>
+<td>It&#39;s everywhere</td>
+<td><strong>A deterministic check for everyone, plus a model judge for coordinators only</strong> (low volume, high stakes), shadow first.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Matt&#39;s live watcher layer</td>
+<td>Weekly tuner + coordinator judge</td>
+<td>—</td>
+<td>—</td>
+<td><strong>A&#39;s verdict, simplified.</strong> No daily triage stage: one weekly review reads the signals directly. Plus a heartbeat. Fewer moving parts is the lesson from Hermes.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Review at every Stop/PreCompact (Matt&#39;s ask)</td>
+<td>Capture every turn, review in batches</td>
+<td>—</td>
+<td>—</td>
+<td><strong>Batches.</strong> One turn can&#39;t tell a pattern from an anecdote, and a model call per turn across 15+ threads costs real quota to say &quot;fine&quot;. <em>Veto candidate.</em></td>
+</tr>
+<tr>
+<td>10</td>
+<td>School enforcement</td>
+<td>Pack + core line</td>
+<td>PreToolUse <code>ask</code> on writes</td>
+<td>Inject + a PostToolUse code-diff block</td>
+<td><strong>Inject + <code>ask</code> on every agent write under school folders.</strong> The AST diff is clever, but it&#39;s brittle across languages. Add it only if the <code>ask</code>s turn out to be too frequent.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Quiz <code>multiSelect</code> deny</td>
+<td>Deny</td>
+<td>Deny</td>
+<td>Mostly fixed (20% after the rule)</td>
+<td><strong>Deny anyway, in step 5.</strong> It&#39;s deterministic and free, and it also enforces &quot;no menus outside quizzes&quot;.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Handoff threshold (40 messages / 200k / 250k)</td>
+<td>—</td>
+<td>Pick the hook&#39;s</td>
+<td>—</td>
+<td><strong>250k, the hook&#39;s.</strong> Delete the others.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>&quot;Syncs to Tyler&quot; line said on every saved rule</td>
+<td>—</td>
+<td>Contradicts today&#39;s call</td>
+<td>—</td>
+<td><strong>Today&#39;s decision wins.</strong> New wording: &quot;saved for all your agents; offered to Tyler in his next digest&quot;.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Classifier-forced OK asks</td>
+<td>—</td>
+<td>—</td>
+<td>Permission allow-rules</td>
+<td><strong>Adopt, in step 1, with the crossword <code>main</code> deny shipped first.</strong> Otherwise the allow-rules would make a public-production push <em>easier</em>. <em>Veto candidate (it widens what runs without a check).</em></td>
+</tr>
+<tr>
+<td>15</td>
+<td>UI design gates (think alone, exemplars, 3–4 separate options, mixer)</td>
+<td>One pack</td>
+<td>Merge into one flow</td>
+<td>—</td>
+<td><strong>One design flow</strong> (§4.4 D). Separate-agent options only for &quot;for the world&quot; Slub products. <em>Veto candidate.</em></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Registry format</td>
+<td>One Markdown file per rule</td>
+<td>One source, generated copies</td>
+<td>—</td>
+<td><strong>A&#39;s format, plus B&#39;s tags</strong> (circle, kind, review date). It&#39;s plain Markdown, so it fits Slub core rule 7.</td>
+</tr>
+<tr>
+<td>17</td>
+<td>do.test links</td>
+<td>—</td>
+<td>Re-test whether still needed</td>
+<td>No link complaints since 10-24</td>
+<td><strong>Keep for now; one quick test decides</strong> (§8).</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Agents editing their own rules (Matt&#39;s reply: approving every rule won&#39;t scale for an end user like his mom)</td>
+<td>Every change needs Matt&#39;s 👍</td>
+<td>—</td>
+<td>—</td>
+<td><strong>A beta tier with hard edges</strong> (§3.10). Additive rules can go live without a 👍. Promotion to official still needs one, until agents&#39; advice has matched Matt&#39;s about 9 times in 10. &quot;Never overrides official rules&quot; is enforced by the compiler, not by wording. <em>Veto candidate.</em></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-final-architecture" data-read>3. Final architecture</h2>
+<h3 id="31-five-channels-cheapest-first" data-read>3.1 Five channels, cheapest first</h3>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Mechanism</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Native deny</td>
+<td><code>permissions.deny</code> in settings</td>
+<td>Secret <code>Read</code>s (<code>.env*</code>, <code>*credentials*</code>, private keys). No code at all.</td>
+</tr>
+<tr>
+<td>2. Path packs</td>
+<td>Generated <code>~/.claude/rules/&lt;pack&gt;.md</code> with <code>paths:</code> frontmatter; Claude Code loads a pack when a matching file is read or edited</td>
+<td>UI and web, Swift/HUD. For folders outside the session&#39;s working directory (<code>~/.hammerspoon</code>, <code>~/Documents/School</code>), the dispatcher injects the pack instead (needs a test, §8).</td>
+</tr>
+<tr>
+<td>3. Dispatcher</td>
+<td>One command hook per event, <code>rulehook.py &lt;event&gt;</code>, reading a compiled index</td>
+<td>Blocks, just-in-time reminders, end-of-turn checks, signal capture</td>
+</tr>
+<tr>
+<td>4. Model judges</td>
+<td>Async <code>asyncRewake</code> hooks on the coordinator&#39;s Stop, behind a deterministic precheck</td>
+<td>4 coordinator judgments (§3.7)</td>
+</tr>
+<tr>
+<td>5. Core</td>
+<td>A generated <code>~/.claude/CLAUDE.md</code>, ≤ 60 lines</td>
+<td>Judgment rules that have no trigger</td>
+</tr>
+</tbody></table>
+<p data-read>Desktop mods (context-alert, action-bar, read-aloud) never <em>enforce</em> rules. They only run in the desktop app; command hooks also run in the CLI, over Remote Control and on Tyler&#39;s Mac.</p>
+<h3 id="32-rule-kinds" data-read>3.2 Rule kinds</h3>
+<p data-read>Every rule has exactly one primary kind; a rule that can&#39;t name one doesn&#39;t get in.</p>
+<table>
+<thead>
+<tr>
+<th>Kind (A&#39;s name)</th>
+<th>What it is</th>
+<th>Contract</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hard block</strong> (<code>deny</code>)</td>
+<td>PreToolUse denies the call, or <code>ask</code>s Matt</td>
+<td>Only for costly or irreversible actions. The reason says what to do instead. Every deny&#39;s tests include its known workarounds (Codex lesson: <code>find -delete</code>).</td>
+</tr>
+<tr>
+<td><strong>Just-in-time reminder</strong> (<code>nudge</code>, <code>pack</code>)</td>
+<td>≤ 200 characters injected at the moment it matters, or a topic pack loaded when its files are touched</td>
+<td>Prefer a <em>fact</em> over a principle (&quot;Pace: 61% of the week used at 48% elapsed, Opus OK&quot;). Tagged <code>[rule:&lt;id&gt;]</code>.</td>
+</tr>
+<tr>
+<td><strong>End-of-turn check</strong> (<code>check</code>)</td>
+<td>Stop dispatcher inspects the reply and the touched repos</td>
+<td>One folded message per turn at most. Action checks continue the turn; prose checks remind on the next turn (§3.6).</td>
+</tr>
+<tr>
+<td><strong>Judgment</strong> (<code>core</code>)</td>
+<td>A line in the always-loaded core</td>
+<td>Only when no trigger exists, and only inside the 60-line budget</td>
+</tr>
+</tbody></table>
+<p data-read>Two supporting kinds:</p>
+<ul>
+<li><span data-read><strong>Auto:</strong> a tool just does it, so the rule text can go (e.g. <code>orphans.cjs</code> inside <code>pages deploy</code>).</span></li>
+<li><span data-read><strong>Signal:</strong> silent evidence capture for the learn loop; it never injects text.</span></li>
+</ul>
+<h3 id="33-one-rule--one-markdown-file" data-read>3.3 One rule = one Markdown file</h3>
+<p data-read>The format is A §4 unchanged, with B&#39;s tags added. Example:</p>
+<pre><code class="language-markdown">---
+id: school-no-ghostwriting
+kind: deny            # deny | nudge | pack | check | core | auto | signal
+circle: matt-only     # shared-core | slub | matt-recommended | matt-only
+roles: [all]          # central | project-coordinator | worker | subagent | all
+on: { event: PreToolUse, tool: &#39;Edit|Write|NotebookEdit|Bash&#39;, test_fn: school_write }
+decision: ask
+say: &quot;Graded school work: explain, hint or critique only. Never write, fix or add logic. Matt approves this write.&quot;
+mode: shadow          # off | shadow | beta | live   (beta: §3.10)
+fail: open
+since: 2026-10-23
+review: 2027-01-31
+requires: []          # rule ids this one relies on (feeds the dashboard&#39;s dependency view)
+# beta rules only:  target: &lt;the signal it should reduce&gt;   expires: &lt;date, ≤ 21 days out&gt;
+tests: { fire: [...], pass: [...] }
+---
+Full rule text, why, Matt&#39;s words, history (for humans, Tyler and the learn loop; never injected).
+</code></pre>
+<p data-read><strong>Where the files live</strong></p>
+<ul>
+<li><span data-read><code>slub-hq/setup/rules/</code>: <code>shared-core</code> and <code>slub</code> rules. Both Matt and Tyler must agree to a change (core.md&#39;s rule).</span></li>
+<li><span data-read><code>ai-os/rules/</code>: <code>matt-recommended</code> and <code>matt-only</code> rules. These replace <code>.rules/*.md</code> gradually.</span></li>
+<li><span data-read><code>slub-hq/setup/&lt;person&gt;/overrides.md</code>: per-person <code>mode</code> and <code>params</code>.</span></li>
+</ul>
+<p data-read><strong>The compiler</strong> (<code>build_rules.py</code> gains this step; it stops writing <code>GEMINI.md</code>/<code>HERMES.md</code>, which are shelved) emits:</p>
+<ol>
+<li><span data-read><code>rules-index.json</code> for the dispatcher (no Markdown parsing at runtime).</span></li>
+<li><span data-read>The path packs.</span></li>
+<li><span data-read>The generated <code>~/.claude/CLAUDE.md</code> core. After step 7, agents never hand-edit it.</span></li>
+<li><span data-read>The settings fragment.</span></li>
+<li><span data-read>Tyler&#39;s export.</span></li>
+</ol>
+<p data-read>It <strong>refuses to compile</strong> when:</p>
+<ul>
+<li><span data-read>a rule has no kind, or has no tests, or a test fails;</span></li>
+<li><span data-read>a <code>say</code> line is over 200 characters, or doesn&#39;t tell the agent what to do;</span></li>
+<li><span data-read>the core is over 60 lines (a new core line means an old one moves out);</span></li>
+<li><span data-read>an incident patch is past its <code>review</code> date with no fires and no renewal;</span></li>
+<li><span data-read>a rule exported to Tyler contains a Matt-only path (<code>do.test</code>, <code>~/.hammerspoon</code>, <code>claude-control</code>);</span></li>
+<li><span data-read>a beta rule breaks any of §3.10&#39;s limits (its kind, a trigger that overlaps an official rule&#39;s, the cap, the expiry date, a missing <code>target:</code>).</span></li>
+</ul>
+<p data-read>The compiler also writes the facts the dashboard (§3.11) needs: rules that share a trigger (overlaps), and <code>requires:</code> links in both directions (relies on / relied on by).</p>
+<p data-read><strong>Rules about rules</strong> (B §6.1) live in a short authoring guide for whoever writes rules. They are never loaded into working agents: one home per rule, firm calm wording (&quot;do X, because Y&quot;), stories go in the body or a changelog and are never injected, proactive behaviour over skills Matt must remember.</p>
+<h3 id="34-runtime" data-read>3.4 Runtime</h3>
+<p data-read>As in A §5:</p>
+<ul>
+<li><span data-read>one <code>rulehook.py</code> per event (PreToolUse, PostToolUse, PostToolBatch, UserPromptSubmit, SessionStart, SubagentStart, Stop);</span></li>
+<li><span data-read><code>python3 -I -S</code>, with a matcher union so Read, Grep and Glob never spawn Python;</span></li>
+<li><span data-read>a per-session state file, and every firing logged to <code>fired.jsonl</code>;</span></li>
+<li><span data-read>at most 600 characters per call and about 1,500 per turn;</span></li>
+<li><span data-read><strong>fail open</strong>, with a kill switch (<code>AIOS_RULES=off</code> or <code>~/.claude/rules.off</code>) and <code>shadow</code> mode per rule.</span></li>
+</ul>
+<p data-read>The <strong>fail-closed</strong> rules (screen input and Bash secret reads) stay in <strong>separate handlers</strong> with <code>onFailure: &quot;block&quot;</code>. A dispatcher crash can&#39;t disable them, and a crash in them can&#39;t take the dispatcher down.</p>
+<p data-read><strong>Changed from A:</strong> the four existing guards (<code>bash_timeout_guard</code>, <code>input_guard</code>, <code>browser_pane_guard</code>, <code>thread_size_guard</code>) keep their own settings lines until step 5 at the earliest. Steps 1–2 <em>extend</em> two of them rather than replacing them.</p>
+<p data-read><strong>Prompt cache:</strong> SessionStart output must be stable per role (no live facts, no timestamps). Live facts only go in mid-conversation injections.</p>
+<h3 id="35-who-is-running-and-who-reads-the-reply" data-read>3.5 Who is running, and who reads the reply</h3>
+<p data-read>Taken from A §6, which is the piece that fixes C&#39;s main caveat.</p>
+<p data-read><strong>Role</strong>, resolved once per session and cached:</p>
+<ol>
+<li><span data-read>Desktop session metadata → <code>coordinator/threads.json</code> role.</span></li>
+<li><span data-read>The title (<code>… · Coordinator</code>), as a fallback.</span></li>
+<li><span data-read><code>AIOS_ROLE</code> env.</span></li>
+<li><span data-read>Default <code>worker</code>.</span></li>
+</ol>
+<p data-read>Subagents are identified by <code>agent_id</code>.</p>
+<p data-read><strong>Sender</strong>, classified at UserPromptSubmit using <code>habit_gate.py</code>&#39;s existing list:</p>
+<ul>
+<li><span data-read><code>matt</code>: plain text, a voice task, a <code>&lt;wake&gt;</code> from his thread;</span></li>
+<li><span data-read><code>relay</code>;</span></li>
+<li><span data-read><code>peer</code> (<code>&lt;cross-session-message</code>);</span></li>
+<li><span data-read><code>event</code> (<code>&lt;side-sessions-event</code>, <code>&lt;task-notification</code>, <code>&lt;ci-monitor-event</code>);</span></li>
+<li><span data-read><code>schedule</code>.</span></li>
+</ul>
+<p data-read><strong>Reader:</strong> Matt reads the reply when the sender was <code>matt</code>, or when the session is a coordinator and the sender wasn&#39;t a peer. Reply checks (length, Actions line, links) run <strong>only when Matt reads the reply</strong>. Repo checks run for everyone.</p>
+<h3 id="36-end-of-turn-action-checks-vs-prose-checks" data-read>3.6 End of turn: action checks vs prose checks</h3>
+<p data-read>The Stop hook runs <strong>after</strong> the reply is on screen, and read-aloud may already be speaking. Continuing the turn adds a second message under the first, plus a visible &quot;Stop hook feedback&quot; line. That&#39;s fine when the continuation <em>does</em> something. It&#39;s bad when it just rewrites prose: Matt would read and hear both versions, which breaks &quot;every word costs Matt&quot; and &quot;no repeats&quot;.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Type</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Asked for an OK it didn&#39;t need (§4.4 A)</td>
+<td>action</td>
+<td>Continue: &quot;do it (commit, push, make it live, start the thread), or name the real fork in one line&quot;</td>
+</tr>
+<tr>
+<td>Actions line lint (≥ 2-word verb + object labels, no bare numbers, no &quot;I&#39;ll…&quot; steps that only Matt can do)</td>
+<td>action</td>
+<td>Continue: print a corrected <code>**Actions:**</code> line only (needs test §8 #2)</td>
+</tr>
+<tr>
+<td>Voice task finished without <code>voice_reply.py</code></td>
+<td>action</td>
+<td>Continue: send the voice reply</td>
+</tr>
+<tr>
+<td>Reply says &quot;saved as a rule&quot; but nothing changed in the rule files this turn</td>
+<td>action</td>
+<td>Continue: save it now</td>
+</tr>
+<tr>
+<td>Coordinator started a session but didn&#39;t update <code>threads.json</code></td>
+<td>action</td>
+<td>Continue: update the registry</td>
+</tr>
+<tr>
+<td>New repo or <code>~/projects/&lt;new&gt;</code> this session, no <code>NOW.md</code> line (Slub core 1)</td>
+<td>action</td>
+<td>Continue: add the line</td>
+</tr>
+<tr>
+<td>Code edited after the last run/test command</td>
+<td>action</td>
+<td>Continue: &quot;run it or a test, then report&quot; (shadow first; heuristic)</td>
+</tr>
+<tr>
+<td>Over 150 words with no detail asked for; &quot;<strong>You:</strong>&quot; shorthand; bare <code>~/</code> paths; <code>open https://</code> commands; unlinked <code>local_</code> ids; <code>[Your Name]</code> placeholders</td>
+<td>prose</td>
+<td>Nothing now. On the next prompt from Matt, one line: &quot;your last reply was 240 words / had 3 bare paths; keep this one ≤ 100 and link paths.&quot; Logged as a signal.</td>
+</tr>
+</tbody></table>
+<p data-read>All failing action checks fold into <strong>one</strong> message per turn. <code>stop_hook_active</code> true means nothing fires. An escape hatch, <code>&lt;!-- rules: skip &lt;id&gt; because … --&gt;</code>, logs the reason instead of fighting (the action-bar mod must hide it).</p>
+<h3 id="37-model-judges-coordinators-only" data-read>3.7 Model judges (coordinators only)</h3>
+<p data-read>A §8 unchanged: an async <code>asyncRewake</code> command hook on the coordinator&#39;s Stop. A deterministic precheck runs first: the reply asks something, or the turn did more than 8 non-registry reads. Only then does a background <code>claude -p --model haiku</code> judge run (use the alias, never a hard-coded ID). It wakes the coordinator only on a violation.</p>
+<p data-read>The four judgments, all evidenced by C:</p>
+<ul>
+<li><span data-read>asked Matt for an OK it didn&#39;t need;</span></li>
+<li><span data-read>did analysis instead of routing;</span></li>
+<li><span data-read>relayed a project coordinator&#39;s update;</span></li>
+<li><span data-read>told Matt to do something an agent could do.</span></li>
+</ul>
+<p data-read>Each runs in shadow for a week; Matt checks 10 verdicts before it goes live.</p>
+<h3 id="38-the-learn-loop-matts-ask-a-13-simplified" data-read>3.8 The learn loop (Matt&#39;s ask, A §13, simplified)</h3>
+<ol>
+<li><p data-read><strong>Capture, every turn, no model.</strong> Signals go to <code>~/.claude/rule-state/signals.jsonl</code> (local only, pruned after 60 days):</p>
+<ul>
+<li><span data-read>corrections from Matt;</span></li>
+<li><span data-read>explicit rule statements (&quot;from now on…&quot;);</span></li>
+<li><span data-read>explicit rules that never got saved;</span></li>
+<li><span data-read>checks that were ignored;</span></li>
+<li><span data-read>a deny followed by a similar allowed command (a workaround);</span></li>
+<li><span data-read>skip comments.
+Unsaved rules also trigger the &quot;save it now&quot; action check, which is the fast lane.</span></li>
+</ul>
+</li>
+<li><p data-read><strong>Weekly review, one Sonnet session</strong> (skipped when <code>claude_pace.py</code> says the week is over pace). It reads the signals, pulls small transcript windows and proposes <strong>at most 3</strong> rule-file diffs, built from the real moments as tests, all starting in shadow. Proposals come in this order: adherence fixes (move a broken rule up a channel), then trigger fixes, then merges and retirements, then new rules (≥ 2 independent signals, or one explicit unsaved statement). <em>Change from A:</em> no daily Haiku triage stage. At about 40 signals a week, one session can read them all directly.</p>
+<p data-read>The same session also does two more jobs:</p>
+<ul>
+<li><span data-read>It samples a few firings per rule and judges whether the agent understood the rule. Those are the dashboard&#39;s &quot;misread&quot; numbers (§3.11). Doing this per turn would cost quota across 15+ threads.</span></li>
+<li><span data-read>It gives each beta rule&#39;s promotion advice (§3.10).</span></li>
+</ul>
+</li>
+<li><p data-read><strong>What happens to a proposal.</strong> It runs silently in shadow for 3 days. Then:</p>
+<ul>
+<li><span data-read><strong>An additive reminder or action check</strong> may go <strong>beta</strong>: live and tagged, with no 👍 needed, within §3.10&#39;s limits.</span></li>
+<li><span data-read><strong>Anything else</strong> (a block, a core line, a change to an official rule, a retirement) waits for Matt&#39;s 👍 in the Coordinator: one plain sentence per proposal plus an Actions line. Apply = merge, build, shadow for 3 days, then live if it fires as estimated. Skip = suppressed for 60 days. No answer in 14 days = it expires quietly.</span></li>
+<li><span data-read><strong>Shared (<code>slub</code>) proposals</strong> also go to <code>inbox/tyler.md</code>. They never go beta, because a beta rule is <code>matt-only</code> until it&#39;s promoted.</span></li>
+</ul>
+</li>
+<li><p data-read><strong>It can&#39;t die quietly.</strong> The Coordinator&#39;s per-turn fact line says &quot;learn loop last ran N days ago&quot; once N &gt; 10. The loop also pauses itself and says so once if acceptance stays under 30% for 4 weeks, or if one rule file gets churned more than 3 times in 30 days (the Hermes curator looped for 25 days unnoticed).</p>
+</li>
+</ol>
+<h3 id="39-testing-and-measurement" data-read>3.9 Testing and measurement</h3>
+<ul>
+<li><span data-read>Inline fire/pass tests per rule.</span></li>
+<li><span data-read>Unit tests for each named check.</span></li>
+<li><span data-read><strong>Replay</strong> of the dispatcher over C&#39;s ~535 transcripts using the C scripts (<code>docs/rules-hooks/c-scripts/</code>), which gives firing rates and false positives before anything goes live.</span></li>
+<li><span data-read>A golden set of 30 hand-labelled final replies for the Stop checks.</span></li>
+<li><span data-read>A p95 latency test (≤ 30 ms on pure-regex paths).</span></li>
+<li><span data-read>A weekly <code>rulehook.py report</code> with fires per rule, compliance (e.g. a commit within 2 calls of the nudge) and skips with reasons. Rules firing more than 50 times a week with low compliance get rewritten. Rules with zero fires in 30 days get their trigger checked, then expire at <code>review</code>.</span></li>
+</ul>
+<h3 id="310-beta-rules-agent-written-live-fenced-in" data-read>3.10 Beta rules: agent-written, live, fenced in</h3>
+<p data-read>Matt&#39;s reply: agents should be able to write rules (&quot;asking my mom to approve rules is useless&quot;), as a lower tier of experimental rules that never override official ones. A dot shows when they&#39;re running, and they get promoted on evidence. He also wants to stay in the loop while the system is being designed. The advisor&#39;s critique (§2) holds: the idea is right, but each part needs a mechanical edge.</p>
+<p data-read><code>mode</code> gains a value between shadow and live: <code>off | shadow | beta | live</code>.</p>
+<p data-read><strong>Hard limits.</strong> The compiler refuses any beta rule that breaks one, so none of these depend on wording:</p>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Additive only:</strong> a just-in-time reminder or an action check. Never a block, never a core line, never a safety, school, secrets or screen-input rule, and never anything that relaxes, exempts or skips another rule.</td>
+<td>Stops an agent annoyed by a check from writing its own exception</td>
+</tr>
+<tr>
+<td><strong>No trigger overlap with an official rule</strong> (same event + tool + pattern)</td>
+<td>This is how &quot;never overrides official&quot; is enforced. Models don&#39;t reliably apply priority between two conflicting injected lines.</td>
+</tr>
+<tr>
+<td><strong>Tagged <code>[rule:beta:&lt;id&gt;]</code></strong> on every injected line</td>
+<td>The &quot;dot&quot; is display only and works only in the desktop app (a mod reads <code>mode: beta</code> in the index). The tag is visible everywhere: in the CLI, over Remote Control, in transcripts.</td>
+</tr>
+<tr>
+<td><strong>At most 5 beta rules live at once</strong></td>
+<td>Growth is problem #4 (§1). Beta must not regrow the pile.</td>
+</tr>
+<tr>
+<td><strong>Expires 21 days after going beta</strong> unless promoted</td>
+<td>No silent accumulation</td>
+</tr>
+<tr>
+<td><strong><code>circle: matt-only</code> until promoted</strong></td>
+<td>Nothing experimental reaches Tyler</td>
+</tr>
+<tr>
+<td><strong><code>target:</code> named when it&#39;s written:</strong> which signal it should reduce (a correction type, a check failure)</td>
+<td>&quot;Two weeks, no issues&quot; is weak evidence. Matt rarely complains, so silence is the default either way.</td>
+</tr>
+</tbody></table>
+<p data-read><strong>Promotion to official.</strong></p>
+<ul>
+<li><span data-read>The weekly review compares the rule&#39;s <code>target</code> signal before and after, and recommends promote, extend or drop. &quot;No issues&quot; only rules out harm; promotion needs the target to have moved.</span></li>
+<li><span data-read><strong>While the system is being designed, promotion needs Matt&#39;s 👍</strong> (shared rules: Tyler&#39;s too).</span></li>
+<li><span data-read>Every recommendation and Matt&#39;s answer are logged. Once about 9 in 10 of the agent&#39;s promotion calls match his, promotion of <em>additive</em> rules can go automatic. That&#39;s the same calibration as the §3.7 judges, and it&#39;s the route to a version his mom could use, based on data rather than hope. Blocks and core lines always need a 👍.</span></li>
+</ul>
+<p data-read><strong>Rollout.</strong> No change to the step order. <code>beta</code> is one more enum value in step 2&#39;s format, and the first beta rules can only come from the learn loop (step 9).</p>
+<h3 id="311-the-rules-dashboard" data-read>3.11 The rules dashboard</h3>
+<p data-read>Matt: &quot;a really fucking good idea&quot;. He wants to see every rule; switch rules on and off; see what&#39;s enabled, how often each one fires and how often it&#39;s misread; why it exists; overlaps, dependencies and clashes; and gaps where a rule is missing.</p>
+<p data-read><strong>It&#39;s a view over data the plan already produces.</strong> Building it before that data exists would show nothing.</p>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Every rule: kind, circle, mode (beta shown with its dot and expiry), why, since, review date</td>
+<td>Rule files</td>
+</tr>
+<tr>
+<td>How often it fires, by role, plus compliance</td>
+<td><code>fired.jsonl</code> + the weekly <code>rulehook.py report</code></td>
+</tr>
+<tr>
+<td>Troublesome or misread</td>
+<td>Sampled judge verdicts from the weekly review (§3.8); never a per-turn audit</td>
+</tr>
+<tr>
+<td>Overlaps (shared triggers) and dependencies (relies on / relied on by)</td>
+<td>The compiler, from triggers and <code>requires:</code> (free and deterministic)</td>
+</tr>
+<tr>
+<td>Clashes in meaning</td>
+<td>One model check per rule change, at compile time, stored with the rule</td>
+</tr>
+<tr>
+<td>Gaps</td>
+<td>Signals with no matching rule (corrections the weekly review couldn&#39;t map)</td>
+</tr>
+<tr>
+<td>Beta rules and their promotion advice</td>
+<td>Rule files + the weekly review</td>
+</tr>
+</tbody></table>
+<p data-read><strong>Versions</strong></p>
+<ul>
+<li><span data-read><strong>v0, at the ⏸ Reassess gate:</strong> the before/after table of C&#39;s numbers, rendered as one page.</span></li>
+<li><span data-read><strong>v1, after step 5</strong> (the registry migration), when every rule is a file with a mode: the panels above.</span></li>
+</ul>
+<p data-read><strong>Toggles.</strong> On/off writes the rule&#39;s <code>mode</code> into <code>slub-hq/setup/matt/overrides.md</code> (never into the rule file itself). The first choice is to expose those modes in the existing ⌃⌥⌘T Tweaks panel, which already renders switches from JSON, instead of building new toggles (the shared-modules rule). A toggle takes effect on the dispatcher&#39;s next call.</p>
+<p data-read><strong>Local only.</strong> It shows Matt-only rules (school, Mac paths), so it&#39;s served at <code>pages.test</code> and <strong>never deployed to Vercel</strong>.</p>
+<p data-read><strong>Existing tools checked</strong> (advisor §3.2): none fits.</p>
+<ul>
+<li><span data-read>Langfuse&#39;s prompt labels are the beta/official idea, so copy the concept. Don&#39;t adopt the tool: it&#39;s built for API apps, heavy to self-host, and protected labels are paid.</span></li>
+<li><span data-read>Claude Code&#39;s OpenTelemetry export and cc-observatory cover usage, not rules.</span></li>
+<li><span data-read>rulesync and agentsync only sync text.</span></li>
+</ul>
+<p data-read>Keep <code>fired.jsonl</code> in OTel event shape, so a Grafana view can be added later at no cost.</p>
+<hr>
+<h2 id="4-the-slimmed-rule-set" data-read>4. The slimmed rule set</h2>
+<p data-read>The kinds below use §3.2&#39;s names: <strong>block</strong>, <strong>remind</strong> (just in time), <strong>check</strong> (end of turn), <strong>judgment</strong> (core), <strong>auto</strong>, <strong>delete</strong>. The detailed &quot;why&quot; for each verdict is in B §4. I&#39;ve added a reason only where my call differs from B&#39;s or wasn&#39;t settled there.</p>
+<h3 id="41-delete-or-shelf-step-0" data-read>4.1 Delete or shelf (step 0)</h3>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Universal progressive disclosure (<code>&lt;details&gt;</code>, <code>&lt;br&gt;</code>, span max-width)</td>
+<td>It contradicts &quot;the Code tab shows raw HTML&quot;. Keep the idea as a Slub product pattern in IDEAS, not as a rule.</td>
+</tr>
+<tr>
+<td>Span-only styling invariant</td>
+<td>A Gemini-era renderer patch; wrong on every surface now. Also remove it from <code>ui_web.md</code> and the Codex frontend pack.</td>
+</tr>
+<tr>
+<td><code>thread.md</code> deprecation</td>
+<td>A rule about something that no longer exists</td>
+</tr>
+<tr>
+<td>Agent logs, <code>DEVELOPMENT_JOURNAL</code>, <code>wiki-engine</code>, project board</td>
+<td>Dead since about 10-20 (the tool isn&#39;t even installed; Linear replaced the board)</td>
+</tr>
+<tr>
+<td><code>preflight.py</code> before any work</td>
+<td>Last ran 10-27; it mostly checks an Antigravity quota. Pulling is rarely needed, since this Mac is the main writer.</td>
+</tr>
+<tr>
+<td>Emoji quick replies, &quot;Reply 👍 to…&quot; (rules, <code>~/.claude/CLAUDE.md</code>, memory)</td>
+<td>Reactions don&#39;t work in the Code tab since 10-27; the Action bar replaced them</td>
+</tr>
+<tr>
+<td>Projects-era routing (<code>cmsg_</code>, warm-thread 45 min, 30-thread cap, <code>/coord</code>, pointer-only project instructions, same-experience-in-project-threads)</td>
+<td>Projects mode was dropped on today&#39;s call. Shelf it.</td>
+</tr>
+<tr>
+<td>HANDOFF.md after ~40 messages</td>
+<td>Contradicts the 250k hook</td>
+</tr>
+<tr>
+<td>Path migration <code>matthewmurphy</code> → <code>matt</code>; project-root detection advice</td>
+<td>Finished, or just script advice</td>
+</tr>
+<tr>
+<td>Model family naming</td>
+<td>Cosmetic, and it clashes with the exact model IDs the harness provides</td>
+</tr>
+<tr>
+<td>Skill/workflow parity with <code>~/.gemini/global_workflows</code></td>
+<td>Antigravity is shelved</td>
+</tr>
+<tr>
+<td><code>gemini_only.md</code>, <code>subagent_leaf.md</code>, <code>LEAF.md</code>, <code>codex_only.md</code>, <code>ios.md</code>, most of <code>mac_env.md</code></td>
+<td>Shelved tools or no content. The TCC reset tip moves to saved methods.</td>
+</tr>
+<tr>
+<td>&quot;Migrate any npm project to bun before your main task&quot;</td>
+<td>Forces scope creep into every task. The ban itself stays (§4.4 E).</td>
+</tr>
+<tr>
+<td>&quot;New utilities welcome / from-scratch flag lifted&quot;</td>
+<td>Suspended by the freeze: kept in its rule file as <code>mode: off</code>, so it isn&#39;t lost</td>
+</tr>
+<tr>
+<td>Memory files that restate rules (<code>make-it-live-by-default</code> &quot;offer undo&quot;, <code>emoji-quick-replies</code>, and similar)</td>
+<td>Memory holds facts; rules live in one place. Two of these already contradict the rules.</td>
+</tr>
+<tr>
+<td>The three-copies rule (&quot;save in <code>.rules/</code>, <code>~/.claude/CLAUDE.md</code> and the project instructions&quot;)</td>
+<td>It is what creates the drift. Replaced by: one rule file, then build.</td>
+</tr>
+</tbody></table>
+<h3 id="42-merges" data-read>4.2 Merges</h3>
+<table>
+<thead>
+<tr>
+<th>Into</th>
+<th>From</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Act or wait</strong> (new, §4.4 A)</td>
+<td>Always push · make it live · obvious wants · ideas wait for 👍 · restate complex logic · drive the web app yourself · close threads without asking</td>
+</tr>
+<tr>
+<td><strong>Palette only</strong> (UI pack)</td>
+<td>Never terracotta · no orange · light mode default (3 copies) · never invent a colour</td>
+</tr>
+<tr>
+<td><strong>One design flow</strong> (UI pack)</td>
+<td>Think alone first · curated exemplars · 3–4 separately made options · UI Mixer · match a named style</td>
+</tr>
+<tr>
+<td><strong>Hand over the work</strong> (core)</td>
+<td>&quot;Try this&quot; comes with a command · folder link + run command · link every file/folder/service/thread</td>
+</tr>
+<tr>
+<td><strong>Ideas in files</strong> (core)</td>
+<td>Matt&#39;s ideas rule + Slub core rule 4</td>
+</tr>
+<tr>
+<td><strong>Reminders pack</strong></td>
+<td>Apple Reminders · no sleep reminders · habits off the calendar (each was stated 3 times)</td>
+</tr>
+<tr>
+<td><strong>HUD pack</strong></td>
+<td>HUD slots · HUDs move/resize/snap · live tweaks (narrowed to UI and feel work) · shared modules</td>
+</tr>
+<tr>
+<td>slub-hq <code>CLAUDE.md</code></td>
+<td>Drop its re-numbered copy of core rules 1–7 and keep <code>@setup/core.md</code></td>
+</tr>
+</tbody></table>
+<h3 id="43-new-rules" data-read>4.3 New rules</h3>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Act or wait</strong> (§4.4 A)</td>
+<td>judgment + check</td>
+<td>The root of C&#39;s top behavioural failure</td>
+</tr>
+<tr>
+<td><strong>Conflict order:</strong> safety &gt; Matt&#39;s latest explicit words &gt; freeze &gt; everything else</td>
+<td>judgment</td>
+<td>One line prevents many wrong guesses (B §6.9)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint and done.</strong> Each project names its next checkpoint (0.0.1 style). Done = tested, pushed, live or installed, <code>NOW.md</code> updated, the other person told if it touches him. Flag polish past the checkpoint once.</td>
+<td>judgment</td>
+<td>Turns &quot;call out wheel-spinning&quot; into something checkable. Matt on the call: &quot;fighting the urge to keep improving will be a constant.&quot;</td>
+</tr>
+<tr>
+<td><strong>Honest saved-rule claims</strong></td>
+<td>check</td>
+<td>C #4: a coordinator called a project-memory note a global rule</td>
+</tr>
+<tr>
+<td><strong>Memory isn&#39;t rules.</strong> Writing always/never/from-now-on wording into a <code>memory/</code> dir → &quot;memory is this project only; global rules go to the rule files (project coordinators: send it to the Coordinator)&quot;</td>
+<td>remind (PostToolUse)</td>
+<td>C #4 (10-29 Glass TV Coordinator)</td>
+</tr>
+<tr>
+<td><strong>Cost note before fan-outs:</strong> the 3rd <code>start_session</code>/Agent in one turn, or a reel/TTS/deploy → state the rough cost in one line</td>
+<td>remind</td>
+<td>Fan-outs have no budget today (B §6.5)</td>
+</tr>
+<tr>
+<td><strong>Permission allow-rules</strong> for <code>git push</code> / <code>gh pr merge</code> (crossword <code>main</code> stays denied)</td>
+<td>settings</td>
+<td>C: about 16 OK asks were forced by the classifier, not chosen by the agent</td>
+</tr>
+<tr>
+<td><strong>Active-project limit:</strong> ≤ 3 <code>NOW.md</code> lines per person</td>
+<td><em>proposal only</em></td>
+<td>It&#39;s a Slub-circle rule, so it needs Tyler&#39;s yes. Offer it; don&#39;t adopt it alone.</td>
+</tr>
+<tr>
+<td>B&#39;s &quot;48h school due dates at Coordinator start&quot;</td>
+<td><em>not adopted</em></td>
+<td>B itself rates it weak, with nag risk, and the habit gate already covers logic practice. Matt can ask for it.</td>
+</tr>
+</tbody></table>
+<h3 id="44-the-full-register" data-read>4.4 The full register</h3>
+<h4 id="a-how-agents-decide-and-talk-mostly-judgment-in-the-core" data-read>A. How agents decide and talk (mostly judgment, in the core)</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Trigger / note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Act or wait.</strong> Wait only for (a) an idea Matt hasn&#39;t asked you to build, (b) something irreversible or that reaches other people or the public, (c) a real fork where his taste decides and the outcomes differ, (d) the visual direction of a new product. Otherwise do it, test it, push it, make it live, then report.</td>
+<td>judgment + <strong>check</strong></td>
+<td>Stop: an ask phrase about commit/push/merge/live/close/archive/start-a-thread, or any ask phrase while a touched repo is dirty or unpushed → continue. Coordinator judge for &quot;plain wants&quot;.</td>
+</tr>
+<tr>
+<td>Every word costs Matt (≈ 8 lines + one before/after example)</td>
+<td>judgment + prose check</td>
+<td>Reader = Matt, &gt; 150 words, no detail asked → reminder on the next turn</td>
+</tr>
+<tr>
+<td>Clarity beats brevity; no &quot;You:&quot; shorthand</td>
+<td>judgment + prose check</td>
+<td>Regex <code>^\*\*You:</code></td>
+</tr>
+<tr>
+<td>Important things go in the reply, never only in a file</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Details file only for overflow</strong>; Readthrough and reel on request</td>
+<td>judgment</td>
+<td>Formatting quirks (per-bullet anchors, <code>---</code> spacing, 2-word bold labels) move to a details-file how-to</td>
+</tr>
+<tr>
+<td>Read-aloud: no repeats</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>One plain-text question at most; menus only for quizzes</td>
+<td>judgment + <strong>block</strong></td>
+<td>AskUserQuestion with any <code>multiSelect: false</code> → deny (step 5)</td>
+</tr>
+<tr>
+<td>Action bar format</td>
+<td>judgment + <strong>check</strong></td>
+<td>Actions lint (action check)</td>
+</tr>
+<tr>
+<td>Hand over the work: link threads, files, folders, services; folder link + run command after changes</td>
+<td>judgment + prose check</td>
+<td>Bare paths, <code>open https://</code>, unlinked <code>local_</code> ids, linked <code>.md</code> that doesn&#39;t exist</td>
+</tr>
+<tr>
+<td>&quot;Why did you do that?&quot; gets the real cause first</td>
+<td>judgment</td>
+<td>All agents, not just coordinators</td>
+</tr>
+<tr>
+<td>No placeholders; identity file only when needed</td>
+<td>remind</td>
+<td>PostToolUse on Write content matching <code>\[Your [A-Z]</code>, plus the prose check</td>
+</tr>
+<tr>
+<td>Rules Matt gives: one rule file + build; say &quot;saved for all your agents; offered to Tyler in his next digest&quot;</td>
+<td>judgment + <strong>check</strong> + remind</td>
+<td>Write in <code>.rules/</code>/<code>rules/</code> → &quot;run the build&quot;; dishonest claim → check</td>
+</tr>
+</tbody></table>
+<h4 id="b-life-and-school" data-read>B. Life and school</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>School: never write graded work</strong></td>
+<td>judgment (1 line) + <strong>block (<code>ask</code>)</strong> + remind</td>
+<td>Edit/Write/Bash writes under <code>~/Documents/School/**</code>, <code>~/projects/school/**</code> or course-code folders (from <code>SCHOOL.md</code>) → <code>ask</code> Matt + inject the school pack. Reads → inject once per session.</td>
+</tr>
+<tr>
+<td>PHIL 120 ramp; the allowed list (explain, hint, critique, subtractive trims, the three <code>_…-without-ghostwriting</code> skills)</td>
+<td>remind</td>
+<td>School pack</td>
+</tr>
+<tr>
+<td>Quizzes via <code>_quiz-with-tap-menus</code></td>
+<td>remind</td>
+<td>Matt says &quot;quiz me / study / practice&quot;</td>
+</tr>
+<tr>
+<td>Apple Reminders (+ no sleep reminders, habits off the calendar)</td>
+<td>remind</td>
+<td>Matt&#39;s prompt has to-do wording (remind me, I need to call, by Monday, follow up)</td>
+</tr>
+<tr>
+<td>Music: resolver links, no AI music</td>
+<td>remind</td>
+<td>Music words in Matt&#39;s prompt</td>
+</tr>
+<tr>
+<td>Obsidian vault path</td>
+<td>remind</td>
+<td>Note / wiki / vault / Obsidian words</td>
+</tr>
+<tr>
+<td>Old AI threads (<code>threads.py</code> recipe)</td>
+<td>remind</td>
+<td>&quot;Gemini&quot;, &quot;Antigravity&quot;, &quot;that earlier conversation&quot;</td>
+</tr>
+<tr>
+<td>ABOUT_MATT first; search the Mac before asking</td>
+<td>judgment (2 lines)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>QMD recall</td>
+<td>auto (exists)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Voice tasks report back</td>
+<td><strong>check</strong> (action)</td>
+<td>The prompt began &quot;🎙️ Voice task&quot; and there was no <code>voice_reply.py</code> call</td>
+</tr>
+<tr>
+<td>Check-in habit gate</td>
+<td>auto (exists)</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h4 id="c-coordinators-role-pack-injected-at-sessionstart-and-after-compaction-coordinator-roles-only" data-read>C. Coordinators (role pack, injected at SessionStart and after compaction, coordinator roles only)</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>code-coordinator.md</code> / <code>project-coordinator.md</code> content (split before routing, meta stays, starting threads, briefs, say nothing after starting, show 5 at a time, housekeeping without asking)</td>
+<td>remind (role pack)</td>
+<td>SessionStart for <code>central</code> / <code>project-coordinator</code>. Fix its stale &quot;details files and emoji replies&quot; line in step 0.</td>
+</tr>
+<tr>
+<td>Thread size 250k</td>
+<td><strong>block</strong> (exists)</td>
+<td>SendMessage</td>
+</tr>
+<tr>
+<td>Model by pace</td>
+<td>remind (fact)</td>
+<td>PreToolUse <code>start_session</code> / Agent: the current <code>claude_pace.py</code> verdict (10-min cache)</td>
+</tr>
+<tr>
+<td>Registry updated after starting a thread</td>
+<td><strong>check</strong> (action)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>No analysis in the coordinator</td>
+<td>remind + judge</td>
+<td>More than 8 non-registry Read/Grep calls in one turn → &quot;route this to a thread&quot;</td>
+</tr>
+<tr>
+<td>Don&#39;t relay project coordinators&#39; updates; start the thread for an obvious bug</td>
+<td>judge</td>
+<td>Coordinator Stop (shadow first)</td>
+</tr>
+<tr>
+<td>Project coordinators forward global rules to the central one</td>
+<td>remind</td>
+<td>Memory-save reminder in project-coordinator sessions</td>
+</tr>
+<tr>
+<td><strong>Big asks go to an advisor first</strong> (Matt, 2026-10-29). The coordinator stays Opus at low effort. For a big ask it saves Matt&#39;s message to <code>docs/coordinator/asks/</code>, starts one Opus xhigh advisor that writes a numbered action list but takes no actions, then carries the list out as written. Full text: <code>code-coordinator.md</code>, &quot;Big asks go to an advisor first&quot;.</td>
+<td>remind (role pack)</td>
+<td>UserPromptSubmit, role <code>central</code> or <code>project-coordinator</code>, sender = Matt, and the prompt is over ~350 words or has 4+ separate asks → inject the advisor rule (advisor answer §6). Phrases like &quot;correct me if I&#39;m wrong&quot;, &quot;think hard&quot; and &quot;critique&quot; trigger it too. Parts that depend on each other stay judgment.</td>
+</tr>
+<tr>
+<td>Cloud: blocked sites go through the Mac</td>
+<td>remind (role pack)</td>
+<td>Cloud sessions only. Caveat: cloud sessions don&#39;t run user-level hooks (§9).</td>
+</tr>
+</tbody></table>
+<h4 id="d-building-and-design" data-read>D. Building and design</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Test or run after every change; report honestly</td>
+<td>judgment + <strong>check</strong> (action, shadow first)</td>
+<td>Code edited after the last Bash run/test</td>
+</tr>
+<tr>
+<td>Fix root causes; don&#39;t strip custom work (span clause removed)</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Marginal change; checkpoint and done; call out wheel-spinning</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Freeze</strong> (end condition: until Matt says the Tyler merge has started)</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Look for existing tools first</td>
+<td>judgment + remind</td>
+<td>New-project signals: <code>git init</code>, <code>gh repo create</code>, <code>pages new</code>, <code>mkdir ~/projects/&lt;new&gt;</code></td>
+</tr>
+<tr>
+<td>Slub check-before-building (pull, read <code>NOW.md</code>/<code>IDEAS.md</code>)</td>
+<td>remind</td>
+<td>Same new-project signals</td>
+</tr>
+<tr>
+<td>Systems over one-offs; save working methods</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Ship-ready = self-contained, README, one-step run; settings and onboarding only for &quot;for the world&quot; builds</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Ideas: log with an honest take, build waits for 👍 (ideas stated as ideas, not asides)</td>
+<td>judgment + remind</td>
+<td>Idea wording in Matt&#39;s prompt (&quot;what if&quot;, &quot;idea:&quot;, &quot;could we&quot;)</td>
+</tr>
+<tr>
+<td><strong>One design flow:</strong> new UI or redesign → if Matt named a style, restate its traits; show 3 exemplar links or quick renders (light and dark); he picks; build; compare side by side with the reference. Offer &quot;think alone first&quot; once for open-ended product UX. Separately-made options and the UI Mixer only for &quot;for the world&quot; Slub products, or when he asks.</td>
+<td>remind (UI pack) + remind</td>
+<td>UI files; Matt&#39;s prompt says &quot;redesign / new UI / new screen&quot;</td>
+</tr>
+<tr>
+<td>UI pack: palette roles only, light and dark, no stock look, icons not text alone, every press shows it landed, discoverable, no orphans, Esc/click-outside closes modals, Mantine over hand-rolled widgets, no Tailwind unless asked, pages live in <code>~/projects/pages</code></td>
+<td>remind (pack)</td>
+<td><code>**/*.{css,scss,html,tsx,jsx,vue,svelte}</code>, <code>pages/**</code>, <code>*.swift</code> views</td>
+</tr>
+<tr>
+<td>Palette</td>
+<td><strong>blocked on Matt</strong></td>
+<td>No palette is picked (since 10-22), so &quot;never invent a colour&quot; can&#39;t be followed. A colour lint comes only after he picks one, or blesses an interim one.</td>
+</tr>
+<tr>
+<td>No orphans</td>
+<td>auto</td>
+<td><code>orphans.cjs</code> runs inside <code>pages deploy</code></td>
+</tr>
+<tr>
+<td>HUD pack: slots, move/resize/snap, Tweaks, shared modules</td>
+<td>remind (pack) + auto</td>
+<td>Swift/hud-kit/Hammerspoon HUD files; PostToolUse on <code>hud_slots.json</code> runs <code>hud_layout_test.lua</code></td>
+</tr>
+<tr>
+<td>Hammerspoon pack: reload method, <code>withInput</code> / <code>claude-control lock</code> for automations</td>
+<td>remind (pack, dispatcher-injected) + auto</td>
+<td><code>~/.hammerspoon/**</code>, <code>qwerty-midi-hammerspoon/**</code>; PostToolUse runs that project&#39;s reload</td>
+</tr>
+<tr>
+<td>Menu bar: ask Matt to click through it</td>
+<td>remind</td>
+<td>Edits containing <code>NSStatusItem</code> / <code>hs.menubar</code></td>
+</tr>
+<tr>
+<td>puma-dev <code>.test</code> domains</td>
+<td>remind</td>
+<td>Starting a dev server, editing <code>launch.json</code></td>
+</tr>
+<tr>
+<td>VPS database first</td>
+<td>remind</td>
+<td>Database/hosting words in Matt&#39;s prompt</td>
+</tr>
+<tr>
+<td>Verify model IDs before hardcoding</td>
+<td>remind</td>
+<td>Write/Edit content with <code>claude-</code> / <code>gpt-</code> / <code>gemini-</code> strings</td>
+</tr>
+<tr>
+<td>Pages on Vercel, not Artifacts; shareable Markdown via <code>pages md</code></td>
+<td>remind</td>
+<td>PreToolUse on the Artifact tool (fights the harness prompt, so it needs a reminder)</td>
+</tr>
+<tr>
+<td>Skills: <code>_</code> prefix, action-first names; run <code>sync_skills.py</code></td>
+<td>remind + auto</td>
+<td>Writes under <code>skills/</code></td>
+</tr>
+<tr>
+<td>Vendor code secret scan</td>
+<td>remind</td>
+<td><code>git clone</code> or vendor/fork wording</td>
+</tr>
+<tr>
+<td>AbletonMCP routing</td>
+<td>remind</td>
+<td>Ableton words</td>
+</tr>
+<tr>
+<td>Git tracking, narrowed to <code>~/projects/*</code> and config folders, mentioned in one line</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>AG_CONTEXT.md</td>
+<td>remind (fact)</td>
+<td>SessionStart: &quot;this project has AG_CONTEXT.md (N lines); read it before changing code&quot;</td>
+</tr>
+</tbody></table>
+<h4 id="e-safety-and-the-machine-mostly-blocks" data-read>E. Safety and the machine (mostly blocks)</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Step</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Secret reads</td>
+<td><strong>block</strong>, fail closed</td>
+<td>1 (<code>Read</code> via <code>permissions.deny</code>), 5 (Bash <code>cat/head/grep/less</code> on <code>.env*</code>)</td>
+<td><code>.env.example</code> is blocked too; acceptable. The deny text names <code>aios-env</code> and &quot;open it in VS Code for Matt&quot;.</td>
+</tr>
+<tr>
+<td>Commit secret gate</td>
+<td>auto (exists in <code>auto_commit.py</code>)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Screen input without a <code>claude-control</code> ticket</td>
+<td><strong>block</strong>, fail closed</td>
+<td>1</td>
+<td>Extend <code>input_guard</code> to <code>mcp__computer-use__*</code> and the Chrome <code>computer</code>/<code>form_input</code> tools (C: 31 unguarded calls). The 700 words of tool docs move to <code>claude-control --help</code> and the deny text.</td>
+</tr>
+<tr>
+<td><code>hs -c &#39;hs.reload()&#39;</code></td>
+<td><strong>block</strong></td>
+<td>1</td>
+<td>Added to the hang guard. Two ~50-minute hangs on 10-28, and the rule reaches no session today (B §3.1).</td>
+</tr>
+<tr>
+<td>Hang guard, browser-pane guard, thread size</td>
+<td><strong>block</strong> (exist)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Push to <code>daily-mini-crossword</code> <code>main</code></td>
+<td><strong>block</strong></td>
+<td>1</td>
+<td>Must land with, or before, the allow-rules</td>
+</tr>
+<tr>
+<td><code>rm</code>/<code>rmdir</code>/<code>find -delete</code>/<code>find -exec rm</code> outside tmp, scratchpad, caches, <code>node_modules</code>, old worktrees</td>
+<td><strong>block</strong></td>
+<td>5</td>
+<td>The 10-23 allowlist, not the old &quot;never rm&quot;</td>
+</tr>
+<tr>
+<td>npm/npx/pnpm/yarn → bun</td>
+<td><strong>block</strong></td>
+<td>5</td>
+<td>Ignore matches inside heredocs (C&#39;s false positives)</td>
+</tr>
+<tr>
+<td><code>gh repo create</code> without <code>--private</code>; <code>git init</code> in <code>~</code></td>
+<td><strong>block</strong></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>System <code>/tmp</code> (allow <code>/private/tmp/claude-*</code>)</td>
+<td><strong>block</strong></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Automations take the input queue</td>
+<td>remind</td>
+<td>6</td>
+<td>Hammerspoon/KM pack</td>
+</tr>
+<tr>
+<td>No command may hang a thread</td>
+<td>auto (exists) + 1 core line</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Never act as someone else (Slub 8)</td>
+<td>judgment</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h4 id="f-slub-core-setupcoremd-circle-slub-changes-need-both-matt-and-tyler" data-read>F. Slub core (<code>setup/core.md</code>, circle <code>slub</code>; changes need both Matt and Tyler)</h4>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Kind</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 Visible by default</td>
+<td>judgment + <strong>check</strong> (action)</td>
+<td>New repo or project folder this session, no <code>NOW.md</code> line → add it</td>
+</tr>
+<tr>
+<td>2 Check before building</td>
+<td>auto (pull exists) + remind</td>
+<td>New-project signals</td>
+</tr>
+<tr>
+<td>3 Look for connections</td>
+<td>judgment, <strong>reworded with a trigger</strong>: &quot;when your work touches a repo, file or idea named in NOW/IDEAS/notes, say so in one line&quot;</td>
+<td>Tyler called it vague</td>
+</tr>
+<tr>
+<td>4 Ideas in files</td>
+<td>judgment</td>
+<td>Merged with Matt&#39;s ideas rule</td>
+</tr>
+<tr>
+<td>5 Tasks per person</td>
+<td>auto</td>
+<td><code>slub-sync.sh</code> should surface <code>TASKS.md</code> (it doesn&#39;t today)</td>
+</tr>
+<tr>
+<td>6 Inbox</td>
+<td>auto (exists)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>7 Model-neutral, Slub-only</td>
+<td>remind</td>
+<td>Edits in slub-hq</td>
+</tr>
+<tr>
+<td>8 Never act as someone else</td>
+<td>judgment</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Header &quot;forever&quot;</td>
+<td>reword</td>
+<td>Pending Tyler&#39;s OK (call decision)</td>
+</tr>
+</tbody></table>
+<p data-read>The <strong>draft core</strong> (what every session always loads) is in Appendix A: about 55 lines including the Slub core. Today that&#39;s ~17,000 words in ai-os and ~4,100 elsewhere.</p>
+<hr>
+<h2 id="5-rollout" data-read>5. Rollout</h2>
+<p data-read>Ordered by C&#39;s cost ranking. Each step is small, testable and can be undone on its own. Nothing is deleted until its replacement is live and measured, except dead rules (step 0).</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What</th>
+<th>C/B evidence it addresses</th>
+<th>Done when</th>
+<th>Undo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0. Text fixes</strong> (no code)</td>
+<td>(1) Delete §4.1. (2) Write <em>act or wait</em> + the conflict order. (3) Put the school line, the freeze and act-or-wait into <code>~/.claude/CLAUDE.md</code> now (missing outside ai-os). (4) Fix the rm, &quot;syncs to Tyler&quot;, emoji and details-file lines. (5) Delete contradicting memory files. (6) Fix <code>code-coordinator.md</code>&#39;s stale lines. (7) Replace the three-copies rule with &quot;one place + build&quot;.</td>
+<td>B §3.1–3.2, §5; C &quot;fix the conflicts before hooking them&quot;</td>
+<td>grep finds none of B §5&#39;s contradictions; a session in a non-ai-os folder sees the school, freeze and act-or-wait lines</td>
+<td>Back up <code>~/.claude/CLAUDE.md</code> first (it isn&#39;t in git); <code>git revert</code> for the rest</td>
+</tr>
+<tr>
+<td><strong>1. Tool-moment gaps on existing guards</strong></td>
+<td>(a) School guard: small standalone hook, <code>ask</code> + inject. (b) <code>hs.reload</code> pattern added to the hang guard. (c) <code>input_guard</code> fail-closed + computer-use/Chrome matchers. (d) Crossword <code>main</code> deny, <strong>then</strong> allow-rules for push/merge (after test §8 #3). (e) <code>permissions.deny</code> for secret <code>Read</code>s.</td>
+<td>C #3, C &quot;not rule breaks&quot;, B §3.1, C (31 unguarded input calls)</td>
+<td>Fire/pass tests per change; replay over C&#39;s transcripts shows no false positives; a test session editing a lab file gets the <code>ask</code></td>
+<td>Remove the settings lines; <code>git revert</code> the guard edits</td>
+</tr>
+<tr>
+<td><strong>2. Stop dispatcher</strong> (shadow, then live)</td>
+<td><code>rulehook.py</code> skeleton (state, log, kill switch, shadow), sender/reader classification, the minimal rule-file format + compiler step. Action checks: OK-ask, Actions lint, voice task, honest saved-rule claim. Prose checks as next-turn reminders. Signal capture starts here.</td>
+<td>C #2 (6 complaints), #6, #5, #8</td>
+<td>Replay + golden set ≥ 90% right; 3 days live shadow with &lt; 1 false nudge a day; then live</td>
+<td><code>mode: shadow</code>, or the kill switch</td>
+</tr>
+<tr>
+<td><strong>3. Saving rules and handoffs</strong></td>
+<td>Memory-isn&#39;t-rules reminder; rule-file write → &quot;run the build&quot;; role resolution; pace fact on <code>start_session</code>. Separately, the thread that built the 10-30 inbox forwarder tests it end to end (C #4: delivery must not depend on reading a file at session start).</td>
+<td>C #4</td>
+<td>A test write of &quot;always X&quot; to a project memory triggers the reminder; the forwarder delivers a test line to the live Coordinator</td>
+<td><code>mode: off</code></td>
+</tr>
+<tr>
+<td><strong>4. Coordinator role pack</strong></td>
+<td>SessionStart injection for coordinator roles (also after compaction); registry check; &quot;no analysis&quot; reminder; SubagentStart leaf digest</td>
+<td>B §4.6, A §6</td>
+<td>Coordinator and worker sessions see different digests; a compacted coordinator still has its pack</td>
+<td><code>AIOS_RULES_ROLES=off</code></td>
+</tr>
+<tr>
+<td><strong>⏸ Reassess</strong></td>
+<td>Re-run C&#39;s scripts on the week since step 2. That table is <strong>dashboard v0</strong> (§3.11): one local page.</td>
+<td>—</td>
+<td>Matt sees one before/after table: OK-asks, reply lengths, Action labels, complaints. <strong>If the main numbers are fixed, steps 5–10 are optional.</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>5. Registry migration + low-evidence blocks</strong></td>
+<td>Move <code>.rules/</code> text into rule files area by area. Port the Codex <code>tool_guard</code> rules <em>from the rule files</em> (rm incl. <code>find -delete</code>, npm, <code>/tmp</code>, <code>gh --private</code>, <code>git init ~</code>, Bash secret reads) + the quiz <code>multiSelect</code> deny. Shadow 2 days. Optionally fold the four old guards into the dispatcher.</td>
+<td>B §3.4, C (insurance)</td>
+<td>Shadow log clean; the compiler passes with every rule having a kind and tests</td>
+<td><code>mode: shadow</code> per rule</td>
+</tr>
+<tr>
+<td><strong>5b. Dashboard v1</strong></td>
+<td>The local page over the rule files, <code>fired.jsonl</code>, <code>signals.jsonl</code> and the weekly report; rule modes exposed as switches in the Tweaks panel through the overrides file</td>
+<td>Matt&#39;s reply, part 2</td>
+<td>Every rule shows its mode, fires and overlaps; flipping a switch changes the dispatcher&#39;s next decision</td>
+<td>Stop serving the page; the overrides file reverts with git</td>
+</tr>
+<tr>
+<td><strong>6. Packs and prompt reminders</strong></td>
+<td>UI, HUD, Hammerspoon, school (fold in step 1&#39;s hook), reminders/music/old-threads/ideas/rules prompts (sender = Matt), the advisor-escalation reminder for coordinators, AG_CONTEXT fact, Artifact → pages, skills, model IDs, fan-out cost note, <code>NOW.md</code> check. Batches of ≤ 10, shadow each.</td>
+<td>B §4</td>
+<td><code>InstructionsLoaded</code> shows the packs loading; &lt; 1 prompt reminder per 5 of Matt&#39;s prompts</td>
+<td>Delete the generated pack files; <code>mode: off</code></td>
+</tr>
+<tr>
+<td><strong>7. Shrink the core</strong></td>
+<td>Generate <code>~/.claude/CLAUDE.md</code> (≤ 60 lines) from the rule files. <code>ai-os/CLAUDE.md</code> becomes ai-os project notes only. A rule&#39;s text leaves the core after its hook has been live a week, <strong>rule by rule</strong>.</td>
+<td>B §3.1, A §1</td>
+<td>Core ≤ 60 lines; C&#39;s numbers re-run and no worse</td>
+<td>Rebuild with <code>--full</code></td>
+</tr>
+<tr>
+<td><strong>8. Coordinator judges</strong></td>
+<td>The four async judges, shadow for a week</td>
+<td>C #2 (coordinator plain wants), #7</td>
+<td>Matt agrees with 9 of 10 sampled verdicts</td>
+<td><code>mode: shadow</code></td>
+</tr>
+<tr>
+<td><strong>9. Learn loop review + beta rules</strong></td>
+<td>First weekly review after ≥ 2 weeks of signals. From then on it may put additive rules in beta (§3.10).</td>
+<td>Matt&#39;s ask and reply</td>
+<td>Matt keeps or kills it after the first report; beta rules stay within the limits, checked by the compiler</td>
+<td><code>mode: off</code>; unload the job; all beta rules → <code>off</code> via one override</td>
+</tr>
+<tr>
+<td><strong>10. Tyler</strong></td>
+<td>§7: export, plugin or settings install, offers in shadow until he says Yes</td>
+<td>Call decisions</td>
+<td>Tyler&#39;s agent explains the shared rules in plain English, and he says Yes or No to each</td>
+<td>Uninstall the plugin</td>
+</tr>
+<tr>
+<td><em>(later)</em> Codex adapter</td>
+<td><code>tool_guard</code>/classifier read <code>rules-index.json</code></td>
+<td>A §1 (guard drift)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p data-read><strong>Targets</strong> (C&#39;s scripts re-run two weeks after step 2):</p>
+<ul>
+<li><span data-read>replies to Matt that end by asking for an OK: 15% → &lt; 5%;</span></li>
+<li><span data-read>Code-tab worker replies to Matt over 150 words: 47% → &lt; 20%;</span></li>
+<li><span data-read>one-word Action labels: 0;</span></li>
+<li><span data-read>oversize sends: 0;</span></li>
+<li><span data-read>agent writes to school files without Matt&#39;s <code>ask</code>: 0;</span></li>
+<li><span data-read>always-loaded rules: &lt; 1,500 words in every session (today ~17,000 in ai-os, ~4,100 elsewhere, with the school rule missing).</span></li>
+</ul>
+<hr>
+<h2 id="6-how-it-works-for-each-kind-of-session" data-read>6. How it works for each kind of session</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Central Coordinator</th>
+<th>Project coordinator</th>
+<th>Worker (Matt-facing)</th>
+<th>Worker started by a session</th>
+<th>Subagent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Always loaded</td>
+<td>Core (≤ 60 lines incl. Slub core)</td>
+<td>Core</td>
+<td>Core</td>
+<td>Core</td>
+<td>Leaf digest (5 lines, SubagentStart)</td>
+</tr>
+<tr>
+<td>SessionStart / after compaction</td>
+<td>Coordinator pack, registry path, own id</td>
+<td>Coordinator pack + project-coordinator delta + project name</td>
+<td>AG_CONTEXT fact</td>
+<td>AG_CONTEXT fact</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Blocks</td>
+<td>All</td>
+<td>All</td>
+<td>All</td>
+<td>All</td>
+<td>All (they&#39;re tool-level)</td>
+</tr>
+<tr>
+<td>Reminders</td>
+<td>Pace on <code>start_session</code>, send size/title, rule saves, memory saves, no-analysis</td>
+<td>Same + &quot;send global rules to the Coordinator&quot;</td>
+<td>Packs, new-project, rule/memory saves, prompt reminders (sender = Matt)</td>
+<td>Packs, new-project</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Action checks</td>
+<td>All, incl. registry update</td>
+<td>All, incl. registry update</td>
+<td>All</td>
+<td>Repo, voice and NOW.md checks only (the reader is an agent)</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Prose checks</td>
+<td>Yes (Matt reads)</td>
+<td>Yes (Matt reads, unless the sender was a peer)</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Model judges</td>
+<td>4, shadow first</td>
+<td>Later, if the Coordinator&#39;s prove useful</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p data-read><strong>After compaction:</strong> SessionStart with <code>source: compact</code> re-injects the role pack. Today a compacted coordinator relies on remembering a file it read hours ago.</p>
+<p data-read><strong>Cloud sessions</strong> don&#39;t run Matt&#39;s user-level hooks, so they get only what a repo&#39;s own settings and <code>CLAUDE.md</code> give them. They&#39;re rare now that Projects mode is dropped; accept the gap.</p>
+<hr>
+<h2 id="7-sync-to-tyler" data-read>7. Sync to Tyler</h2>
+<p data-read>Built on A §11 and B §3.3, shaped by today&#39;s call.</p>
+<p data-read><strong>Circles</strong> (Matt&#39;s word on the call), as the <code>circle:</code> tag:</p>
+<table>
+<thead>
+<tr>
+<th>Circle</th>
+<th>Who</th>
+<th>How it reaches Tyler</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>shared-core</code></td>
+<td>Matt, Tyler, Kristy</td>
+<td>Live for everyone. Today that&#39;s one rule: projects are visible by default.</td>
+</tr>
+<tr>
+<td><code>slub</code></td>
+<td>Matt and Tyler, on Slub work</td>
+<td>Live for both, from <code>slub-hq/setup/rules/</code>. Changes need both to agree.</td>
+</tr>
+<tr>
+<td><code>matt-recommended</code></td>
+<td>Matt&#39;s defaults that might suit Tyler</td>
+<td>Exported (sanitized) to <code>slub-hq/setup/matt/rules/</code>. <strong>Off on Tyler&#39;s Mac until he says Yes.</strong></td>
+</tr>
+<tr>
+<td><code>matt-only</code></td>
+<td>Matt&#39;s Mac, life, school, Hammerspoon</td>
+<td>Never exported, never in Tyler&#39;s queue</td>
+</tr>
+</tbody></table>
+<p data-read><strong>How it ships</strong></p>
+<ul>
+<li><span data-read><strong>Code:</strong> the dispatcher is a <code>slub-rules</code> plugin in the existing <code>slub-mods</code> marketplace, <em>if</em> plugin command hooks fire in the desktop Code tab and over Remote Control (§8 #5). Otherwise INSTALL.md gains one step that adds the settings lines. Python stdlib only; paths come from env (<code>AIOS_HOME</code>, <code>AIOS_REGISTRY</code>).</span></li>
+<li><span data-read><strong>Rule files:</strong> read live from slub-hq, which <code>slub-sync.sh</code> already pulls at every session start. A shared rule edit reaches Tyler on his next session with no plugin update.</span></li>
+</ul>
+<p data-read><strong>Tyler&#39;s worries from the call, and the answers</strong></p>
+<ul>
+<li><span data-read><em>&quot;If your handoff rule quietly overrode mine, I&#39;d think something was broken.&quot;</em> Offers arrive switched off. Every injected line is tagged <code>[rule:id]</code>, and <code>rulehook.py why &lt;id&gt;</code> prints the rule&#39;s file. A <code>conflicts</code> report lists his own rules that touch the same triggers. <code>params</code> overrides let him keep his own thresholds without forking a rule.</span></li>
+<li><span data-read><em>&quot;Psychotic levels of clarity.&quot;</em> Every few days (the call&#39;s cadence) his agent gets one digest of new or changed <code>matt-recommended</code> rules. Each has a plain-English line on what it changes in practice, then Yes / No / Later. This reuses <code>CHANGES.md</code> and <code>slub-answers.json</code>, deduplicated and titled by the rule&#39;s own name, not its section. Changes to how slub-hq itself works also get a short note in <code>inbox/tyler.md</code>.</span></li>
+<li><span data-read><em>Rules he can&#39;t run.</em> The export lint refuses Matt-only paths in anything offered to him.</span></li>
+</ul>
+<p data-read><strong>His own data stays his.</strong> His agent can run the same learn loop on his own signals; signals never leave the Mac they were captured on.</p>
+<p data-read><strong>Kristy</strong> gets only <code>shared-core</code>, which is also the only rule she asked for.</p>
+<hr>
+<h2 id="8-must-test-before-building-each-blocks-the-step-named" data-read>8. Must-test before building (each blocks the step named)</h2>
+<ol>
+<li><span data-read><strong>How a Stop continuation looks in the Code tab</strong> (step 2): does Matt see the &quot;Stop hook feedback&quot; line and a second message, and does read-aloud read both? This confirms §3.6&#39;s split.</span></li>
+<li><span data-read><strong>Does the action-bar mod pick up an <code>Actions:</code> line from a continuation?</strong> (step 2: Actions lint)</span></li>
+<li><span data-read><strong>Do permission allow-rules stop the auto-mode classifier from forcing an ask on <code>git push origin main</code>?</strong> (step 1d) If not, drop 1d and live with those asks.</span></li>
+<li><span data-read><strong>Do user-level <code>~/.claude/rules/*.md</code> <code>paths:</code> globs match absolute paths outside the session&#39;s working directory?</strong> (step 6) If not, the dispatcher injects all packs, as it already must for Hammerspoon and School.</span></li>
+<li><span data-read><strong>Do plugin <code>hooks.json</code> command hooks fire in the desktop Code tab and over Remote Control?</strong> (step 10)</span></li>
+<li><span data-read><strong>Role lookup</strong> from the desktop session metadata, plus its fallbacks (step 3).</span></li>
+<li><span data-read><strong>Is do.test still needed</strong> in the Code tab, now that plain markdown links open in the file pane? (step 0 wording)</span></li>
+</ol>
+<hr>
+<h2 id="9-risks" data-read>9. Risks</h2>
+<ul>
+<li><span data-read><strong>A dispatcher bug breaks every session.</strong> Mitigations: fail-open, the kill switch, shadow mode, replay tests, and the fail-closed rules in separate handlers.</span></li>
+<li><span data-read><strong>Reminders become wallpaper</strong>, as <code>CLAUDE.md</code> did. Mitigations: the <code>once</code> defaults, character caps, facts over principles, reader-aware checks, the weekly report, and expiry dates.</span></li>
+<li><span data-read><strong>Blocks teach workarounds</strong> (Codex: <code>find -delete</code>). Mitigations: keep blocks few, test known workarounds, and log &quot;deny, then a similar allowed command&quot; as a signal.</span></li>
+<li><span data-read><strong>Prose reminders arrive one turn late.</strong> That&#39;s the honest limit: no hook runs before a reply is shown. Prose quality stays mostly judgment.</span></li>
+<li><span data-read><strong>Shrinking the core can drop a rule that had no trigger.</strong> Step 7 goes rule by rule. Each removed line must name the hook or pack that replaces it, or it stays.</span></li>
+<li><span data-read><strong>School <code>ask</code>s may get frequent</strong> during cleanup sessions Matt asked for. If so, add an &quot;approved for this session&quot; flag, or C&#39;s code-diff check.</span></li>
+<li><span data-read><strong>Fail-closed input</strong> blocks every <code>open</code>/focus while Hammerspoon is down. That&#39;s intended; the deny text gives the restart route.</span></li>
+<li><span data-read><strong>Allow-rules widen what runs without a check.</strong> Pushes are pre-approved by Matt, crossword <code>main</code> stays denied, and nothing else is widened.</span></li>
+<li><span data-read><strong>The undocumented desktop metadata</strong> used for role lookup may change. The env and title fallbacks still work, and a failure logs <code>role=unknown</code>.</span></li>
+<li><span data-read><strong>Beta rules regrow the pile, or game the checks.</strong> Mitigations: compiler-enforced limits (additive only, no trigger overlap, cap of 5, 21-day expiry, a named target), a one-switch kill for all beta rules, and promotion that needs a 👍 until the agent&#39;s calls have proven calibrated.</span></li>
+<li><span data-read><strong>The dashboard becomes a project of its own.</strong> v0 is one table and v1 is a view over existing files. No new backend, no hosting, toggles reuse the Tweaks panel.</span></li>
+<li><span data-read><strong>The system itself becomes a project.</strong> The reassess gate after step 4, and the stated targets, keep it honest.</span></li>
+</ul>
+<hr>
+<h2 id="10-decisions-only-matt-can-make" data-read>10. Decisions only Matt can make</h2>
+<ol>
+<li><span data-read>The six in <a href="PLAN-summary.md">PLAN-summary.md</a>: details file, allow-rules + act-or-wait, one design flow, weekly learn loop, school <code>ask</code>, and <strong>beta rules going live without his 👍</strong>.</span></li>
+<li><span data-read><strong>The freeze&#39;s end condition</strong> (proposed: &quot;until Matt says the Tyler merge has started&quot;).</span></li>
+<li><span data-read><strong>The palette</strong>, or an interim one. Until then, the colour rules can&#39;t be followed or enforced.</span></li>
+<li><span data-read><strong>With Tyler:</strong> the circles, the digest cadence, the <code>core.md</code> header wording, and the active-project limit.</span></li>
+</ol>
+<hr>
+<h2 id="appendix-a-draft-always-loaded-core--55-lines-with-slub-core" data-read>Appendix A: draft always-loaded core (≈ 55 lines with Slub core)</h2>
+<p data-read>Generated, never hand-edited. Wording to be polished in step 7; shown so the budget is concrete.</p>
+<pre><code class="language-markdown"># Matt&#39;s core rules (generated from rule files; edit those, not this)
+Other rules arrive just in time, tagged [rule:id]. Follow them.
+
+## When rules clash
+Safety (secrets, data loss, school, other people&#39;s accounts) &gt; Matt&#39;s latest explicit words &gt; the project freeze &gt; everything else.
+
+## Who and where
+- Read ~/projects/ai-os/docs/ABOUT_MATT.md first; school schedule is docs/SCHOOL.md.
+- Search the Mac (that index, QMD, mdfind, threads.py) before asking Matt about himself.
+- Shelved unless Matt asks: Antigravity/agy, Hermes, Perplexity, DeepSeek, the LiteLLM proxy.
+
+## Act or wait
+- Wait for Matt only for: (a) an idea he hasn&#39;t asked you to build; (b) anything irreversible or that reaches other people or the public (messages, posts, purchases, publishing to his website); (c) a real fork where his taste decides and the outcomes differ; (d) the visual direction of a new product.
+- Everything else: do it, test it, commit and push, make it live, then report. Pushes are pre-approved, main included (not daily-mini-crossword main).
+- Restate logic before building only when it is truly complex and you&#39;re unsure you understood.
+- If a tool or agent can do a step (including clicking through a web app in Chrome), you do it. Hand Matt a step only when it needs his password, payment, device or hands.
+
+## Replies to Matt
+- Line 1 is the answer, or the one thing he must do.
+- Aim for ≤ 50 words, up to ~100 when clarity needs it; more only when he asked for detail. Clarity beats brevity: plain full sentences, no shorthand like &quot;You: rename 3 states&quot;.
+- One idea per line, bold the point, a blank line between lines, at most 4 items.
+- Anything he must do, decide or worry about is in the reply, one short line each. Overflow goes to the details file (~/projects/ai-os/docs/details/YYYY-MM-DD-&lt;slug&gt;.md), linked last.
+- At most one question, in plain text. Offered actions go in one last line: **Actions:** &lt;verb + object&gt; → &lt;sentence&gt; · … (only things you will do; ` | ` between either/or choices).
+- Link every thread, file, folder and service you mention. After changing a project, give its folder link and one command or link that runs it.
+- Read-aloud reads the whole turn: never repeat what a progress note said.
+- &quot;Why did you do that?&quot; gets the real cause first, plainly.
+
+## Building
+- Test or run after every change; report the result honestly, failures included.
+- Fix root causes; never strip existing custom styling or architecture.
+- Small steps. Each project names its next checkpoint; done = tested, pushed, live or installed, NOW.md updated. Flag polish past the checkpoint once; call out wheel-spinning.
+- Project freeze until Matt says the Tyler merge has started: no new projects, prefer simplifying.
+- Look for existing tools first. Systems over one-offs. Shared modules over copies. Save working methods where the next agent will find them.
+- Ship-ready = self-contained, README, runs in one step. Settings and onboarding only for &quot;for the world&quot; builds.
+- Ideas Matt states: log them in the project&#39;s IDEAS.md (Slub ideas in slub-hq) with a 1–2 line honest take; building waits for his 👍.
+- Rules Matt gives: one rule file, then the build; say &quot;saved for all your agents; offered to Tyler in his next digest&quot;.
+- School: never write, fix or generate graded work (code, essays, answers). Explain, hint and critique only.
+- Secrets never go in chat, pages, logs or commits; check keys with aios-env.
+
+## Slub (shared with Tyler; changes need both)
+@~/projects/slub-hq/setup/core.md
+</code></pre>
+
+</main>
+</body>
+</html>
