@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_c837a1f2-6eef-463f-812a-78a035dbdadd">
+<meta name="claude-thread" content="local_cc656186-076a-49c9-9b70-cea93d86d4d2">
 <title>No-suggestions mod</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -19,6 +19,8 @@
 <p data-read>Rejected: the global setting (you rely on suggestions elsewhere) and the Hammerspoon cover (a solid one hides typing).</p>
 <p data-read>Untested: three throwaway headless sessions produced no suggestions even with the mod off, so the actual hiding has not been seen. Validation and the unit test passed (the only validator failures are plugin-directory listing rules). The Coordinator process predates the install and must restart to load the mod. The band and command are also unseen in the Code tab.</p>
 <p data-read>Undo: disable <code>no-suggestions@ai-os-mods</code> in settings and delete the flag folder.</p>
+<h2 id="cold-hold-note-leak">Cold-hold note leak</h2>
+<p data-read>You showed a held prompt with an app note restored into your composer. The context-alert mod (0.7.9) now strips app notes before holding, and never holds a message that is only app notes. Undo: revert the 0.7.9 commit.</p>
 
 </main>
 </body>
