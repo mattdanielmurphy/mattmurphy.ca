@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_f227f4da-7077-4f4e-a40b-8bcf0650968f">
+<title>Glass TV reports its own problems</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · glass-tv-self-reporting</p>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h1 id="glass-tv-reports-its-own-problems">Glass TV reports its own problems</h1>
+<h2 id="2300-plan-and-first-case">23:00 Plan and first case</h2>
+<p data-read>You asked for a system where every build reports problems, a receiver collects them, and Claude threads investigate so a coordinator can bring you findings. You also asked about We&#39;re the Millers.</p>
+<h3 id="most-of-it-exists">Most of it exists</h3>
+<hr>
+<p data-read>Built 2026-10-29 (VISION.md): play log on each server, odd events to the VPS, 9:00 triage, briefs, Coordinator hand-off. The collector is the VPS; Sentry-style tools were rejected earlier. So the plan is to close gaps, not start again.</p>
+<h3 id="three-gaps">Three gaps</h3>
+<hr>
+<ol>
+<li><span data-read>TV and iPad report only source-finding time, fallbacks and crashes, not first frame or stalls. &quot;Streaming got slower&quot; can&#39;t see their real playback. Add play reports in PlayerScreen.kt and the iPad player, posted to a new <code>/tv/v1/health</code>, and ship new builds.</span></li>
+<li><span data-read>Triage ran at 9:00 today while the Mac server was down, saw 0 events and still moved its &quot;last run&quot; forward, so anything odd from then would be lost. Fix: retry, and if a server stays down, don&#39;t advance.</span></li>
+<li><span data-read>Unit tests write fake events to the real log: run together, an earlier test file fixes the data folder before health.test.ts sets its own. Fix: one shared test data folder set in a preload. My run tonight added 3 fake events; I removed those (kept a copy in the session scratchpad). They&#39;d have raised a false alarm tomorrow.</span></li>
+</ol>
+<p data-read>Rejected for now: raw title sharing, Sentry.</p>
+<h3 id="privacy">Privacy</h3>
+<hr>
+<p data-read>Titles, keys and crash details stay on the machine that recorded them; only title-free lines go to the VPS, which is tailnet-only. Nothing reveals what your parents or brother watch. Weak spot: crash stack traces are stripped too (<code>detail</code>), so a TV crash arrives with only its one-line message, and the investigation needs the local /tv/errors page. Proposed: send stack traces (no titles in them) home. Tell them in one line that the app sends fault reports; the choice is yours.</p>
+<h3 id="millers-case">Millers case</h3>
+<hr>
+<p data-read>Saved play: <code>We&#39;re the Millers [2013 Blu-ray disc] [2-in-1...]</code>, 1359 s (22.7 min). A disc holds the film as chunks, so one chunk explains the mid-film start and the short length. Slow load is likely the disc&#39;s high bitrate, not measured. isDiscImage matches this name, the live server has had it since 18:36, and quality grading excludes it. Not retested with real streams, to avoid Real-Debrid requests. Play was before the health log, so no event exists. A differently named disc could still slip through; idea: on wrong length, switch source automatically.</p>
+
+</main>
+</body>
+</html>
