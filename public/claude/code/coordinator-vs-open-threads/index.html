@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_cc656186-076a-49c9-9b70-cea93d86d4d2">
+<title>Coordinator vs open threads</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · coordinator-vs-open-threads</p>
+<h1 id="coordinator-vs-open-threads">Coordinator vs open threads</h1>
+<p data-read>Written 2026-10-31 from your files, your transcripts and Anthropic&#39;s current pages. Nothing was changed except this file.</p>
+<h2 id="bottom-line">Bottom line</h2>
+<p data-read><strong>You are right about the shape and wrong about the machinery.</strong> &quot;Open a thread for anything&quot; is a better default than &quot;everything goes through a coordinator&quot;. But the old setup did not do what you remember, so there is nothing to bring back. You would be building a smaller, better version on top of what Claude already writes to disk.</p>
+<p data-read><strong>My recommendation: make every thread a first-class entry point and keep one coordinator as an option you choose,</strong> not a layer you must pass through. Total build is about two small threads, and most of the value comes from rule changes that cost nothing.</p>
+<p data-read><strong>The biggest find:</strong> the Claude app already writes a short status summary after each turn, for most threads, to a local file. You don&#39;t need agents to write per-turn summaries, and you shouldn&#39;t ask them to. That habit has already died twice.</p>
+<p data-read><strong>The extra-message problem mostly goes away by itself.</strong> The app only refuses to start a thread on a turn you didn&#39;t type on the desktop. If you start threads yourself, the refusal rarely comes up.</p>
+<p data-read><strong>What you&#39;d lose is real, though:</strong> short replies, one place that says what&#39;s waiting on you, and a brain that splits a long voice dump into several threads. The plan below replaces the first two cheaply. The third stays with the optional coordinator.</p>
+<p data-read><strong>This reverses your own decision from Oct 29</strong> (&quot;hooks empower coordinators, never replace them&quot;). Your newest word wins, but you should make that call knowingly.</p>
+<hr>
+<h2 id="what-the-old-setup-did">What the old setup did</h2>
+<h3 id="what-it-actually-was">What it actually was</h3>
+<ul>
+<li><span data-read><a href="/Users/matt/projects/ai-os/scripts/preflight.py"><strong><code>preflight.py</code></strong></a>: a script the agent had to choose to run. It checked Antigravity quota, rebuilt rules if stale, scanned for secrets, ran <code>git pull</code>, started the watcher, checked Hammerspoon errors, and printed recent threads and the project board.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/scripts/watch_transcripts.py"><strong><code>watch_transcripts.py</code></strong></a>: a background daemon that checked Antigravity transcript files as often as every 50 milliseconds. It rendered <code>Discussions.html</code>, ran the evaluator, auto-committed after each finished turn, and started a summary after five idle minutes.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/scripts/summarize_thread.py"><strong><code>summarize_thread.py</code></strong></a>: sent the first request and final reply to DeepSeek through the local LiteLLM proxy for a two-sentence summary, saved in <code>thread_summaries.json</code>.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/scripts/transcript_evaluator.py"><strong><code>transcript_evaluator.py</code></strong></a>: checked replies for banned HTML tags and estimated length.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/.rules/agent_logs.md"><strong>Agent logs and journal rules</strong></a>: at the end of a session, write <code>agent-logs/&lt;date&gt;_&lt;topic&gt;.md</code> in the project and add 2-3 lines to <code>DEVELOPMENT_JOURNAL.md</code>. New sessions were told to read those first.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/.rules/git_protocol.md"><strong>Git rules</strong></a>: run preflight first, commit and push when done.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/.rules/gemini_only.md"><strong>Gemini rules</strong></a>: treat preflight output as system-level instructions, plus cleanup rules for subagents and background tasks.</span></li>
+</ul>
+<p data-read>It read Antigravity from three folders (<code>~/.gemini/antigravity</code>, <code>antigravity-ide</code>, <code>antigravity-cli</code>), each holding <code>brain/&lt;id&gt;/.system_generated/logs/transcript.jsonl</code>. It sorted by file time, took the first typed line as the title, pulled project names out by pattern, and linked subagents to parents by finding their ids in the text. It never read Claude&#39;s transcripts, not once.</p>
+<hr>
+<h3 id="where-your-memory-is-rosier-than-the-evidence">Where your memory is rosier than the evidence</h3>
+<p data-read><strong>&quot;It ran at the start of every turn.&quot;</strong> Mostly no. Since Aug 15 the rule said once per thread, turn 1 only. A separate every-turn step (postflight) lasted two days for Gemini, Aug 13-15, because it added latency. The Claude version of that rule did exist until it was shelved on Oct 17. The log shows 996 finished runs in three months, against roughly 3,400 Antigravity thread folders (many are subagents). So it depended on agents remembering. A hook can&#39;t forget, which already makes today&#39;s version stronger.</p>
+<p data-read><strong>&quot;It found similar threads.&quot;</strong> No, never. It printed the 8 most recent threads by first line and folder. It wasn&#39;t even given your prompt, so it couldn&#39;t compare anything. Your current recall hook, weak as it is, does more than preflight ever did.</p>
+<p data-read><strong>&quot;Agents wrote summaries every turn.&quot;</strong> No. Agent logs were per session, and only when code changed. Thread summaries came from the watcher, not the agents. <code>thread_summaries.json</code> was last written Aug 13, so summaries stopped within about a day of being built, and nobody noticed. Preflight kept a fallback line for missing summaries until the feature was removed on Sep 16.</p>
+<p data-read><strong>&quot;It was self-improving.&quot;</strong> The evaluator logged 2,046 turns and found 5 problems, all HTML tags. It flagged bloat zero times. Its six &quot;synthesis reports&quot; have identical findings because the text is hard-coded: they always say no rule drift was detected.</p>
+<p data-read><strong>&quot;It was cheap.&quot;</strong> Not really.</p>
+<ul>
+<li><span data-read>The Gemini rules file is 13,714 words, loaded into every thread.</span></li>
+<li><span data-read>1,785 of your 2,969 ai-os commits have generic messages, and 1,251 commits touched <code>Discussions.html</code>.</span></li>
+<li><span data-read>One auto-commit swept in 5,379 files and 4.1 million lines, including compiled cache files.</span></li>
+<li><span data-read>July audits show you were already fighting quota waste, for example 1.27 million cumulative context tokens in one 146-step thread.</span></li>
+</ul>
+<p data-read><strong>Why it was really abandoned:</strong> not because the shape failed. The shelf says the Antigravity trial ended with quota near zero, and the proxy, DeepSeek and Hermes went with it on Oct 17. The whole system was tied to one vendor&#39;s file paths.</p>
+<hr>
+<h3 id="what-is-alive-now-vs-dead">What is alive now vs dead</h3>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>State today</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Watcher</td>
+<td><strong>A ghost.</strong> launchd shows it running, but only the wrapper is alive. There&#39;s no Python process and no tmux session. Last output was Oct 28 14:48.</td>
+</tr>
+<tr>
+<td>Preflight</td>
+<td>Last ran Oct 27, 7 runs in glass-tv. Still a rule in the ai-os compiled file. Mostly checks a dead Antigravity quota.</td>
+</tr>
+<tr>
+<td>Summaries</td>
+<td>Dead since Aug 13. The proxy they need was switched off Oct 21.</td>
+</tr>
+<tr>
+<td>Evaluator</td>
+<td>Ran only through the watcher, so it stopped too.</td>
+</tr>
+<tr>
+<td>Agent logs</td>
+<td>Last Oct 17. In ai-os: 312 in June-July, then 102 across the next three months.</td>
+</tr>
+<tr>
+<td>Journal</td>
+<td>Last updated Oct 21.</td>
+</tr>
+<tr>
+<td>Gemini ingest</td>
+<td>Still running, feeding the old thread search.</td>
+</tr>
+<tr>
+<td>Auto-commit script</td>
+<td>Alive, and agents still use it by hand.</td>
+</tr>
+</tbody></table>
+<p data-read>The shelf note and your rules-to-hooks plan already mark most of this as dead. The plan&#39;s list should also name the ghost watcher.</p>
+<hr>
+<h2 id="what-the-current-one-does">What the current one does</h2>
+<h3 id="the-moving-parts">The moving parts</h3>
+<ul>
+<li><span data-read><a href="/Users/matt/projects/ai-os/docs/coordinator/code-coordinator.md"><strong>Central Coordinator</strong></a>: a pinned session that splits your messages, picks folder, model and effort, starts or reuses threads, relays results, archives finished threads, and takes voice tasks.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/docs/coordinator/project-coordinator.md"><strong>Project coordinators</strong></a>: one per project (Glass TV, Slub), plus subject coordinators started automatically when two threads share a subject.</span></li>
+<li><span data-read><strong>Advisor hop:</strong> big asks go to a sub-coordinator that writes a plan, which the coordinator then carries out.</span></li>
+<li><span data-read><a href="/Users/matt/projects/ai-os/coordinator/threads.json"><strong>Registry</strong></a>: a hand-kept list of threads, to be updated every turn.</span></li>
+<li><span data-read><strong>Hooks:</strong> seven on each prompt (recall, habit gate, big-prompt guard, rule nudge, worker feed and others), plus guards on tools, sends and turn end.</span></li>
+<li><span data-read><strong>Mods:</strong> action bar, context alert, read-aloud, no-suggestions, visible session.</span></li>
+<li><span data-read><strong>Daily custodian:</strong> a job that drops a prompt into the Coordinator for clean-up, loose ends and due dates.</span></li>
+<li><span data-read><strong>Recall:</strong> Claude transcripts are exported to markdown, indexed by QMD, and each prompt gets up to four keyword-matched pointers.</span></li>
+<li><span data-read><strong>Details files:</strong> one per thread, published as Readthroughs.</span></li>
+</ul>
+<hr>
+<h3 id="what-the-numbers-say-oct-28-to-now">What the numbers say (Oct 28 to now)</h3>
+<ul>
+<li><span data-read><strong>You do go through it.</strong> 530 of your 566 typed messages went to coordinators, only 36 directly to workers.</span></li>
+<li><span data-read><strong>It is expensive.</strong> Coordinators are 5 of 164 sessions but about 32% of model use, and 1.04 billion of the 2.9 billion cached tokens read. That uses rough API price ratios, so your plan&#39;s meter may differ. Each message to a coordinator costs about 40-90% of what a median worker uses in its whole life.</span></li>
+<li><span data-read><strong>It is not slow.</strong> Median time from your message to a thread starting is 13 seconds, 90th percentile 52. Speed isn&#39;t the real problem; friction and cost are.</span></li>
+<li><span data-read><strong>Its context never stays small.</strong> The current central session compacted 30 times in about 32 hours. Each one is a chance to lose detail, which is probably part of why it feels clunky. The previous one ran at a median of 338k tokens.</span></li>
+<li><span data-read><strong>Starts fail often.</strong> 36 of 229 start attempts were refused (16%).</span></li>
+<li><span data-read><strong>The registry has quietly stopped.</strong> Last updated Oct 28 20:22, with 36 entries against 164 active sessions, even though the doc says to update it every turn. The system depending on it hasn&#39;t noticed. That&#39;s the same way the old summaries died.</span></li>
+<li><span data-read><strong>Worker feed is too new to judge.</strong> Four messages queued, none flagged.</span></li>
+</ul>
+<hr>
+<h3 id="recall-tested">Recall, tested</h3>
+<p data-read>I ran four realistic prompts through the recall hook. One gave clearly useful hits. &quot;Make a new explainer reel about the rules plan&quot; missed the actual thread with that name, and two others returned loosely related files.</p>
+<p data-read>Two reasons stand out. Of the 549 exported &quot;threads&quot;, 122 are read-aloud one-shots and 289 are titled by a relay prefix, not a topic. And it only ever knows what was exported up to 15 minutes ago, with no idea whether a thread is running or finished. So it can&#39;t tell you another thread is working on this right now, which is the thing you actually want.</p>
+<hr>
+<h2 id="comparison">Comparison</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Old setup</th>
+<th>Coordinator</th>
+<th>Open threads (proposed)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Start anything anywhere</td>
+<td>Yes</td>
+<td>No, one front door</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Knows related past work</td>
+<td>Recent list only</td>
+<td>Keyword hints, plus the coordinator&#39;s memory</td>
+<td>Keyword hints plus live thread status</td>
+</tr>
+<tr>
+<td>Knows what&#39;s running now</td>
+<td>No</td>
+<td>Yes, while the registry is kept up</td>
+<td>Yes, from the app&#39;s own data</td>
+</tr>
+<tr>
+<td>Works without agents remembering</td>
+<td>No</td>
+<td>Partly</td>
+<td>Yes, hooks and a background job</td>
+</tr>
+<tr>
+<td>Reply length</td>
+<td>Long</td>
+<td><strong>Short:</strong> median 67 words, 4% over 150</td>
+<td>Risk: workers&#39; median is 139, 47% over 150</td>
+</tr>
+<tr>
+<td>What&#39;s waiting on you</td>
+<td>Stale board</td>
+<td>One voice, in chat</td>
+<td>A small list, no agent</td>
+</tr>
+<tr>
+<td>Splits a long voice dump</td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+<td>Only if you use the coordinator</td>
+</tr>
+<tr>
+<td>Picks folder, model, effort</td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+<td>You or defaults, needs a fix</td>
+</tr>
+<tr>
+<td>Phone and voice</td>
+<td>No</td>
+<td>Partly, starts get refused</td>
+<td>Same limits</td>
+</tr>
+<tr>
+<td>Token overhead</td>
+<td>High</td>
+<td><strong>About a third of use</strong></td>
+<td>Small</td>
+</tr>
+<tr>
+<td>Failure mode</td>
+<td>Died silently</td>
+<td>Registry dying silently</td>
+<td>Same risk, needs a heartbeat</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="what-the-old-setup-did-better">What the old setup did better</h3>
+<p data-read>Mainly one thing: no middleman. Every thread was equal, and it stayed vendor-neutral plain files. The agent logs also gave you a readable project history, which details files now provide.</p>
+<h3 id="what-the-coordinator-does-better">What the coordinator does better</h3>
+<p data-read>Honest credit, because these are real:</p>
+<ul>
+<li><span data-read>Replies you can actually read, at half the length of workers&#39;.</span></li>
+<li><span data-read>A single place to dump a long message and have it split up.</span></li>
+<li><span data-read>Choosing folder, model and effort without you thinking.</span></li>
+<li><span data-read>Checking a thread&#39;s claim before telling you it&#39;s done.</span></li>
+<li><span data-read>Cleaning up finished threads.</span></li>
+</ul>
+<h3 id="whats-a-real-platform-limit-vs-your-own-choice">What&#39;s a real platform limit vs your own choice</h3>
+<p data-read><strong>Real limits, you can&#39;t change these:</strong></p>
+<ul>
+<li><span data-read>A thread can only be started on a message you typed in the desktop app. Refused cases are another session&#39;s message, an automated or plugin-sent turn, and a brief given by another session.</span></li>
+<li><span data-read>On Remote Control the app refuses too. Its wording says &quot;for now&quot;, so this may change.</span></li>
+<li><span data-read>A proposal card can&#39;t carry a folder (14 of the refusals).</span></li>
+<li><span data-read>A hook can add context or block, but can&#39;t move your message into another thread.</span></li>
+<li><span data-read>A new thread&#39;s effort and model can&#39;t go above the parent&#39;s.</span></li>
+<li><span data-read>Sessions can only see other desktop sessions, not cloud or terminal ones. By default it lists the 20 most recent.</span></li>
+</ul>
+<p data-read><strong>Please don&#39;t engineer around the start rule.</strong> It exists so sessions only begin on your own words. The sanctioned phone route is <a href="https://code.claude.com/docs/en/desktop#sessions-from-dispatch">Dispatch</a>, or Remote Control&#39;s server mode, which creates sessions from your phone. Neither has been tried on your setup.</p>
+<p data-read><strong>Self-imposed, all changeable by rule:</strong></p>
+<ul>
+<li><span data-read>Everything through the coordinator.</span></li>
+<li><span data-read>Automatic subject coordinators at two threads.</span></li>
+<li><span data-read>&quot;No analysis in the coordinator&quot;, which forces another hop.</span></li>
+<li><span data-read>The advisor hop for 500+ word messages.</span></li>
+<li><span data-read>The hand-kept registry.</span></li>
+<li><span data-read>Running the coordinator at low effort, which also caps what it can start.</span></li>
+</ul>
+<p data-read><strong>One thing in your docs is wrong.</strong> The big-prompt hook says sessions started by a session can&#39;t start threads. They can. Both the central and Glass TV coordinators were started by sessions, and they started threads fine whenever you typed to them. The block is per turn, not per session. That matters: you can type &quot;split this into three threads&quot; in any desktop thread, and it should work.</p>
+<hr>
+<h2 id="recommendation">Recommendation</h2>
+<p data-read><strong>Yes to &quot;every thread is a first-class entry point; the coordinator becomes optional&quot;.</strong> No to reviving preflight, the watcher or agent-written per-turn summaries.</p>
+<h3 id="step-1-rule-changes-no-build">Step 1: rule changes, no build</h3>
+<ul>
+<li><span data-read>Any thread is a valid starting point. The coordinator is something you open when you want it.</span></li>
+<li><span data-read>Stop automatic subject and project coordinators, and drop the advisor hop.</span></li>
+<li><span data-read>Stop treating the registry as required. The app already knows this.</span></li>
+<li><span data-read>Raise your default effort. <strong>Your settings default is low</strong>, so threads you open yourself would start low on real work. Medium is the likely right default.</span></li>
+<li><span data-read>Remove the dead preflight, journal and agent-log rules, as the rules-to-hooks plan already proposes.</span></li>
+</ul>
+<h3 id="step-2-a-real-similar-threads-check-one-small-thread">Step 2: a real &quot;similar threads&quot; check, one small thread</h3>
+<p data-read>A small background job, run about once a minute, reads the app&#39;s session files and writes one compact list: title, folder, last active, status, needs-you. On the first prompt of a thread, the recall hook compares your words with that list and adds up to three lines, such as &quot;an active thread may overlap: X, status Y&quot;.</p>
+<p data-read>This is what you remember preflight doing, and it would be the first time it has existed. It needs no model calls and adds about 100-150 tokens per new thread. A background job is needed because reading all 406 files takes about 2 seconds, too slow for a prompt.</p>
+<h3 id="step-3-clean-recall-part-of-the-same-thread">Step 3: clean recall, part of the same thread</h3>
+<p data-read>Exclude one-shots from the export and use real thread titles. Without this, the hook&#39;s hits stay noisy.</p>
+<h3 id="step-4-a-waiting-on-you-list-one-small-thread">Step 4: a &quot;waiting on you&quot; list, one small thread</h3>
+<p data-read>Show threads the app marks as blocked or needing action, from the same list, in an existing panel or HUD. No tokens. This replaces most of what you&#39;d miss from the coordinator&#39;s status messages. Add a heartbeat line so it can&#39;t die silently the way summaries and the registry did.</p>
+<h3 id="step-5-move-the-custodian">Step 5: move the custodian</h3>
+<p data-read>It currently needs the Coordinator to receive its prompt. Make it a desktop scheduled task so it runs either way. Keep its archiving and due-date checks.</p>
+<h3 id="step-6-try-it-for-a-week-then-decide">Step 6: try it for a week, then decide</h3>
+<p data-read>Watch duplicate threads, weekly usage, and how often you still open the coordinator. If duplicates pile up or you miss it badly, you&#39;ve lost nothing, since it&#39;s still there.</p>
+<h3 id="keep-one-coordinator-for">Keep one coordinator for</h3>
+<p data-read>Long voice dumps, big multi-thread projects like Glass TV while they&#39;re hot, and phone messages into existing threads. Open it deliberately.</p>
+<hr>
+<h3 id="cost-and-what-breaks">Cost and what breaks</h3>
+<p data-read><strong>Build:</strong> two small threads, plus an hour of rule edits. No new projects, so it fits the freeze, and it simplifies overall.</p>
+<p data-read><strong>Usage saved:</strong> I&#39;d expect most of the coordinator&#39;s third to go, perhaps a quarter of total use. That&#39;s an estimate, untested, and some of it will come back as you open coordinators when needed.</p>
+<p data-read><strong>What breaks or gets worse:</strong></p>
+<ul>
+<li><span data-read><strong>Longer replies.</strong> You&#39;d read workers directly, at twice the length. The rules-to-hooks plan&#39;s reply-length check matters more now. This is the biggest day-to-day downside, especially since you listen to replies.</span></li>
+<li><span data-read><strong>Duplicate work.</strong> Step 2 reduces it but won&#39;t eliminate it. Two threads editing the same repo can still collide, which was only ever partly handled.</span></li>
+<li><span data-read><strong>Wrong folder.</strong> You pick it when opening a thread. A thread started in the wrong one has broken your links before.</span></li>
+<li><span data-read><strong>Model choice.</strong> Nobody checks your usage pace for you. A short line at thread start can state it.</span></li>
+<li><span data-read><strong>Undocumented file.</strong> The app&#39;s session files aren&#39;t a public format, and Anthropic warns transcript formats can change on any release. If it breaks, the hook must fail silently and you lose only the overlap hint.</span></li>
+<li><span data-read><strong>Voice tasks.</strong> Plugin-sent turns can&#39;t start threads, in either world. That&#39;s already true today.</span></li>
+</ul>
+<p data-read><strong>Things you should not build:</strong> agent-written per-turn summaries. The agent logs died, the details ritual has faded (57 files on Oct 22, one to three on many days since), and each summary means an extra model call that re-reads the whole thread. The app&#39;s summaries cost your agents nothing. Whether they count toward your plan isn&#39;t documented, and I couldn&#39;t measure it.</p>
+<p data-read><strong>Timing is good.</strong> The rules-to-hooks plan is still waiting on your go for step 0, and its coordinator steps (role packs, judges) would be built around the design you&#39;re now questioning. Decide this first, and those steps shrink.</p>
+<p data-read><strong>Slub overlap.</strong> The Oct 28 idea of a Slub coordinator for you and Tyler in slub-hq <code>IDEAS.md</code> depends on this choice. Tyler should hear about it.</p>
+<h3 id="what-i-didnt-verify">What I didn&#39;t verify</h3>
+<p data-read>No part of the plan has been built or tested. Token figures use rough price ratios. Typed-message counts rely on a transcript field that may be incomplete for older sessions, so I used only Oct 28 onward. I sampled recall with four prompts, not a proper benchmark. One note: your input guard blocked a harmless search of mine because the text contained the word &quot;open&quot;. Nothing touched your screen; I reworded the search.</p>
+<hr>
+<h2 id="what-claude-keeps-on-disk">What Claude keeps on disk</h2>
+<p data-read><strong>Yes, the same idea as Antigravity, and better.</strong></p>
+<ul>
+<li><span data-read><strong>Where:</strong> <code>~/.claude/projects/&lt;folder&gt;/&lt;session-id&gt;.jsonl</code>, for terminal and desktop Code sessions alike. You have 625, 1.36 GB, of which 595 are desktop. None predate Oct 17, and I couldn&#39;t establish why.</span></li>
+<li><span data-read><strong>Live:</strong> yes. Anthropic documents continuous saving, and I confirmed it: this report&#39;s own transcript was 11 seconds old when checked.</span></li>
+<li><span data-read><strong>Complete:</strong> yes. Your messages, replies, thinking text, tool calls and results, and records of what was sent to the model. Compaction doesn&#39;t erase earlier lines. Subagents sit in a subfolder and big tool outputs in another.</span></li>
+<li><span data-read><strong>Kept:</strong> your retention is set to about 100 years, and desktop transcripts are kept at any age by default anyway.</span></li>
+<li><span data-read><strong>Plain text:</strong> not encrypted. Anything a tool prints lands there.</span></li>
+<li><span data-read><strong>Caution:</strong> Anthropic says the format is internal and can break on any release. Their suggested routes are export, hooks that receive the transcript path, and <code>claude -p --resume</code>.</span></li>
+</ul>
+<p data-read><strong>The extra file that matters:</strong> <code>~/Library/Application Support/Claude/claude-code-sessions/…/local_&lt;id&gt;.json</code>. There are 406, linking the sidebar id to the transcript, with title, folder, model, effort, archived state, who started it and last activity. 322 hold a <code>postTurnSummary</code> with a status and what&#39;s needed from you, and 81 hold a report of the last turn. This is the free per-turn summary. It&#39;s undocumented.</p>
+<p data-read><strong>Native tools exist too.</strong> Any desktop thread can list sessions and search all transcripts. Those cost a model call each, so they suit deliberate searches, not every prompt.</p>
+<p data-read><strong>Claude.app chats and Projects threads: not usable on disk.</strong> They live on Anthropic&#39;s servers. The app&#39;s local database held no message content in my check, and the roughly 1 GB web cache has only scattered fragments. Cloud sessions are also remote. The Mac-side worker of a Projects thread was local, but the cloud coordinator&#39;s conversation was not. That&#39;s why <a href="/Users/matt/projects/ai-os/scripts/pull_voice_chats.py"><code>pull_voice_chats.py</code></a> has to fetch from claude.ai.</p>
+<hr>
+<h2 id="claude--p-and-your-own-frontend">claude -p and your own frontend</h2>
+<p data-read>Researched 2026-10-31. Help-center pages show no fixed date except their update notes (Jun 15 and Oct 7, 2026). The Consumer Terms show an effective date of Oct 8, 2025. I read these through a fetch tool that extracts text, so check the exact wording before relying on it. I&#39;m not a lawyer, and this isn&#39;t legal advice.</p>
+<h3 id="short-answer">Short answer</h3>
+<p data-read><strong>Yes, you can build a personal frontend on your subscription with no API bill,</strong> as long as it drives the real, unmodified <code>claude</code> program signed in through Anthropic&#39;s own login. It uses your normal plan limits, so it saves no usage. <strong>You can&#39;t give that to others on your subscription,</strong> and you must not lift your login token to call the API directly.</p>
+<h3 id="how-far-it-goes">How far it goes</h3>
+<p data-read><code>claude -p</code> is documented as the Agent SDK&#39;s command-line form. It&#39;s close to the whole engine: tools, permissions, hooks, skills, subagents, MCP, plugins, resuming a session by id, streaming JSON events for live text, and structured output. That&#39;s enough for a real chat UI.</p>
+<p data-read>What you wouldn&#39;t get: desktop-only tools like session starting, the sidebar, and mods, since those belong to the app. <code>-p</code> sessions stay out of the normal resume picker. A long-lived token from <code>claude setup-token</code> can&#39;t do Remote Control or fetch claude.ai connectors.</p>
+<p data-read><strong>Watch this one.</strong> Anthropic&#39;s docs say <code>--bare</code> will become the default for <code>-p</code> in a future release, and bare mode ignores subscription login. Your hooks using <code>claude -p</code> (worker feed, cold handoff, Tab Tidy) could stop working, or switch to an API key if one is set. Check this when Claude Code updates.</p>
+<h3 id="whats-explicit-policy">What&#39;s explicit policy</h3>
+<p data-read><strong>Subscription vs API key:</strong></p>
+<ul>
+<li><span data-read><code>claude -p</code> and the Agent SDK signed in with your plan draw from your plan limits. That&#39;s stated, and it means this use is permitted and metered.</span></li>
+<li><span data-read>Plan limits are shared with Claude chat and Code: five-hour and weekly on Max.</span></li>
+<li><span data-read>With <code>ANTHROPIC_API_KEY</code> set, <code>-p</code> always uses the key and bills API rates. There&#39;s a key in your ai-os <code>.env</code>, so a script that loads that file before calling <code>claude -p</code> pays real money.</span></li>
+<li><span data-read>The Jun 15 plan to split Agent SDK use into its own credit is paused, with no stated end. It could return.</span></li>
+<li><span data-read>Since Oct 7, Max includes $100 a month in API credits. It covers <code>-p</code> and the Agent SDK only with an API key from a linked Console organization. It doesn&#39;t roll over, and interactive Code isn&#39;t covered. If you&#39;re on Max as your notes suggest, this is free money for background jobs.</span></li>
+</ul>
+<p data-read><strong>Limits on use:</strong></p>
+<ul>
+<li><span data-read>Consumer Terms bar access &quot;through automated or non-human means&quot; unless by API key or where Anthropic explicitly permits it (section 3). The <code>-p</code> documentation and plan-limit statements read as that permission for Claude Code, but they don&#39;t say so in those words. That reading is my inference.</span></li>
+<li><span data-read>Advertised limits assume ordinary individual use of Claude Code and the Agent SDK.</span></li>
+<li><span data-read>Subscription login is intended for ordinary use of Claude Code and Anthropic&#39;s native apps.</span></li>
+</ul>
+<p data-read><strong>Third parties and developers:</strong></p>
+<ul>
+<li><span data-read>Developers building products or services, including with the Agent SDK, should use API keys.</span></li>
+<li><span data-read>Third-party developers may not offer Claude.ai login or route requests through plan credentials for their users, and may not collect or store Claude credentials or session tokens.</span></li>
+<li><span data-read>Anthropic may enforce this without notice.</span></li>
+</ul>
+<p data-read><strong>Distributing to others:</strong></p>
+<ul>
+<li><span data-read>Preinstalling or running Claude Code in a product requires the Commercial Terms and an unmodified binary.</span></li>
+<li><span data-read>Each end user must sign in with their own key or plan, and you can&#39;t pay for or resell their use.</span></li>
+<li><span data-read>Your product can&#39;t use the Claude Code name or look. The Agent SDK note adds that offering claude.ai login needs prior approval.</span></li>
+<li><span data-read>Consumer Terms section 2 bars sharing your login, and section 3 bars building services that compete with Anthropic&#39;s. A public chat frontend gets close to that second line.</span></li>
+</ul>
+<h3 id="what-separates-programmatic-use-from-what-id-have-typed">What separates programmatic use from &quot;what I&#39;d have typed&quot;</h3>
+<p data-read><strong>No Anthropic text I found draws that line.</strong> A forwarded message and a scripted one are the same <code>-p</code> call on the same meter. The lines actually written down are about credential, who runs it, on whose behalf, and ordinary use.</p>
+<p data-read>My inference, not policy: forwarding is the safest position, because one human message produces one turn, at human pace, by one person. That is ordinary use by any reading. Risk rises as prompts stop coming from you: per-message Haiku checks, watchers, cron loops, always-on agents. Risk rises sharply if volume looks like a service rather than a person.</p>
+<h3 id="your-options-safest-first">Your options, safest first</h3>
+<ol>
+<li><span data-read><strong>Mods inside the app.</strong> First-party extension point, and you already use them.</span></li>
+<li><span data-read><strong>Personal UI driving the unmodified <code>claude</code> program,</strong> on your Mac, for you only. Fine in my reading. Keep automation modest.</span></li>
+<li><span data-read><strong>Background jobs on the Max API credit</strong> with a Console key. Cleanest for automation, since API keys are the explicitly allowed route.</span></li>
+<li><span data-read><strong>Sharing with Tyler.</strong> He runs his own install with his own login. Never your account or token. Grey if it becomes a packaged product.</span></li>
+<li><span data-read><strong>Selling or publishing it.</strong> API keys or each user&#39;s own login under Commercial Terms. Ask Anthropic sales first.</span></li>
+</ol>
+<p data-read><strong>Don&#39;t do:</strong> extract the OAuth token, proxy it, disguise a client as Claude Code, or modify the binary.</p>
+<p data-read><strong>One existing thing to look at:</strong> <code>pull_voice_chats.py</code> reads claude.ai&#39;s internal API through your signed-in Chrome every night. It&#39;s read-only and your own data, but on its face it&#39;s the automated access the Consumer Terms restrict, and I found no permission covering it. The practical risk is probably low, but your connector&#39;s <code>save_call</code> path, with a lighter fallback, would be cleaner.</p>
+<hr>
+<h2 id="sources">Sources</h2>
+<p data-read><strong>Your files:</strong> <a href="/Users/matt/projects/ai-os/scripts/preflight.py"><code>preflight.py</code></a>, <a href="/Users/matt/projects/ai-os/scripts/watch_transcripts.py"><code>watch_transcripts.py</code></a>, <a href="/Users/matt/projects/ai-os/scripts/summarize_thread.py"><code>summarize_thread.py</code></a>, <a href="/Users/matt/projects/ai-os/scripts/transcript_evaluator.py"><code>transcript_evaluator.py</code></a>, <a href="/Users/matt/projects/ai-os/.rules/agent_logs.md"><code>agent_logs.md</code></a>, <a href="/Users/matt/projects/ai-os/.rules/git_protocol.md"><code>git_protocol.md</code></a>, <a href="/Users/matt/projects/ai-os/.rules/gemini_only.md"><code>gemini_only.md</code></a>, <a href="/Users/matt/projects/ai-os/docs/coordinator/code-coordinator.md"><code>code-coordinator.md</code></a>, <a href="/Users/matt/projects/ai-os/docs/coordinator/project-coordinator.md"><code>project-coordinator.md</code></a>, <a href="/Users/matt/projects/ai-os/coordinator/threads.json"><code>threads.json</code></a>, <a href="/Users/matt/projects/ai-os/docs/rules-hooks/PLAN.md"><code>PLAN.md</code></a>, <a href="/Users/matt/projects/ai-os/docs/rules-hooks/PLAN-summary.md"><code>PLAN-summary.md</code></a>, <a href="/Users/matt/projects/ai-os/docs/coordinator/proposals/2026-10-29-coordinators-hooks.md">Oct 29 proposal</a>, <a href="/Users/matt/projects/ai-os/shelf/INDEX.md"><code>shelf/INDEX.md</code></a>, <a href="/Users/matt/projects/ai-os/scripts/hooks/qmd_recall.py"><code>qmd_recall.py</code></a>, <a href="/Users/matt/projects/ai-os/scripts/hooks/worker_feed.py"><code>worker_feed.py</code></a>, <code>~/.preflight.log</code>, <code>~/.hermes/eval_logs.jsonl</code>, <code>~/.claude/settings.json</code> (hooks only), ai-os git history, your transcripts and desktop session files.</p>
+<p data-read><strong>Anthropic, read 2026-10-31:</strong></p>
+<ul>
+<li><span data-read><a href="https://code.claude.com/docs/en/legal-and-compliance">Claude Code legal and compliance</a></span></li>
+<li><span data-read><a href="https://www.anthropic.com/legal/consumer-terms">Consumer Terms</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK overview</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/headless">Run Claude Code programmatically</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/authentication">Authentication</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/sessions">Manage sessions</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/claude-directory">The .claude directory</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/remote-control">Remote Control</a></span></li>
+<li><span data-read><a href="https://code.claude.com/docs/en/desktop">Desktop app</a></span></li>
+<li><span data-read><a href="https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan">Use the Agent SDK with your Claude plan</a></span></li>
+<li><span data-read><a href="https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans">Monthly API credits</a></span></li>
+<li><span data-read><a href="https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan">Use Claude Code with your plan</a></span></li>
+</ul>
+
+</main>
+</body>
+</html>
