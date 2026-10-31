@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_40c78409-5be9-4b34-ac48-4ccbbf7a259e">
+<title>Details</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · lab4-cipher-skeletons</p>
+<h2 id="1315-cipher1-same-treatment-as-cipher23">13:15 cipher1 same treatment as cipher2/3</h2>
+<p data-read>Matt asked: keep his first functions in cipher1.py, give the rest the cipher2/3 treatment, make instructions super clear.</p>
+<p data-read>What I did: kept his <code>ask_for_claim_filename</code> and <code>read_packets</code> untouched. Replaced the loose comment dump with <code>def</code> skeletons (<code>scramble</code>, <code>select_packets</code>, <code>main</code>), each holding the lab&#39;s own steps (unmarked) plus plain-English <code># !important</code> hints. No working code written (bodies are <code>pass</code>).</p>
+<p data-read>Checks: file parses. In a scratch run (not saved) I followed my hints literally on files 1, 2, 3 and got all three sample outputs exactly, so the hints are right.</p>
+<p data-read>Left for Matt: his test call <code>read_packets(&quot;1&quot;)</code> is global code (Quality Req 1.3); flagged to delete. Add a <code>main()</code> call as the last line. Note he renamed signal1-3.txt to 1/2/3; the sample output shows <code>signal1.txt</code>, so for the demo either name works but the TA will see the typed name.</p>
+<p data-read>Undo: <code>git revert</code> the &quot;Lab 4 cipher1: skeletons&quot; commit in cmput-174; the pre-edit copy is also in the session scratchpad.</p>
+
+</main>
+</body>
+</html>
