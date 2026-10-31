@@ -25,6 +25,14 @@
 <li><span data-read><strong>Untested or risky:</strong> the feel with a real held remote; older titles may have no good stream, since only known-bad ones are hidden; filters still use the smaller catalog.</span></li>
 <li><span data-read><strong>Undo:</strong> revert 4d48ba0 and redeploy.</span></li>
 </ul>
+<h2 id="0340-back-to-the-top-and-obvious-rows-first">03:40 Back to the top, and obvious rows first</h2>
+<p data-read>You wanted a quick way to the top menu from hundreds of rows down, and traditional rows before the wacky ones.</p>
+<ul>
+<li><span data-read><strong>What shipped:</strong> commit 648e3ff. Back below the first row focuses Search at the top; Back at the top behaves as before. A quiet &quot;Back: to the top&quot; label shows while you&#39;re below the first row.</span></li>
+<li><span data-read><strong>Home button:</strong> it does the same when Mattinee is the TV&#39;s home screen, because the app&#39;s remote service receives Home only then. Tested by sending the same internal signal, not a physical press.</span></li>
+<li><span data-read><strong>New row order:</strong> the fixed top, then all-time greats, Oscars, AFI, Best Picture, decades newest first, decade movies and shows, genres, best of each genre, gems and cult. 40 more tame rows follow before the wacky families join. Tweak <code>tv.tameRows</code>.</span></li>
+<li><span data-read><strong>Undo:</strong> revert 648e3ff, redeploy and publish.</span></li>
+</ul>
 
 </main>
 </body>
