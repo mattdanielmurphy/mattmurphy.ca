@@ -83,7 +83,7 @@
 </tr>
 <tr>
 <td>Gemini ingest</td>
-<td>Still running, feeding the old thread search.</td>
+<td><strong>The same ghost:</strong> wrapper alive, script not running. It last wrote to the thread database on Oct 30 around startup. Other tmux-wrapped agents may be affected too, which I didn&#39;t check.</td>
 </tr>
 <tr>
 <td>Auto-commit script</td>
@@ -109,7 +109,7 @@
 <h3 id="what-the-numbers-say-oct-28-to-now">What the numbers say (Oct 28 to now)</h3>
 <ul>
 <li><span data-read><strong>You do go through it.</strong> 530 of your 566 typed messages went to coordinators, only 36 directly to workers.</span></li>
-<li><span data-read><strong>It is expensive.</strong> Coordinators are 5 of 164 sessions but about 32% of model use, and 1.04 billion of the 2.9 billion cached tokens read. That uses rough API price ratios, so your plan&#39;s meter may differ. Each message to a coordinator costs about 40-90% of what a median worker uses in its whole life.</span></li>
+<li><span data-read><strong>It is expensive.</strong> Coordinators are 5 of 164 sessions but about 32% of model use, and 1.04 billion of the 2.9 billion cached tokens read. That uses rough API price ratios, so your plan&#39;s meter may differ. Each message to a coordinator costs about 35-90% of what a median worker uses in its whole life.</span></li>
 <li><span data-read><strong>It is not slow.</strong> Median time from your message to a thread starting is 13 seconds, 90th percentile 52. Speed isn&#39;t the real problem; friction and cost are.</span></li>
 <li><span data-read><strong>Its context never stays small.</strong> The current central session compacted 30 times in about 32 hours. Each one is a chance to lose detail, which is probably part of why it feels clunky. The previous one ran at a median of 338k tokens.</span></li>
 <li><span data-read><strong>Starts fail often.</strong> 36 of 229 start attempts were refused (16%).</span></li>
@@ -181,7 +181,7 @@
 </tr>
 <tr>
 <td>Phone and voice</td>
-<td>No</td>
+<td>Only a separate Telegram bot</td>
 <td>Partly, starts get refused</td>
 <td>Same limits</td>
 </tr>
@@ -214,7 +214,7 @@
 <p data-read><strong>Real limits, you can&#39;t change these:</strong></p>
 <ul>
 <li><span data-read>A thread can only be started on a message you typed in the desktop app. Refused cases are another session&#39;s message, an automated or plugin-sent turn, and a brief given by another session.</span></li>
-<li><span data-read>On Remote Control the app refuses too. Its wording says &quot;for now&quot;, so this may change.</span></li>
+<li><span data-read>On Remote Control the app refuses too. Its refusal message suggests this is temporary, so it may change.</span></li>
 <li><span data-read>A proposal card can&#39;t carry a folder (14 of the refusals).</span></li>
 <li><span data-read>A hook can add context or block, but can&#39;t move your message into another thread.</span></li>
 <li><span data-read>A new thread&#39;s effort and model can&#39;t go above the parent&#39;s.</span></li>
@@ -268,7 +268,7 @@
 <li><span data-read><strong>Undocumented file.</strong> The app&#39;s session files aren&#39;t a public format, and Anthropic warns transcript formats can change on any release. If it breaks, the hook must fail silently and you lose only the overlap hint.</span></li>
 <li><span data-read><strong>Voice tasks.</strong> Plugin-sent turns can&#39;t start threads, in either world. That&#39;s already true today.</span></li>
 </ul>
-<p data-read><strong>Things you should not build:</strong> agent-written per-turn summaries. The agent logs died, the details ritual has faded (57 files on Oct 22, one to three on many days since), and each summary means an extra model call that re-reads the whole thread. The app&#39;s summaries cost your agents nothing. Whether they count toward your plan isn&#39;t documented, and I couldn&#39;t measure it.</p>
+<p data-read><strong>Things you should not build:</strong> agent-written per-turn summaries. The agent logs died, the details ritual has faded (57 new files on Oct 22, one to three on most days this week), and each summary means an extra model call that re-reads the whole thread. The app&#39;s summaries cost your agents nothing. Whether they count toward your plan isn&#39;t documented, and I couldn&#39;t measure it.</p>
 <p data-read><strong>Timing is good.</strong> The rules-to-hooks plan is still waiting on your go for step 0, and its coordinator steps (role packs, judges) would be built around the design you&#39;re now questioning. Decide this first, and those steps shrink.</p>
 <p data-read><strong>Slub overlap.</strong> The Oct 28 idea of a Slub coordinator for you and Tyler in slub-hq <code>IDEAS.md</code> depends on this choice. Tyler should hear about it.</p>
 <h3 id="what-i-didnt-verify">What I didn&#39;t verify</h3>
@@ -286,7 +286,7 @@
 </ul>
 <p data-read><strong>The extra file that matters:</strong> <code>~/Library/Application Support/Claude/claude-code-sessions/…/local_&lt;id&gt;.json</code>. There are 406, linking the sidebar id to the transcript, with title, folder, model, effort, archived state, who started it and last activity. 322 hold a <code>postTurnSummary</code> with a status and what&#39;s needed from you, and 81 hold a report of the last turn. This is the free per-turn summary. It&#39;s undocumented.</p>
 <p data-read><strong>Native tools exist too.</strong> Any desktop thread can list sessions and search all transcripts. Those cost a model call each, so they suit deliberate searches, not every prompt.</p>
-<p data-read><strong>Claude.app chats and Projects threads: not usable on disk.</strong> They live on Anthropic&#39;s servers. The app&#39;s local database held no message content in my check, and the roughly 1 GB web cache has only scattered fragments. Cloud sessions are also remote. The Mac-side worker of a Projects thread was local, but the cloud coordinator&#39;s conversation was not. That&#39;s why <a href="/Users/matt/projects/ai-os/scripts/pull_voice_chats.py"><code>pull_voice_chats.py</code></a> has to fetch from claude.ai.</p>
+<p data-read><strong>Claude.app chats and Projects threads: not usable on disk.</strong> They live on Anthropic&#39;s servers. A simple search of the app&#39;s local database found no message content, though that database may be compressed, and the roughly 1 GB web cache has only scattered fragments. Cloud sessions are also remote. The Mac-side worker of a Projects thread was local, but the cloud coordinator&#39;s conversation was not. That&#39;s why <a href="/Users/matt/projects/ai-os/scripts/pull_voice_chats.py"><code>pull_voice_chats.py</code></a> has to fetch from claude.ai.</p>
 <hr>
 <h2 id="claude--p-and-your-own-frontend">claude -p and your own frontend</h2>
 <p data-read>Researched 2026-10-31. Help-center pages show no fixed date except their update notes (Jun 15 and Oct 7, 2026). The Consumer Terms show an effective date of Oct 8, 2025. I read these through a fetch tool that extracts text, so check the exact wording before relying on it. I&#39;m not a lawyer, and this isn&#39;t legal advice.</p>
