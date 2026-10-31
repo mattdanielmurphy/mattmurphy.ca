@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_b1e02cfb-ccb6-429b-b928-79e48866d884">
+<title>Mattinee endless Home</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mattinee-endless-home</p>
+<h1 id="mattinee-endless-home">Mattinee endless Home</h1>
+<h2 id="0305-endless-rows-and-columns">03:05 Endless rows and columns</h2>
+<p data-read>You asked for every row and the column of rows to feel endless, with as many categories as possible.</p>
+<ul>
+<li><span data-read><strong>What shipped:</strong> commit 4d48ba0 on master. About 7,500 rows over about 30,000 titles, on the Mac and VPS servers and the Streamer.</span></li>
+<li><span data-read><strong>How it stays fast:</strong> Home sends 12 rows of 24 titles (about 37 KB compressed, was about 600 KB). Android asks for more only when focus nears the end. Library-free rebuilds take about 2 s, so after the first hour they happen every 6 hours.</span></li>
+<li><span data-read><strong>Catalog growth:</strong> the add-on catalog alone gave only 340 rows and AFI matched 14 of 100. Cinemeta&#39;s by-year lists, walked weekly one request at a time and saved as <code>deep-catalog.json</code>, raised AFI to 97 of 100 and added director, cast, country and Oscars.</span></li>
+<li><span data-read><strong>Row families:</strong> AFI, Best Picture, Letterboxd, genres, decades, decade + genre, years, year + genre, ratings, hidden gems, cult, famously bad, genre blends, 70 themes, theme + genre or decade, directors, actors, countries, Oscars, title quirks. Fixed top, then the rest reshuffles daily.</span></li>
+<li><span data-read><strong>Rejected:</strong> a live Letterboxd feed. 17 popular public lists were saved once with <code>bin/letterboxd-bake.ts</code>; their terms don&#39;t favour scraping, so the server never contacts Letterboxd.</span></li>
+<li><span data-read><strong>Tested:</strong> row unit tests; 30 rows down and 40 titles right on the Streamer, no crash, p50 28 ms per frame. iPad&#39;s Home is unchanged.</span></li>
+<li><span data-read><strong>Untested or risky:</strong> the feel with a real held remote; older titles may have no good stream, since only known-bad ones are hidden; filters still use the smaller catalog.</span></li>
+<li><span data-read><strong>Undo:</strong> revert 4d48ba0 and redeploy.</span></li>
+</ul>
+
+</main>
+</body>
+</html>
