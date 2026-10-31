@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_796fcce1-ba3f-4668-9986-80b7aa07b496">
+<title>Details</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · glass-tv-copies</p>
+<h2 id="1830-copies-menu-couldnt-switch">18:30 Copies menu &quot;couldn&#39;t switch&quot;</h2>
+<p data-read>You asked why switching copies failed and whether low seeders were the cause.</p>
+<p data-read>Cause: that message only appears when the server refuses the switch, before any video link is tried, so seeders can&#39;t trigger it. The list of copies lived only in server memory and the server restarts often (each install by another session), while the player keeps running. Reproduced during Ted Lasso S2E8: the menu&#39;s list was empty on the server and the switch returned 404.</p>
+<p data-read>Changes (728e1ee): list saved in <code>sources.json</code> (last 6 titles); menu and auto-fallback skip uncached copies with fewer than 10 sharers (<code>stream.menuMinPeers</code>, a judgment call; 10 is where the &quot;fair signal&quot; bar starts); failure says why; a copy that won&#39;t open within 20 s returns to the old copy at the same spot. Default ranking untouched.</p>
+<p data-read>Not tested: return-to-old-copy with real playback; not installed until playback ends. Undo: revert 728e1ee.</p>
+
+</main>
+</body>
+</html>
