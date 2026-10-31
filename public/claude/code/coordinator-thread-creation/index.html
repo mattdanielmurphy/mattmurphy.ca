@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_cc656186-076a-49c9-9b70-cea93d86d4d2">
 <title>Coordinator thread creation issue (2026-10-27)</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -11,39 +12,39 @@
 <body>
 <main id="text">
 <p class="label">Claude · code · coordinator-thread-creation</p>
-<h1 id="coordinator-thread-creation-issue-2026-10-27" data-read>Coordinator thread creation issue (2026-10-27)</h1>
-<h2 id="1810-why-the-everything-coordinator-couldnt-start-a-thread-in-projects" data-read>18:10 Why the Everything coordinator couldn&#39;t start a thread in ~/projects</h2>
+<h1 id="coordinator-thread-creation-issue-2026-10-27">Coordinator thread creation issue (2026-10-27)</h1>
+<h2 id="1810-why-the-everything-coordinator-couldnt-start-a-thread-in-projects">18:10 Why the Everything coordinator couldn&#39;t start a thread in ~/projects</h2>
 <p data-read><strong>Asked:</strong> the Everything project coordinator can&#39;t start a new thread in ~/projects; find out why.</p>
 <hr>
-<h3 id="folder-is-fine" data-read>Folder is fine</h3>
+<h3 id="folder-is-fine">Folder is fine</h3>
 <ul>
 <li><span data-read><code>~/Library/Logs/Claude/remote-control.log</code>: <code>/Users/matt/projects</code> is served (env_015p1o93hMvvV1zfQtXNJ6PQ). New sessions attached there fine at 17:46 and 18:01 (18:01 = this session).</span></li>
 <li><span data-read>Same account/org (e1b0bd7e / 7da8d1cb) the whole time, so the coordinator&#39;s &quot;Testing account&quot; guess is wrong.</span></li>
 </ul>
 <hr>
-<h3 id="only-the-glass-tv-stremio-task-fails" data-read>Only the Glass TV Stremio task fails</h3>
+<h3 id="only-the-glass-tv-stremio-task-fails">Only the Glass TV Stremio task fails</h3>
 <ul>
 <li><span data-read>Coordinator (cloud session session_01UsR2dpXiZFvE9kJ5c9kLBh) called <code>start_thread</code> 7 times 23:55–00:00Z, all for &quot;Add Stremio add-on support to Glass TV&quot; (6 on ~/projects, 1 on ~/projects/ai-os), across 3 different message ids.</span></li>
 <li><span data-read>Every one: Mac acks the work, then within ~150 ms <code>not attached (session_ended)</code> — the server had already closed the session. Tool error: &quot;the Remote Control session could not be made this thread&#39;s session and was closed&quot;.</span></li>
 <li><span data-read>Early briefs mentioned Torrentio / AutoStream / Real-Debrid; later ones were plain but attached Matt&#39;s message as context.</span></li>
 </ul>
 <hr>
-<h3 id="likely-cause-inferred-not-confirmed" data-read>Likely cause (inferred, not confirmed)</h3>
+<h3 id="likely-cause-inferred-not-confirmed">Likely cause (inferred, not confirmed)</h3>
 <ul>
 <li><span data-read>The server closes the session before it reaches the Mac, only for this task&#39;s content. Most likely a server-side check on the brief/attached message (Stremio + earlier torrent/debrid context in the project), not the folder, Mac or account.</span></li>
 <li><span data-read>Can&#39;t see the server&#39;s reason from here.</span></li>
 </ul>
 <hr>
-<h3 id="what-to-try" data-read>What to try</h3>
+<h3 id="what-to-try">What to try</h3>
 <ul>
 <li><span data-read>Start the Glass TV add-on work yourself from the Code tab in ~/projects/glass-tv (no coordinator brief), or have the coordinator start it with a brief that doesn&#39;t attach the old message.</span></li>
 <li><span data-read>If that also dies instantly, it&#39;s an app/server bug: report it via the app&#39;s feedback with session id cse_01UsR2dniMTqrPBYuVEt3QGH.</span></li>
 </ul>
 <p data-read>Undo: nothing changed.</p>
-<h2 id="2150-it-is-not-glass-tv-the-coordinator-chat-hit-30-threads" data-read>21:50 It is not Glass TV: the coordinator chat hit 30 threads</h2>
+<h2 id="2150-it-is-not-glass-tv-the-coordinator-chat-hit-30-threads">21:50 It is not Glass TV: the coordinator chat hit 30 threads</h2>
 <p data-read><strong>Asked:</strong> Matt&#39;s unrelated new-thread request also failed, even after fully quitting and relaunching Claude. It worked earlier today. Find what&#39;s really wrong.</p>
 <hr>
-<h3 id="every-new-thread-fails-since-555-pm" data-read>Every new thread fails since 5:55 pm</h3>
+<h3 id="every-new-thread-fails-since-555-pm">Every new thread fails since 5:55 pm</h3>
 <ul>
 <li><span data-read><code>~/Library/Logs/Claude/remote-control.log</code>: every coordinator-started new thread since 17:55 ends the same way: the Mac acks it, then ~150 ms later <code>not attached (session_ended)</code>. 13 failures in a row (17:55–18:16, then 21:33–21:34 after the relaunch), on both <code>~/projects</code> and <code>~/projects/ai-os</code>, for different tasks.</span></li>
 <li><span data-read>Resumed threads still attach fine (18:17, 18:19, 19:56, 21:39). So the Mac, folders, account and the app are fine.</span></li>
@@ -52,7 +53,7 @@
 <li><span data-read>So the earlier &quot;torrent/debrid wording&quot; theory is wrong: unrelated tasks fail the same way.</span></li>
 </ul>
 <hr>
-<h3 id="the-30-thread-pattern" data-read>The 30-thread pattern</h3>
+<h3 id="the-30-thread-pattern">The 30-thread pattern</h3>
 <ul>
 <li><span data-read>Before 10-26 22:44 every new thread had its own random-looking id. Since then every thread id starts <code>cse_01UsR2d…</code>, which looks like they all hang off one parent: the coordinator chat that started at 10-26 22:44.</span></li>
 <li><span data-read>That coordinator started exactly <strong>30</strong> threads successfully (10-26 22:44 → 10-27 17:46). Every coordinator start after that (13 tries) failed.</span></li>
@@ -60,28 +61,28 @@
 <li><span data-read>Inference, not confirmed: the server caps how many threads one coordinator chat can start, and the cap is 30. Neither the logs nor any doc state this limit.</span></li>
 </ul>
 <hr>
-<h3 id="fix-to-try" data-read>Fix to try</h3>
+<h3 id="fix-to-try">Fix to try</h3>
 <ul>
 <li><span data-read>Start a <strong>new coordinator chat</strong> in the Everything project and ask it to start one small thread. If it works, the cap theory holds.</span></li>
 <li><span data-read>If a new coordinator chat also fails, it&#39;s a wider server problem: report it from the app&#39;s feedback with session id <code>cse_01UsR2dm2M8nDUa29N4wMyX8</code> (21:33 failure).</span></li>
 </ul>
 <hr>
-<h3 id="follow-up-worth-doing" data-read>Follow-up worth doing</h3>
+<h3 id="follow-up-worth-doing">Follow-up worth doing</h3>
 <ul>
 <li><span data-read>A rule so the coordinator hands itself off before it hits the cap (e.g. at ~25 threads started), and tells Matt plainly when start fails instead of guessing. Also tell Tyler about the cap, since he&#39;ll use the same one-coordinator setup. Not done yet; offered to Matt.</span></li>
 </ul>
 <p data-read>Undo: nothing changed on the Mac.</p>
-<h2 id="2200-added-the-25-thread-handoff-rule" data-read>22:00 Added the 25-thread handoff rule</h2>
+<h2 id="2200-added-the-25-thread-handoff-rule">22:00 Added the 25-thread handoff rule</h2>
 <p data-read><strong>Asked:</strong> Matt said yes to a rule so the coordinator hands itself off before it hits the thread limit.</p>
 <hr>
-<h3 id="where-the-rule-now-lives" data-read>Where the rule now lives</h3>
+<h3 id="where-the-rule-now-lives">Where the rule now lives</h3>
 <ul>
 <li><span data-read><code>.rules/core_safety.md</code>, Coordinator Routing section: &quot;Hand the coordinator chat off before 30 threads&quot;. Compiled into <code>CLAUDE.md</code> / <code>GEMINI.md</code> with <code>build_rules.py</code>.</span></li>
 <li><span data-read><code>docs/coordinator/project-instructions-slim.md</code> (the local copy of the Everything project instructions): one short line, 5,008 chars total, well under the 16k limit.</span></li>
 <li><span data-read><code>docs/shared/coordinator-instructions.md</code> (Tyler&#39;s copy) plus its public page mattmurphy.ca/coordinator-instructions, republished.</span></li>
 </ul>
 <hr>
-<h3 id="what-the-rule-says" data-read>What the rule says</h3>
+<h3 id="what-the-rule-says">What the rule says</h3>
 <ul>
 <li><span data-read>Count threads this coordinator chat has started. At 25: finish routing, write a <code>/_handoff</code>, and ask Matt in one line to open a new coordinator chat with the paste prompt.</span></li>
 <li><span data-read>25, not 30: leaves room for a few starts while Matt gets to it, and the limit of 30 is inferred, not documented.</span></li>
@@ -89,12 +90,12 @@
 <li><span data-read>Rejected: having the coordinator open a new coordinator chat itself. It has no tool for that; only Matt can open a chat in the project.</span></li>
 </ul>
 <hr>
-<h3 id="what-matt-still-has-to-do" data-read>What Matt still has to do</h3>
+<h3 id="what-matt-still-has-to-do">What Matt still has to do</h3>
 <ul>
 <li><span data-read>The live coordinator reads the project instructions on claude.ai, which I can&#39;t edit from the Mac. Matt pastes the one line into the Everything project instructions (text in the reply). I didn&#39;t drive the web UI because he&#39;s on a call and it changes a project setting.</span></li>
 </ul>
 <hr>
-<h3 id="rule-guard-false-alarm" data-read>Rule-guard false alarm</h3>
+<h3 id="rule-guard-false-alarm">Rule-guard false alarm</h3>
 <ul>
 <li><span data-read>The take-control guard blocked a Bash edit because it saw Python&#39;s <code>open(p)</code> and read it as the macOS <code>open</code> command. Nothing touched the screen; I made the edits with the file editor instead. Worth a small guard fix sometime (ignore <code>open(</code> inside Python heredocs).</span></li>
 </ul>
