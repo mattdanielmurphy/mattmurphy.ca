@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_2709390d-7fcf-4c30-b123-ac57cf9409ea">
+<title>Hotspot → home Wi-Fi watcher</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · hotspot-home-wifi</p>
+<h1 id="hotspot--home-wi-fi-watcher">Hotspot → home Wi-Fi watcher</h1>
+<h2 id="1525-watcher-built-and-live">15:25 Watcher built and live</h2>
+<p data-read>Asked (via coordinator): Mac joined the iPhone hotspot instead of home Wi-Fi; both must stay auto-join. Check preferred order first, then build a watcher that rejoins home, with a subtle note and a retry knob.</p>
+<hr>
+<h3 id="preferred-order-already-right">Preferred order already right</h3>
+<p data-read><code>networksetup -listpreferredwirelessnetworks en0</code>: <code>mdm</code> is #1, <code>Matt’s iPhone 14 Pro Max</code> #2. So reordering fixes nothing: macOS only uses the order when choosing a network, and never drops a working one for a higher-priority one. That&#39;s why it stuck on the hotspot.</p>
+<hr>
+<h3 id="how-it-detects-home">How it detects home</h3>
+<p data-read>Hammerspoon has no Location access, so <code>hs.wifi</code> returns no SSIDs. Instead:</p>
+<ul>
+<li><span data-read>current SSID from <code>ipconfig getsummary en0</code> (not redacted);</span></li>
+<li><span data-read>nearby networks from <code>system_profiler SPAirPortDataType</code> (names redacted, but channel + security shown). While on home it learns home&#39;s fingerprint (now <code>157 (5GHz, 80MHz)|WPA2 Personal</code>, in <code>~/.hammerspoon/cache/wifi_home.json</code>). On the hotspot, a nearby network with that fingerprint = home in range.</span></li>
+<li><span data-read>False matches can only happen near home (neighbours), where home is in range anyway. If the router changes channel, the fingerprint re-learns next time he&#39;s on home (hourly).</span></li>
+<li><span data-read>Rejected: granting Hammerspoon Location (real SSID scans) needs Matt to change a privacy setting; optional upgrade later.</span></li>
+</ul>
+<hr>
+<h3 id="how-it-switches">How it switches</h3>
+<p data-read>Wi-Fi power off for 2 s, then on; macOS rejoins the top visible preferred network (home). No password needed. Rejected <code>networksetup -setairportnetwork</code> (may need the password or pop a keychain prompt). Each switch is a few seconds offline, so attempts are at most every 5 min (<code>retry.cooldown</code>). Checks every 60 s (<code>retry.every</code>) and 15 s after any network change.</p>
+<hr>
+<h3 id="untested-real-switch">Untested real switch</h3>
+<p data-read>The Mac was on home the whole time, so the off/on switch and the note never ran for real. Tested: parser/decision unit tests, live dry run (learned the fingerprint). Undo: delete the <code>safeRegister(&quot;modules.wifi_home&quot;)</code> line in <code>~/.hammerspoon/init.lua</code>, or <code>git revert 0282371</code> there.</p>
+
+</main>
+</body>
+</html>
