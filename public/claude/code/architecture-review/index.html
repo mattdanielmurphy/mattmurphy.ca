@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_cc656186-076a-49c9-9b70-cea93d86d4d2">
+<title>Architecture plan second opinion (2026-10-22)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · architecture-review</p>
+<h1 id="architecture-plan-second-opinion-2026-10-22">Architecture plan second opinion (2026-10-22)</h1>
+<p data-read>Thread: &quot;Architecture plan second opinion&quot;. Reviews <code>docs/ARCHITECTURE.md</code> (draft, commit 4ebf24b4) from the
+&quot;Shared app architecture constraints&quot; thread. Read-only review: nothing in the plan or the apps was changed.</p>
+<h2 id="1445-second-opinion-on-architecturemd">14:45 Second opinion on ARCHITECTURE.md</h2>
+<p data-read><strong>What Matt asked (via the coordinator):</strong> a fresh, independent read of the shared app plan: gaps, risks,
+simpler alternatives, anything that will bite later, in priority order. Report in short points, then send the
+notes to the drafting thread. 👍 = the drafting thread adopts the top notes.</p>
+<p data-read><strong>What I read:</strong> the plan (sections 1-9, checklist, open decisions, rule line), the drafting thread, and the
+live code it governs: <code>~/.hammerspoon</code> (44 modules, <code>tweaks.lua</code>, <code>brand.lua</code>, <code>suite.lua</code>, <code>hud_slots.json</code>,
+<code>hud_positions.json</code>, <code>tweaks_registry.json</code>, <code>bin/ship-public</code>, tests), <code>~/projects/hud-kit</code> (all four
+sources + tests), <code>~/projects/trackpad-mixer</code> (build.sh, Info.plist, tweaks.json, Palette in HUD.swift),
+<code>~/projects/lidstay</code>. <code>mac-utilities</code> is not a folder on the Mac: it&#39;s the public repo that
+<code>bin/ship-public</code> builds from <code>~/.hammerspoon</code>. I found no &quot;launcher&quot; project to check.</p>
+<p data-read><strong>Tests today:</strong> hud-kit <code>tests/run.sh</code> passes; all five <code>~/.hammerspoon/tests/*.lua</code> pass.</p>
+<p data-read><strong>Verdict:</strong> the plan&#39;s direction is right (platform by job, kits, registries, tweaks, roles). Its weak spot is
+that almost every constraint is prose that an agent must remember, and the evidence from today says they
+don&#39;t. The four notes below are ranked by how much later pain they prevent per unit of work.</p>
+<hr>
+<h3 id="enforce-with-one-check-script">Enforce with one check script</h3>
+<p data-read><strong>Problem.</strong> The plan says every registry &quot;has a test that fails on a clash&quot;, but nothing runs those tests:
+no git hooks in <code>~/.hammerspoon</code>, hud-kit or trackpad-mixer, and <code>auto_commit.py</code> runs no tests. Same for the
+colour rule: the plan says &quot;one sage accent, don&#39;t add new one-off hexes&quot;, yet on the same afternoon the quote
+tool got a brand-new teal (<code>#2b5f75</code>, commit 6432f3b, 14:33). Sage (<code>#4F8A6C</code>) appears nowhere in code.
+There are 248 distinct hex literals across the Lua and HTML modules (596 literals in <code>qwerty_midi.lua</code> alone).</p>
+<p data-read><strong>Proposal.</strong> One <code>check</code> script per kit, wired as a pre-commit hook in each app repo (and called by
+<code>ship-public</code>, which today only runs <code>suite_test.lua</code>):</p>
+<ul>
+<li><span data-read>run the kit&#39;s unit tests (hud-kit <code>tests/run.sh</code>, <code>~/.hammerspoon/tests/*.lua</code>);</span></li>
+<li><span data-read>slot clash test (exists);</span></li>
+<li><span data-read>duplicate hotkey chord test (cheap grep of <code>hs.hotkey.bind</code>, see below);</span></li>
+<li><span data-read>colour lint: fail on a hex literal in a changed file outside the palette file, and on any colour in the
+banned warm-orange hue band. Allow-list existing files so it only stops <em>new</em> drift.</span></li>
+</ul>
+<p data-read><strong>Why first.</strong> It turns sections 3, 5 and 6 from hopes into gates, costs maybe an hour, and protects every
+later step. Rejected alternative: a CI service; overkill for local, mostly private repos.</p>
+<hr>
+<h3 id="one-shared-state-folder">One shared state folder</h3>
+<p data-read><strong>Problem.</strong> Shared state is scattered over four conventions, and the Swift kit is hard-wired to Hammerspoon&#39;s
+config folder:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Where it lives now</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Slots</td>
+<td><code>~/.hammerspoon/hud_slots.json</code> (read by <code>Slots.swift</code>)</td>
+</tr>
+<tr>
+<td>Remembered HUD spots</td>
+<td><code>~/.hammerspoon/hud_positions.json</code> (written by <code>HUDWindow.swift</code>; untracked and not gitignored, so it will get committed by accident)</td>
+</tr>
+<tr>
+<td>Tweaks registry</td>
+<td><code>~/.hammerspoon/tweaks_registry.json</code>, holding absolute <code>/Users/matt/...</code> paths</td>
+</tr>
+<tr>
+<td>Lua tweaks</td>
+<td><code>~/.hammerspoon/tweaks/&lt;module&gt;.json</code></td>
+</tr>
+<tr>
+<td>Swift tweaks</td>
+<td>in the app&#39;s repo (<code>~/projects/trackpad-mixer/tweaks.json</code>): every tuning session dirties git, and the path in code is <code>~/projects/trackpad-mixer</code></td>
+</tr>
+<tr>
+<td>lidstay</td>
+<td><code>/Users/Shared/lidstay/</code></td>
+</tr>
+</tbody></table>
+<p data-read>That clashes with the plan&#39;s own section 8 (&quot;self-contained, no hard-coded Matt paths&quot;): any hud-kit app
+handed to someone else writes into a <code>~/.hammerspoon</code> they may not have.</p>
+<p data-read><strong>Proposal.</strong> One neutral folder, e.g. <code>~/Library/Application Support/MDMA/</code> with <code>slots.json</code>,
+<code>positions.json</code>, <code>palette.json</code>, <code>hotkeys.json</code> and <code>tweaks/&lt;app&gt;.json</code>. Defaults stay in code (as now), so
+the user-values file can live outside the repo. The Tweaks panel then just lists <code>tweaks/</code>, so
+<code>tweaks_registry.json</code> and its absolute paths disappear. Hammerspoon keeps working by reading the new paths
+(or a symlink during the move).</p>
+<p data-read><strong>Why now.</strong> One Swift app uses hud-kit today; moving three paths in hud-kit and two in Lua is small. After the
+next two or three Swift HUDs, it&#39;s a migration. lidstay already shows the right shape: standalone first, and
+it defers to the suite when the suite is present.</p>
+<hr>
+<h3 id="port-formats-not-behaviour">Port formats not behaviour</h3>
+<p data-read><strong>Problem.</strong> Section 2 says that when one kit has a behaviour, port it to the other kit &quot;with the same feel&quot;.
+Section 4 says the Lua kit gets the HUDWindow behaviour. That means re-implementing drag, centre-snap, edge
+resize and Option-symmetric resize in <code>hs.canvas</code>, then keeping two implementations and two test suites
+feeling identical forever. Every new shared behaviour doubles in cost, and the copies will drift.</p>
+<p data-read><strong>Proposal.</strong> Split the rule:</p>
+<ul>
+<li><span data-read><strong>Data formats are shared by both kits:</strong> slots, positions, tweaks, palette, hotkeys. A JSON reader is a
+few lines in either language, already done for slots and tweaks.</span></li>
+<li><span data-read><strong>Interactive behaviour lives in one kit only (hud-kit).</strong> A Hammerspoon HUD that needs window behaviour
+moves to Swift when it&#39;s next touched, which section 1 already says for new HUDs.</span></li>
+</ul>
+<p data-read>Rejected: rendering Hammerspoon HUDs through a Swift host over IPC; worth revisiting only if the Utilities
+app becomes that host (an open decision in the plan).</p>
+<hr>
+<h3 id="one-palette-file-for-all">One palette file for all</h3>
+<p data-read><strong>Problem.</strong> Section 5 makes colours tweak knobs per app; section 6 says colour by role from one palette.
+These pull apart: if each app has its own <code>look.accent</code> knob, tuning one app forks the look. The plan also
+proposes two hand-kept copies (<code>Palette.swift</code> and <code>palette.lua</code>) and there&#39;s a third consumer it doesn&#39;t
+mention: the HTML panels (<code>tweaks_panel.html</code>, <code>gemini_thread_search.html</code>, ps5 dashboard, song key).
+hud-kit&#39;s own doc comment shows <code>.color(&quot;look.accent&quot;, &quot;#ff8a00&quot;)</code>, an orange, as the example agents will copy.</p>
+<p data-read><strong>Proposal.</strong> One <code>palette.json</code> in the shared folder: roles (<code>ink</code>, <code>paper</code>, <code>accent</code>, <code>track</code>, <code>muted</code>), each
+with light and dark values. Swift and Lua read it at runtime the same way they read slots; HTML gets it as
+CSS variables injected by the module that opens the webview. The palette shows as one entry in the ⌃⌥⌘T
+Tweaks panel, so retuning the accent changes every app at once. Per-app knobs pick a role, never a hex. When
+the palette thread lands, its tokens just replace the file&#39;s values. Fix the hud-kit example while there.</p>
+<hr>
+<h3 id="other-notes-lower-priority">Other notes, lower priority</h3>
+<hr>
+<h3 id="shared-escape-stack">Shared Escape stack</h3>
+<p data-read>Section 4 says every modal closes on Escape. Today each module grabs a global Escape itself
+(<code>clipboard.lua</code>, <code>eye_breaks.lua</code>; <code>clipboard.lua</code> also grabs ⌘Z globally while its toast shows). Two
+transient UIs up at once fight over the key, and while either is up, Escape never reaches Ableton or the front
+app. A small shared <code>dismiss</code> module (one Escape owner, closes the topmost thing, only holds the key while
+something is showing) is the shared piece section 4 really needs.</p>
+<hr>
+<h3 id="hud-kit-build-and-pinning">hud-kit build and pinning</h3>
+<ul>
+<li><span data-read>Apps compile hud-kit by relative path (<code>../hud-kit/Sources/*.swift</code>), unpinned: a hud-kit edit silently
+changes every app on its next build, and a clone of an app alone doesn&#39;t build.</span></li>
+<li><span data-read>hud-kit is private while lidstay and mac-utilities are public; a &quot;for the world&quot; Swift app can&#39;t depend on it
+as is. Section 7 also says &quot;its own private repo&quot; for every app, which contradicts public lidstay; say
+&quot;private until Matt publishes it&quot;.</span></li>
+<li><span data-read>The signing identity and bundle assembly are copy-pasted in each <code>build.sh</code>, which the plan itself calls a
+bug. Proposal: <code>hud-kit/build-app.sh</code> (assemble bundle, Info.plist with <code>ca.mattmurphy.&lt;app&gt;</code>, sign) that
+every app calls; pin hud-kit as a git submodule or tag once an app goes public.</span></li>
+</ul>
+<hr>
+<h3 id="permissions-per-app">Permissions per app</h3>
+<p data-read>Section 1 makes every new HUD its own Swift app. Each one is a separate process, login item and set of macOS
+permission prompts (Accessibility, Input Monitoring, audio capture), and an unstable signature resets them.
+That&#39;s the price of crash isolation; it&#39;s fine for two or three apps, painful at ten. Decide the Utilities-app
+shape (open decision 3: one host vs many apps) before the second Swift HUD, because it decides whether HUDs
+are apps or plugins.</p>
+<hr>
+<h3 id="public-copy-path-leak">Public copy path leak</h3>
+<p data-read><code>bin/ship-public</code> scans for emails, keys and school details but not home paths. Two shareable modules ship
+with Matt-only absolute paths: <code>clipboard.lua</code> (<code>/Users/matt/projects/console-compactifier</code>,
+<code>webpage-compressor</code>) and <code>clamshell_guard.lua</code>. On Tyler&#39;s Mac those features silently fail. Add a
+<code>/Users/matt</code> check to the scan; it&#39;s the cheapest &quot;self-contained&quot; enforcement.</p>
+<hr>
+<h3 id="hotkey-registry-first-step">Hotkey registry first step</h3>
+<p data-read>Before building the planned <code>hotkeys.json</code> registry, a test that greps all <code>hs.hotkey.bind</code> chords and fails on
+duplicates gives most of the clash protection today (about 20 bindings now; the ⌃⌥⌘ namespace already holds
+M, L, V, R, T). For section 9 discoverability, the official <a href="https://github.com/Hammerspoon/Spoons/tree/master/Source/HSKeybindings.spoon">HSKeybindings Spoon</a>
+already shows every Hammerspoon hotkey that has a description, so a cheat-sheet overlay is mostly free once
+bindings carry descriptions. Note a registry can&#39;t see Raycast, Keyboard Maestro or system shortcuts.</p>
+<hr>
+<h3 id="rules-in-one-place">Rules in one place</h3>
+<p data-read>The same app rules now live in four places: project instructions, <code>.rules/core_safety.md</code>,
+<code>~/.claude/CLAUDE.md</code> and <code>ARCHITECTURE.md</code>. Today&#39;s terracotta ban and ship-ready change each had to be
+mirrored by hand, with the coordinator asking the drafting thread to sync them. Proposal: <code>ARCHITECTURE.md</code> is
+the one source for how apps are built; the others keep a one-line pointer plus the hard bans (banned colours,
+input queue, slots).</p>
+<hr>
+<h3 id="smaller-notes">Smaller notes</h3>
+<ul>
+<li><span data-read>Shared JSON files have no <code>&quot;version&quot;</code> field; add one before a format change breaks older builds.</span></li>
+<li><span data-read>Remembered positions are absolute and keyed by slot only, not by screen arrangement; a spot set on the
+laptop can land oddly after plugging in a display (it does fall back to the slot when off-screen).</span></li>
+<li><span data-read><code>Tweaks.register</code> and <code>HUDPositions.save</code> do read-modify-write from several processes; a rare lost write,
+self-healing on next launch. Fine for now.</span></li>
+<li><span data-read>The plan should carry a short conformance table (which apps follow which section, what&#39;s known drift), so
+agents can tell legacy from a new violation.</span></li>
+</ul>
+<hr>
+<h3 id="how-to-undo">How to undo</h3>
+<p data-read>Nothing to undo: this review changed no code or plan text. Only this details file was added.</p>
+<h2 id="1455-no-prescribed-colours-in-the-plan">14:55 No prescribed colours in the plan</h2>
+<p data-read><strong>What Matt asked:</strong> make sure the plan prescribes no colours (the palette isn&#39;t picked yet), stress one unified
+system where agents never invent a colour, and plan for a big master palette (~100 apps one day) with a small
+active subset that grows when a new app needs a colour. He pointed at his earlier brand/palette thread.</p>
+<p data-read><strong>What I found:</strong> the drafting thread already made this change at 14:54 (commit bac95d4f, &quot;Plan names no
+colours; rule: never invent a colour&quot;). I checked the new <code>docs/ARCHITECTURE.md</code>: no hex values, no sage, no
+named hues left; only the banned list names colours, which is a ban, not a prescription. The rule line and
+<code>.rules/core_safety.md</code> now carry &quot;never invent a colour&quot;. So I did not send a second, duplicate change.</p>
+<hr>
+<h3 id="already-done-by-the-drafting-thread">Already done by the drafting thread</h3>
+<p data-read>Section 6 now opens with &quot;No colours are picked yet&quot;, then: one unified palette, agents never invent, eyeball
+or copy a colour; a large master palette sized for ~100 apps with a small active subset that a new app expands
+(recorded with the app that claimed it, never a random pick); colour by role; one palette file per system,
+generated from the master palette. Checklist item 6 and the rule line match.</p>
+<hr>
+<h3 id="one-conflict-left-in-section-5">One conflict left in section 5</h3>
+<p data-read>Section 5 still says &quot;timings, curves, sizes, opacities and <strong>colours</strong> are tweak knobs&quot;. That contradicts
+section 6 (&quot;values live in one palette file ... and nowhere else&quot;) and is how drift already happens: the quote
+tool&#39;s tweaks file holds its own hex (<code>#2b5f75</code>) as a knob. Suggested wording for section 5: &quot;Colours are not
+per-app knobs. The palette is tuned in one place (one entry in the Tweaks panel); an app&#39;s knob may choose
+which role it uses, never a hex.&quot; This is the same point as note 4 above (&quot;One palette file for all&quot;), so it&#39;s
+covered by Matt&#39;s 👍 on the earlier reply.</p>
+<hr>
+<h3 id="palette-thread-already-planned-this">Palette thread already planned this</h3>
+<p data-read>Matt&#39;s &quot;Personal design system and palette&quot; thread (Oct 21) proposed exactly this system and has been waiting
+on his 👍 since 2026-10-21 20:44: a generated master palette (Adobe Leonardo for contrast-correct steps), 24
+hues x 12 steps each in light and dark, Radix-style step jobs (1-2 backgrounds, 6-8 borders, 9 solid, 11-12
+text), 8 hues unlocked at first, and <code>design unlock &lt;hue&gt; --app &lt;name&gt;</code> to grow the subset and record the
+claim. Source in <code>ai-os/design/</code>, generating CSS variables, a Mantine theme, Swift colours and <code>palette.lua</code>.
+Simpler alternative it offered: Radix Colors as-is (31 scales).</p>
+<p data-read>Two things to carry into that work when it restarts:</p>
+<ul>
+<li><span data-read><strong>24 hues may be short for ~100 apps</strong> if every app claims its own hue. Because Leonardo generates scales,
+the master can grow past 24 without re-picking; or apps share a hue and differ by role use. Decide this
+when the palette is designed, not now.</span></li>
+<li><span data-read><strong>The logo thread&#39;s brand colours</strong> (&quot;MDMA Appothecary logo&quot;) should come from, or seed, the master palette,
+not become a second brand palette.</span></li>
+</ul>
+<p data-read>That thread is cold (over a day idle), so per the routing rules it restarts as a fresh thread from its
+proposal rather than being woken. Offered to Matt as 👍 = restart.</p>
+<h2 id="1458-palette-restart-handed-to-the-coordinator">14:58 Palette restart handed to the coordinator</h2>
+<p data-read>Matt 👍&#39;d the restart. Thread sessions can&#39;t start threads, so I asked the coordinator to start a fresh one,
+attaching Matt&#39;s palette message and a self-contained brief: his requirements (never invent a colour, master
+palette for ~100 apps, growing active subset), the old proposal as the starting point (Leonardo, 24 x 12,
+8 unlocked, <code>design unlock</code>, <code>ai-os/design/</code>), the constraints in ARCHITECTURE.md section 6 and the bans, and
+three open questions for Matt rather than for the agent (24 hues vs 100 apps, logo colours seeding the
+palette, one palette file for Swift/Lua/HTML). I did not wake the old thread (cold since Oct 21).</p>
+<h2 id="1500-light-and-dark-everywhere">15:00 Light and dark everywhere</h2>
+<p data-read><strong>What Matt asked:</strong> light and dark mode for all apps, as a requirement and part of the design process for
+everything.</p>
+<p data-read><strong>What the rules say today:</strong></p>
+<ul>
+<li><span data-read><code>docs/ARCHITECTURE.md</code> section 6: &quot;Light by default, dark only via the system appearance&quot;, and roles have &quot;a
+light and a dark value&quot;. Dark reads as optional, and nothing says screens, HUDs and icons are designed in both.</span></li>
+<li><span data-read><code>.rules/ui_web.md</code>: web apps must sync with <code>prefers-color-scheme</code>. Web only; native apps and HUDs have no
+equivalent.</span></li>
+<li><span data-read><code>.rules/web_design.md</code>: dark mode is &quot;or support system theme adaptation&quot;, i.e. optional.</span></li>
+</ul>
+<hr>
+<h3 id="wording-passed-to-the-drafting-thread">Wording passed to the drafting thread</h3>
+<p data-read>&quot;Every app ships light and dark and follows the system appearance (light when there&#39;s no preference). Every
+palette role, screen, HUD and icon is designed and contrast-checked in both modes before it&#39;s done.&quot; Into
+section 6, checklist item 6 and the rule line. The new palette thread gets the same as a design requirement:
+every hue, step and role has both values, both contrast-checked, never a later pass. Routed through the
+coordinator because the drafting thread owns the plan and the rule line.</p>
+<hr>
+<h3 id="old-web-rule-still-orders-random-palettes">Old web rule still orders random palettes</h3>
+<p data-read><code>.rules/web_design.md</code> contradicts today&#39;s &quot;never invent a colour&quot; rule: it says every new web project must run
+<code>generate_design_brief.py</code> for a fresh randomized palette (that script is now only in <code>scripts/archive/</code>), and
+it prescribes <code>#f5f4ed</code>, <code>#08090a</code> and &quot;single subtle indigo/violet accents&quot;. It isn&#39;t compiled into
+<code>CLAUDE.md</code> by <code>build_rules.py</code> (which only bundles <code>common.md</code> plus the per-agent files), so its reach is
+limited, but any agent reading <code>.rules/</code> directly would follow it. Suggested: retire it or rewrite it to point
+at ARCHITECTURE.md section 6. Passed to the drafting thread with the light/dark change.</p>
+
+</main>
+</body>
+</html>
