@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_a85dc09a-76d8-46fe-bffd-8abdc74e3571">
+<title>Details</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mattinee-crash-logs</p>
+<h2 id="0305-why-mattinee-keeps-closing">03:05 Why Mattinee keeps closing</h2>
+<p data-read>You asked why the app keeps crashing and whether crashes were recorded.</p>
+<h3 id="cause">Cause</h3>
+<p data-read>All 16 exits Android kept (01:55 to 02:24 on 2026-10-31) were 11 force-stops and 5 installs. There were no crashes, freezes or memory kills, and the crash buffer was empty. Android keeps only the last 16 exits, and the rename to ca.mattmurphy.mattinee cleared older history, so earlier closures can&#39;t be checked directly. The app also reopens itself after an update.</p>
+<h3 id="fixes">Fixes</h3>
+<p data-read>Version 0.3.58: crashes stay saved until the server accepts them (they were deleted before sending). The catcher starts with the process, not only with the main screen. Freezes, native crashes, memory kills and on-screen closures now come from Android&#39;s exit history. auto-install.sh waits while the app is on screen and the Streamer is awake. dev.sh does not wait.</p>
+<h3 id="test">Test</h3>
+<p data-read><code>am crash</code> at 02:59 reached the Mac log and the VPS as <code>Crash: CrashedByAdbException</code>. A force-stop was logged as <code>Closed:</code>. Both test lines remain in the log. Freeze, native and memory reports were not triggered for real.</p>
+<h3 id="deploy-mistake">Deploy mistake</h3>
+<p data-read>I ran the zsh-only deploy/vps.sh with bash, so it ran rsync from / with --delete for 22 minutes. I killed it. The VPS showed 0 changed files, so nothing landed and nothing was deleted. vps.sh now works in either shell.</p>
+<p data-read>Undo: revert commit 6237789 and republish.</p>
+
+</main>
+</body>
+</html>
