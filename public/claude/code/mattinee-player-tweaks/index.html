@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_1e81929a-910c-4763-b1a5-d82c16b49ca5">
+<title>Mattinee player tweaks</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mattinee-player-tweaks</p>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h1 id="mattinee-player-tweaks">Mattinee player tweaks</h1>
+<p data-read>Small tweaks to the string player in <code>e.html</code>, after the long design thread.</p>
+<h2 id="1730-middle-of-the-screen-and-the-leaf-cursor">17:30 Middle of the screen and the leaf cursor</h2>
+<p data-read>You asked for click to pause and drag to seek in the middle of the screen, then a custom cursor with default, pointer and loading states. Both are in <code>e.html</code>. The Vercel deploy failed, so the public link still shows the old version.</p>
+<h3 id="deploy-blocked">Deploy blocked</h3>
+<p data-read>Vercel refused the deploy: the account has used its 100 free deployments for the day (&quot;try again in 24 hours&quot;). The new version runs at <a href="http://pages.test/mattinee-playful/e.html?v=moss&amp;screen=paused&amp;theme=dark">http://pages.test/mattinee-playful/e.html?v=moss&amp;screen=paused&amp;theme=dark</a> on your Mac. The public link stays on the old version until a deploy goes through. I did not move the page to another host.</p>
+<hr>
+<h3 id="the-middle-mark">The middle mark</h3>
+<p data-read>In the middle of the screen, the cursor becomes a little mark. It shows a pause icon while playing and a play icon while paused, so it always shows what a click will do. The zone runs from 120 px below the top to 190 px above the bottom, which keeps it clear of the buttons.</p>
+<ul>
+<li><span data-read>The outline re-rolls each time it appears, like the other shapes.</span></li>
+<li><span data-read>Two small arrows beside the mark hint that you can drag. I added those because every gesture needs a visible hint. They are one line to remove.</span></li>
+<li><span data-read>It fades after 1.5 seconds without movement, so the film stays clean.</span></li>
+</ul>
+<p data-read>Clicking the video did nothing before, because a layer sat on top of it. That is fixed.</p>
+<hr>
+<h3 id="drag-to-seek">Drag to seek</h3>
+<p data-read>A press becomes a drag after 10 px sideways. Below that, it counts as a click.</p>
+<ul>
+<li><span data-read>The mark opens into a pill showing the change and the target time, such as +2:23 and 21:05, with arrows in the direction you are going.</span></li>
+<li><span data-read>The string comes up and the preview frame shows, so you see the dot move.</span></li>
+<li><span data-read>The video seeks when you let go. Esc while dragging cancels and returns to where you started.</span></li>
+</ul>
+<p data-read>How far a drag seeks: 0.25 seconds per px at first, then faster, so half a screen covers half the video. Small moves stay fine, and a long film is still reachable. A drag of 400 px on this 29-minute episode moves about 3.5 minutes, and on a 2-hour film about 11 minutes.</p>
+<p data-read>Rejected: a fixed seconds-per-px rate, which is either too slow for films or too twitchy for short moves.</p>
+<hr>
+<h3 id="the-leaf-cursor">The leaf cursor</h3>
+<p data-read>The cursor is a leaf from the saplings, drawn on the page, and it shows on every screen.</p>
+<ul>
+<li><span data-read><strong>Default:</strong> one leaf. The tip is the exact click point.</span></li>
+<li><span data-read><strong>Pointer:</strong> over anything clickable, the leaf grows a little, changes colour and sprouts two more leaves.</span></li>
+<li><span data-read><strong>Loading:</strong> a three-strand loop spins round the leaf. It shows on the buffering screen and for 0.9 seconds after a seek.</span></li>
+<li><span data-read><strong>Press:</strong> the leaf dips so every click visibly lands.</span></li>
+</ul>
+<p data-read>Colours use existing Moss roles only, in both themes. The middle mark counts as the cursor in that zone, except while loading, when the leaf with its loop takes over.</p>
+<p data-read>Why drawn instead of the system cursor: the system cursor cannot spring, sprout or spin smoothly, and this keeps one shared look. The cost is that it can trail the real mouse by a frame.</p>
+<p data-read>Your message ended on a comma after &quot;loading&quot;, so there may have been more states.</p>
+<hr>
+<h3 id="touch-and-the-remote">Touch and the remote</h3>
+<p data-read>These are calls I made, since you did not specify them.</p>
+<ul>
+<li><span data-read><strong>Touch:</strong> a finger has no hover, so the first tap brings up the controls and a second tap while they are up pauses. Dragging seeks, with the pill floating above the finger. Nothing tested this on a real iPad.</span></li>
+<li><span data-read><strong>Streamer remote:</strong> nothing changes. There is no cursor, so Centre still plays and Left or Right still scrub.</span></li>
+</ul>
+<hr>
+<h3 id="tested">Tested</h3>
+<p data-read>Headless Chrome, 1920×1080, on the local page, in light and dark, with no page errors:</p>
+<ul>
+<li><span data-read>hover, click to pause and play, drag both ways, Esc cancel, release to seek</span></li>
+<li><span data-read>mark fading when idle, leaf returning outside the zone</span></li>
+<li><span data-read>pointer on buttons and posters, loading on the buffering screen</span></li>
+</ul>
+<p data-read>Untested: a real mouse feel, a real iPad, and the live public page. The cursor trail is unknown until you try it.</p>
+<hr>
+<h3 id="for-wiring-into-the-apps">For wiring into the apps</h3>
+<p data-read>All values live in <code>PLAYER</code> at the top of the script. <code>MIDDLE</code> and <code>CURSOR</code> hold no video state: the player hands <code>MIDDLE</code> its getters and callbacks, and the app sets loading with <code>CURSOR.loading(true)</code>. The fake wait after a seek is in the demo wiring only. To undo, remove rounds 13 and 14 in the CSS and the two modules in the script.</p>
+<p data-read>The Mac app has no web view, so the leaf there will need native cursor images. The loading spin would mean swapping images.</p>
+
+</main>
+</body>
+</html>
