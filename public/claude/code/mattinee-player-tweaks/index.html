@@ -96,6 +96,20 @@
 <h3 id="tested-1">Tested</h3>
 <p data-read>Headless Chrome on the local page, in light and dark, with no page errors: volume up, down to mute, Esc, release, seek after volume, pause tag, and the earlier seek and cursor checks.</p>
 <p data-read>Untested: real mouse feel, a real iPad, real audio, and the public page.</p>
+<h2 id="1840-calmer-poster-hover">18:40 Calmer poster hover</h2>
+<p data-read>You wanted the poster hover dialled back a little, with its character kept. The change is on the local page only, because Vercel is still refusing deploys.</p>
+<h3 id="what-changed">What changed</h3>
+<p data-read>All four are named settings under <code>PLAYER.poster</code>, where 1 is the old strength.</p>
+<ul>
+<li><span data-read><strong>Stretch 0.75:</strong> the poster grows and squashes 25% less.</span></li>
+<li><span data-read><strong>Lean 0.7:</strong> it tilts and shears 30% less.</span></li>
+<li><span data-read><strong>Shape 0.7:</strong> the outline changes 30% less.</span></li>
+<li><span data-read><strong>Settle 1.25:</strong> the bounce dies away 25% faster.</span></li>
+</ul>
+<p data-read>Measured over 20 hovers, peak stretch went from about 7.6% to about 5%. These numbers vary a little because each hover is random. Buttons, the selected poster and the cursor are unchanged.</p>
+<hr>
+<h3 id="tested-2">Tested</h3>
+<p data-read>Headless Chrome on the local Home page, in light and dark, with no page errors. Untested: how it feels with a real mouse.</p>
 
 </main>
 </body>
