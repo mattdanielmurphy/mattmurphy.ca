@@ -25,6 +25,13 @@
 </ul>
 <h3 id="app-store-connect">App Store Connect</h3>
 <p data-read>Same bundle ID means the Mac build must use ca.mattmurphy.mattinee.ipad; local stays ca.mattmurphy.mattinee, so both can coexist. macOS must be added as a platform to the record, possibly by hand. As I recall, Apple stops offering the iPad-on-Mac version once a native Mac build exists; not verified.</p>
+<h2 id="2330-real-mac-app-on-the-vps">23:30 Real Mac app on the VPS</h2>
+<h3 id="what-changed">What changed</h3>
+<p data-read>You pointed out that one VPS process per person avoids the shared-profile problem, so the earlier iPad-screens recommendation was dropped. Each person gets a server under /srv/glass-mac (ports 4801-4806), and a small door on port 4800 lists them. Progress and Library sync with the main server. The app carries the player&#39;s time to its server over a WebSocket. The main server was not restarted or changed.</p>
+<h3 id="test-result">Test result</h3>
+<p data-read>A sandboxed debug build, muted and hidden, started a stream through the relay: 4.88 seconds played, then position showed no change on the last poll. Not proven to keep playing. Your first try stalled because I closed the app and restarted its server while you were using it.</p>
+<h3 id="upload">Upload</h3>
+<p data-read>The upload reported success. It has not been confirmed as visible in TestFlight. Needs macOS 15+ and Apple Silicon. Unit tests: 50 of 51 test cases passed with one rating-filter failure, and a local-port listen error appeared in this environment; neither was checked against the previous commit. X-Ray and song ID are untested on this build.</p>
 
 </main>
 </body>
