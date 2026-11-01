@@ -147,6 +147,9 @@
 <h3 id="linux">Linux</h3>
 <p data-read>Good idea, and no rush now. Linux can send with BBR, which Windows 10 can&#39;t, so homes may be able to skip the VPS entirely. It would also speed up Tailscale. Whether direct then works as well isn&#39;t proven until it&#39;s running. While it&#39;s down, nobody at either home can watch, because the VPS&#39;s way out goes through it. Recorded in IDEAS.md.</p>
 <p data-read>Only the relay, Tailscale, the metrics exporter and Jump Desktop run on it, so nothing else needs moving. Secure Boot is on.</p>
+<h2 id="1725-server-change-is-live">17:25 Server change is live</h2>
+<p data-read>You ran <code>deploy/vps.sh</code> and the server restarted at 17:17. It now hands a viewer in Edmonton the VPS route. The very first speed test after the restart got the direct address, because the check hadn&#39;t run yet; the next one got the VPS. That only happens once after a restart, and a play always waits for the check. Times in the play log read an hour behind this Mac&#39;s clock, so its 16:09 play happened after BBR went on.</p>
+<p data-read>Not seen yet: a real iPad or Streamer play on the new route, or a Ft Sask device staying direct on the live server. The next plays in <code>bin/playlog</code> will show it. Undo: revert a0d587e and run <code>deploy/vps.sh</code>.</p>
 
 </main>
 </body>
