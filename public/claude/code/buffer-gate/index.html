@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_c51e3be5-9374-4758-ba29-ecf3461ed426">
+<meta name="claude-thread" content="local_d01601a9-ea8a-4b3c-a89c-b7236fba571e">
 <title>Buffer gate: Mattinee loads before it plays</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -103,6 +103,8 @@
 <h3 id="not-proven-yet">Not proven yet</h3>
 <p data-read>I haven&#39;t measured how much each of these cost, because that needs a real play in the real app. Each play now logs when the file opened, the first frame, when playback began and how long the song detector took. If next-episode stops working, the hidden page is the first suspect. The song detector now starts mid-playback, which might cause a tiny sound blip.</p>
 <p data-read>Undo: <code>git revert</code> the commit &quot;Mac player: nothing extra competes with a video starting&quot;.</p>
+<h2 id="0240-second-open-of-the-test-build">02:40 Second open of the test build</h2>
+<p data-read>You opened the test build again. It&#39;s running with no crash reports, and no load times are logged in the last 10 minutes, so nothing has played far enough to measure. This build dates from 01:42, so it doesn&#39;t include the commit made at 02:20 (play log, fast start, moving up, and a copy that isn&#39;t ready can&#39;t open).</p>
 
 </main>
 </body>
