@@ -120,6 +120,20 @@
 <p data-read>The face finder on the VPS (YuNet) doesn&#39;t detect bodies the way Apple Vision did on your Mac. So someone who turns fully away can keep their name only if the picture has barely changed since they were named. That was already true of the &quot;seen so far&quot; path, and of the Streamer and iPad.</p>
 <p data-read>The spare copy never touched a real key: its cast came from a copied metadata cache. It has been deleted from the VPS.</p>
 <p data-read>Undo: <code>git revert</code> this commit, then restart the Mac server.</p>
+<h2 id="0358-a-self-contained-mac-app">03:58 A self-contained Mac app</h2>
+<p data-read>You said you want a self-contained Mac app, with any server inside it, and asked whether the TestFlight sandbox prevents that.</p>
+<hr>
+<h3 id="where-things-are-today">Where things are today</h3>
+<p data-read>The TestFlight Mac app has no server of its own. Each person has one on the VPS (ports 4801 to 4806), and the app connects to it. Nothing on your Mac is needed for Tyler. Tyler&#39;s server on the VPS is off, along with four others. The app shows Who&#39;s watching from the first server in the list, which is Tyler&#39;s, so going by the code a fresh install can&#39;t get past that first screen. I haven&#39;t confirmed that on a real install. I also found no written reason for why those servers were stopped.</p>
+<hr>
+<h3 id="the-sandbox-answer">The sandbox answer</h3>
+<p data-read>The October 31 note said the sandbox forbids <code>spawnServer</code>. That&#39;s true of the current code, which starts a <code>bun</code> from outside the app. It isn&#39;t true of a server shipped inside the app: Apple allows a signed helper in the bundle, which inherits the sandbox, and a network-server permission lets it listen on the Mac itself. This comes from what I know of Apple&#39;s rules. It hasn&#39;t been tried here, so a short test comes first.</p>
+<hr>
+<h3 id="the-catch">The catch</h3>
+<p data-read>The server holds your Real-Debrid key. Inside the app, that key would sit on Tyler&#39;s Mac, and Real-Debrid would see Tyler&#39;s address on your account. So the built-in server should ask the VPS for streams, as the iPad and Streamer do, and video stays on the relay. The app would still need Tailscale and the VPS for streams. Library, progress, the player link and X-ray would live in the app.</p>
+<hr>
+<h3 id="decision">Decision</h3>
+<p data-read>Recorded in IDEAS.md with my take. Nothing is built. I recommend the sandbox test first.</p>
 
 </main>
 </body>
