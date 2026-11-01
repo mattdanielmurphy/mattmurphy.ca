@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_c51e3be5-9374-4758-ba29-ecf3461ed426">
+<title>Mattinee: instant start, the play log and moving up</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · instant-start</p>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h1 id="mattinee-instant-start-the-play-log-and-moving-up">Mattinee: instant start, the play log and moving up</h1>
+<h2 id="0220-play-log-fast-start-quality-upgrade-and-the-baraka-bug">02:20 Play log, fast start, quality upgrade, and the Baraka bug</h2>
+<p data-read>You asked that every play be readable afterwards, that playback start instantly on something light, and then that quality move up as soon as possible without ever going past what the line can hold. You also found a bug: picking a 43 GB copy of Baraka showed a green Real-Debrid clip and threw you out of the player.</p>
+<hr>
+<h3 id="why-baraka-picked-37-gb">Why Baraka picked 3.7 GB</h3>
+<p data-read>It wasn&#39;t caution. The server sorted copies by size, so the top two were the 44 GB copies, which aren&#39;t on Real-Debrid yet. Asking for the first one came back not ready, so the server tried the others in order of how many people share them. The 3.7 GB copy has the most sharers. Nothing compared speed or quality.</p>
+<p data-read>It had two costs. Every normal play of a title like this touched a copy that wasn&#39;t ready, which can start a download on your account. And the choice was accidental.</p>
+<hr>
+<h3 id="why-the-player-closed-on-you">Why the player closed on you</h3>
+<ol>
+<li><span data-read>The 43 GB copy isn&#39;t cached, so the Mac route used the raw link when the readiness check failed. That raw link is Real-Debrid&#39;s 30-second &quot;downloading&quot; clip.</span></li>
+<li><span data-read>The player treated the end of that 30-second video as reaching the credits, so it closed.</span></li>
+<li><span data-read>Baraka was saved as finished at 30 seconds, replacing your 32:05 spot, and that synced to the main server.</span></li>
+<li><span data-read>The server also still listed the 43 GB copy as the one playing.</span></li>
+</ol>
+<p data-read>Your request probably also started that 43 GB download on Real-Debrid. That&#39;s harmless, and the copy will work once it&#39;s done.</p>
+<hr>
+<h3 id="what-changed-for-that-bug">What changed for that bug</h3>
+<ul>
+<li><span data-read>Ready copies now sort first, whatever their size.</span></li>
+<li><span data-read>A copy that isn&#39;t ready can&#39;t open. You keep watching, and the player says that copy has to download first. This covers the Mac, iPad and Streamer.</span></li>
+<li><span data-read>The menu now says &quot;not ready, has to download first&quot; instead of &quot;loads a bit slower&quot;.</span></li>
+<li><span data-read>A file under 5 minutes can no longer mark a title finished or move its saved spot (<code>player.shortestVideoSeconds</code>).</span></li>
+<li><span data-read>I put Baraka back to 32:05 on the main server.</span></li>
+</ul>
+<hr>
+<h3 id="the-play-log">The play log</h3>
+<p data-read>Every press of Play now records what was on screen and for how long, first picture, video moving, which copy and why, each fallback and why, stalls, speed, device, profile and place.</p>
+<ul>
+<li><span data-read><strong>Command line:</strong> <code>bin/playlog</code>, <code>bin/playlog last</code>, <code>bin/playlog stats 7</code>.</span></li>
+<li><span data-read><strong>Browser:</strong> <a href="http://100.123.57.17:4747/plays">http://100.123.57.17:4747/plays</a></span></li>
+<li><span data-read><strong>Dashboard:</strong> a new panel plots every start, and links to that page. It isn&#39;t installed yet.</span></li>
+<li><span data-read><strong>Places:</strong> Edmonton, Ft Sask and Ontario are my guesses from device and profile names. A <code>locations.json</code> in the data folder corrects them.</span></li>
+<li><span data-read><strong>Secrets:</strong> the log keeps a file&#39;s hash and server name, never the link, because links carry your Real-Debrid key.</span></li>
+</ul>
+<hr>
+<h3 id="fast-start">Fast start</h3>
+<p data-read>Target: 3 seconds typical from pressing Play to video moving, 6 seconds for the slowest 1 in 10.</p>
+<p data-read>Before, on five real Mac plays: 18.6 seconds typical, 94.6 seconds slowest. The log has no real &quot;after&quot; numbers yet because nothing is deployed.</p>
+<p data-read>Changes:</p>
+<ul>
+<li><span data-read><strong>The pick:</strong> cached, up to 1080p, at most 8 Mb/s, and at most half the viewer&#39;s known speed. The sharpest of those wins, and a file that has started well before goes first. Copies under 2 Mb/s are a last resort.</span></li>
+<li><span data-read><strong>Foreign copies:</strong> light copies are often dubbed, and the English check missed names like &quot;Тед Лассо&quot;. Those are skipped when there&#39;s a choice.</span></li>
+<li><span data-read><strong>Start buffer:</strong> 3 seconds of video instead of 8. Baraka&#39;s real timing shows why: 2.2 s finding, 2.9 s opening, 1.6 s to the first frame, then 8.1 s waiting behind the meter.</span></li>
+<li><span data-read><strong>Subtitles:</strong> no longer hold up a play for more than a second, and they start loading when the title page opens.</span></li>
+</ul>
+<hr>
+<h3 id="moving-up">Moving up</h3>
+<p data-read>Each player watches the download speed while it plays. After 20 seconds of real downloading with nothing going wrong, it asks for something sharper, offering the worst five seconds it saw as the speed. The sharper copy has to fit 70% of that.</p>
+<p data-read>If the sharper copy can&#39;t hold, the buffer gate&#39;s normal stall handling takes it straight back to the copy it left, and it won&#39;t try again on that title for 15 minutes.</p>
+<p data-read>It never moves up from a copy picked by hand. The iPad stops at 1080p SDR, because VLC&#39;s HDR comes out wrong. The Streamer goes as high as its screen and HDR support allow.</p>
+<p data-read><strong>The honest cost:</strong> these are different files, not one video in several qualities as on Netflix. So a move means reopening at the same spot, which shows &quot;Moving up to 4K&quot; for a few seconds. It took 2 seconds on the stand-in server; real numbers will come from the log. A copy whose length differs by more than 5 seconds is refused, but one of equal length could still be slightly off in timing. Truly invisible swapping needs a second hidden player, which means two Real-Debrid streams at once for a moment. I&#39;d try that only if the log and your eyes say the pause bothers you.</p>
+<hr>
+<h3 id="location-learning">Location learning</h3>
+<p data-read>I agree with the recommendation: a simple score per copy and place, fading with age, not a neural net. A family&#39;s few plays a day would teach a model noise. The log already counts results per file and per place. Details and the catch about the relay are in IDEAS.md.</p>
+<hr>
+<h3 id="what-was-tested">What was tested</h3>
+<ul>
+<li><span data-read><strong>Server rules:</strong> 69 of 70 tests pass. The failure is in <code>tests/addons.test.ts</code>, in code this work didn&#39;t touch, and it failed before this work too.</span></li>
+<li><span data-read><strong>Mac:</strong> no window and no sound, stand-in server: fast start, moving up, a sharper copy too slow to hold and falling back.</span></li>
+<li><span data-read><strong>iPad:</strong> muted simulator, stand-in server: fast start and moving up, with the full log arriving.</span></li>
+<li><span data-read><strong>Streamer:</strong> see the next section for the emulator result.</span></li>
+<li><span data-read><strong>Not tested:</strong> anything against real Real-Debrid links, and the different-length refusal on any player.</span></li>
+</ul>
+<hr>
+<h3 id="more">More</h3>
+<p data-read>The tests had been writing into the real data folder, so a <code>tests/preload.ts</code> now gives them their own. Two stray files from my first run went to the Trash.</p>
+<p data-read>Undo: <code>start.instant</code> and <code>upgrade.on</code> set to 0 in tweaks turn each off with no new apps. <code>git revert</code> removes the rest.</p>
+
+</main>
+</body>
+</html>
