@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_315e4f03-b79d-4210-812a-c7c367e39464">
+<title>Thread size watch</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · thread-size-watch</p>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h1 id="thread-size-watch">Thread size watch</h1>
+<h2 id="1750-catching-big-threads-you-drive-yourself">17:50 Catching big threads you drive yourself</h2>
+<p data-read>You said a design thread passing 600k meant the coordinator and the hooks both failed, and that the fix must not give you a job. Now any thread past 250k gets a fresh start by itself at a natural break, and you keep typing in the same sidebar thread.</p>
+<hr>
+<h3 id="a-new-thread-was-not-possible">A new thread was not possible</h3>
+<p data-read>The brief asked for a handoff and a new thread. The app won&#39;t allow that: it starts a session only from words you typed to that session, and it refuses on an automated note. That&#39;s the same wall the earlier cold-thread work hit. I read the app&#39;s own check to confirm it.</p>
+<p data-read>I could have made the wake-up look like you typed it, the way button presses do, but that would be faking your words to get around the app&#39;s check, so I didn&#39;t. A proposal card would have needed your click. So the move happens in place: the coordinator writes the handoff, and the thread compacts itself and keeps your next steps. You see a compaction line in the thread, and nothing else.</p>
+<hr>
+<h3 id="how-it-decides">How it decides</h3>
+<p data-read>A small job runs every minute and reads each thread&#39;s real size from disk, so it needs nothing from the thread. Past 250k, it waits for a natural break: the reply finished and five quiet minutes. Then it wakes that thread&#39;s coordinator. If nobody owns the thread, or its coordinator isn&#39;t running, the central Coordinator gets it.</p>
+<p data-read>Just before compacting, the thread checks again. If you&#39;ve started typing, even with nothing sent, it waits for the next break. If the cache has gone cold it also waits, so it never pays full price. Both numbers are knobs in the Tweaks panel under Context alert: <code>thread.limitTokens</code> and <code>thread.breakMinutes</code>.</p>
+<hr>
+<h3 id="three-other-things-were-wrong">Three other things were wrong</h3>
+<p data-read>The size script read the pre-compaction number after a thread compacted. That&#39;s the stale 370k from the commit you pointed at. Seven recent threads read high, some wrongly refused by the send guard. Fixed.</p>
+<p data-read>The fix that removed the Code-thread hold (0.7.12) was committed but never installed, so the old 0.7.10 hold was still live. 0.7.13 is installed now and carries that fix.</p>
+<p data-read>The mod still showed a &quot;consider /_handoff&quot; toast at 250k, which is exactly the hook telling you to do something. Removed.</p>
+<hr>
+<h3 id="decisions-you-might-veto">Decisions you might veto</h3>
+<p data-read>Compaction keeps a summary rather than a clean slate. It&#39;s slightly less of a reset than a new thread, but it&#39;s the only version that needs nothing from you.</p>
+<p data-read>Five minutes is my guess at a natural break. Too short and it compacts while you&#39;re reading a long reply; your message would then wait about a minute. It&#39;s a knob, so it&#39;s easy to change.</p>
+<hr>
+<h3 id="what-isnt-proven">What isn&#39;t proven</h3>
+<p data-read>Mod updates reach a thread only when its process restarts, so threads running right now keep 0.7.10 until then. Until they do, they only get the old 50-minute idle compaction.</p>
+<p data-read>To undo: unload <code>com.matt.agent.thread-size-watch</code> and revert the commit.</p>
+
+</main>
+</body>
+</html>
