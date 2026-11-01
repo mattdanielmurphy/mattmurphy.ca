@@ -86,6 +86,40 @@
 <p data-read>The fast pick and shorter start buffer are on the server, so they reach current apps now. The full step-by-step log and moving up need the new apps. Until those are in, a play stays on its light copy. A test line named <code>deploy-check-delete</code> is in the log; it does no harm.</p>
 <h2 id="0245-testflight-builds-uploaded">02:45 TestFlight builds uploaded</h2>
 <p data-read>You asked for the Mac and iPad builds. Both uploaded and Apple accepted them; each takes a few minutes to process before TestFlight offers it. The Streamer in the bonus room already has version 0.3.98 with the same work. The downstairs Streamer isn&#39;t on it, because that one only updates through the update feed, which still offers version 96 and has to be published separately. One play has been logged so far, Ted Lasso S2 E10 on the Mac at 01:38. It chose a 2.0 GB 1080p copy but came from the older app, so it has no start time.</p>
+<h2 id="0348-x-ray-names-nobody-on-the-mac-since-the-vps-move">03:48 X-ray names nobody on the Mac since the VPS move</h2>
+<p data-read>You said X-ray stopped naming faces after the move to the VPS, although &quot;Actors seen so far&quot; still fills in.</p>
+<hr>
+<h3 id="why-it-broke">Why it broke</h3>
+<p data-read>X-ray has two separate paths on the Mac.</p>
+<ul>
+<li><span data-read><strong>While playing:</strong> the player sends a small picture about once a second. That still works, and it&#39;s what fills &quot;Actors seen so far&quot;.</span></li>
+<li><span data-read><strong>On pause:</strong> the server used to tell the player &quot;save this picture to this file&quot;, then read the file. When both ran on your Mac, that worked. Now the server is on the VPS, so the player can&#39;t save to that path and the VPS never gets a picture.</span></li>
+</ul>
+<p data-read>With no picture, the server skipped the face search and answered in about 90 ms with nobody named. The Mac server&#39;s log shows that on every recent pause, and its folder has never held a paused frame. The Streamer and iPad were never affected: they use a different route, and the logs show them naming 1 to 4 people on October 31.</p>
+<hr>
+<h3 id="the-fix">The fix</h3>
+<ul>
+<li><span data-read><strong>New Mac app:</strong> the player now sends the exact paused picture with its question. Arrow-key steps while paused do the same.</span></li>
+<li><span data-read><strong>Your current app:</strong> the server uses the picture from the moment before the pause. If that&#39;s older than 2.5 seconds, as after a seek while paused, it reads one frame from the stream, like the Streamer does.</span></li>
+</ul>
+<p data-read>Only the Mac server on the VPS needs a restart. The main server doesn&#39;t use this path.</p>
+<hr>
+<h3 id="what-your-current-app-will-do">What your current app will do</h3>
+<p data-read>The picture can be up to about a second older than the pause, so a pause just after a cut could show names from the previous shot. A pause after seeking takes a few seconds longer. The new Mac app removes both.</p>
+<hr>
+<h3 id="what-was-tested-1">What was tested</h3>
+<ul>
+<li><span data-read><strong>Real faces, real server code:</strong> a spare copy on the VPS, on its own port with its own data, read five real frames of what you&#39;re watching. It named Brett Goldstein and Juno Temple at 0.46 to 0.82 likeness, in 0.2 to 1.1 seconds, by both the new route and the current app&#39;s route.</span></li>
+<li><span data-read><strong>Stream read:</strong> the route works and found the 2 faces, but named neither. The test video was a re-encoded frame with added noise, so names from that route are untested.</span></li>
+<li><span data-read><strong>Mac player:</strong> real player code, drawing off-screen with no sound, against the stand-in server. The picture it sent is stamped 6.708 seconds, the exact pause time.</span></li>
+<li><span data-read><strong>Automated tests:</strong> 69 of 70 pass. The failure is the same old <code>tests/addons.test.ts</code> one.</span></li>
+<li><span data-read><strong>Not tested:</strong> the real Mac app against the real Mac server, because that needs the restart and you&#39;re watching.</span></li>
+</ul>
+<hr>
+<h3 id="more-1">More</h3>
+<p data-read>The face finder on the VPS (YuNet) doesn&#39;t detect bodies the way Apple Vision did on your Mac. So someone who turns fully away can keep their name only if the picture has barely changed since they were named. That was already true of the &quot;seen so far&quot; path, and of the Streamer and iPad.</p>
+<p data-read>The spare copy never touched a real key: its cast came from a copied metadata cache. It has been deleted from the VPS.</p>
+<p data-read>Undo: <code>git revert</code> this commit, then restart the Mac server.</p>
 
 </main>
 </body>
