@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_79650efb-967f-4b42-a9c1-a935c91e8d0c">
 <title>Relay speed: making Mattinee start like Stremio</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -130,6 +130,23 @@
 <li><span data-read><strong>Mini PC:</strong> two small read-only scripts, deleted afterwards.</span></li>
 </ul>
 <p data-read>To undo: <code>deploy/bbr.sh undo</code> once run. To drop the BBR module, nothing is needed; it does nothing unless selected.</p>
+<h2 id="1720-the-fix-for-every-client-and-linux-on-the-mini-pc">17:20 The fix for every client, and Linux on the mini PC</h2>
+<p data-read>You said BBR made it so much better and that all clients need it, then said you&#39;ll install Linux on the mini PC.</p>
+<hr>
+<h3 id="bbr-is-live-and-the-first-play-proves-it">BBR is live and the first play proves it</h3>
+<p data-read>The VPS is on BBR and live connections show it. Your 16:09 play on Ted Lasso started in 6.5 seconds with no fallback, against 35 to 57 seconds this afternoon. That&#39;s one play, so it isn&#39;t an evening average yet.</p>
+<hr>
+<h3 id="all-clients-through-one-server-change">All clients through one server change</h3>
+<p data-read>iPads and Streamers never used the VPS route, because only the Mac app had a route chooser. The server already knows where each viewer is, so it now hands anyone outside Ft Sask the VPS address. Nobody needs a new app. In Ft Sask they stay on the home network, since a trip to the VPS and back would only be a detour. Unknown places get the VPS.</p>
+<p data-read>The speed test follows the same route, so a screen measures the line it will really use. If the hop stops answering, which it also does at its 8 TB monthly limit, viewers go back to direct. Checked every 15 seconds when someone plays.</p>
+<p data-read>Mac plays still use the app&#39;s own timing, so the Mac server is unchanged. Rejected: a route chooser in each app, because it would need builds for iPad and Android to do what the server can do alone.</p>
+<hr>
+<h3 id="tested-and-not-tested">Tested and not tested</h3>
+<p data-read>All 5 new tests pass, and the full test run is in the commit. Tailnet rules let every device reach the hop. Not tested on a real iPad or Streamer: the change isn&#39;t live until the restart. Android and iPad work out the relay address from the link, and the hop answers the same checks, so they should behave the same.</p>
+<hr>
+<h3 id="linux">Linux</h3>
+<p data-read>Good idea, and no rush now. Linux can send with BBR, which Windows 10 can&#39;t, so homes may be able to skip the VPS entirely. It would also speed up Tailscale. Whether direct then works as well isn&#39;t proven until it&#39;s running. While it&#39;s down, nobody at either home can watch, because the VPS&#39;s way out goes through it. Recorded in IDEAS.md.</p>
+<p data-read>Only the relay, Tailscale, the metrics exporter and Jump Desktop run on it, so nothing else needs moving. Secure Boot is on.</p>
 
 </main>
 </body>
