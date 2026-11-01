@@ -81,6 +81,9 @@
 <h3 id="more">More</h3>
 <p data-read>The tests had been writing into the real data folder, so a <code>tests/preload.ts</code> now gives them their own. Two stray files from my first run went to the Trash.</p>
 <p data-read>Undo: <code>start.instant</code> and <code>upgrade.on</code> set to 0 in tweaks turn each off with no new apps. <code>git revert</code> removes the rest.</p>
+<h2 id="0230-servers-restarted">02:30 Servers restarted</h2>
+<p data-read>You approved the restart. Nobody was watching and the relay was idle. The main server, your Mac server on the VPS and the local server on this Mac now run this work. All three report the 3-second start and moving up, Home loads, and the log takes plays. The five stopped Mac servers stayed stopped, so <code>deploy/mac-people.sh</code> was not used: it would have started them. Their code is updated only when that script next runs.</p>
+<p data-read>The fast pick and shorter start buffer are on the server, so they reach current apps now. The full step-by-step log and moving up need the new apps. Until those are in, a play stays on its light copy. A test line named <code>deploy-check-delete</code> is in the log; it does no harm.</p>
 
 </main>
 </body>
