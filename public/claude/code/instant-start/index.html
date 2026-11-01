@@ -142,6 +142,28 @@
 <p data-read>The test build opened and is the only Mattinee running. The first real numbers are in, and they miss the 3-second target. Your 14:29 play on the TestFlight build took 35.0 seconds to get video moving, with the first picture at 27.3 seconds. Finding and opening were quick at 5 seconds together. The other 22 seconds went to filling on a 2.0 GB copy, at about 2.5 Mb/s, until the player gave up and moved to a lighter 0.8 GB copy. So the pick itself is fast, and the time is lost in the first seconds of download. The cause isn&#39;t known yet. One play proves little, but it&#39;s the one real sample with a full timeline.</p>
 <p data-read>The two Mac plays logged today average 35 seconds in <code>bin/playlog stats</code>, but only one finished starting.</p>
 <p data-read>X-ray still names nobody until the Mac server restarts: the log shows &quot;0 named&quot; at 16:07.</p>
+<h2 id="1620-song-detection-taken-out-and-the-slow-line">16:20 Song detection taken out, and the slow line</h2>
+<p data-read>You said the play still wasn&#39;t moving, then that the bar appeared after about 60 seconds, and asked me to take out song detection because you believe it caused the slow starts.</p>
+<hr>
+<h3 id="song-detection-is-gone">Song detection is gone</h3>
+<p data-read>The Mac player no longer listens to its own sound. The server&#39;s song routes, the Songs panel in the X-ray overlay and the three song tweaks are gone too. The microphone permission stays, because voice search uses it. Songs already saved stay in the data folder but no longer show. <code>git revert</code> brings it all back.</p>
+<hr>
+<h3 id="why-i-dont-expect-it-to-fix-the-starts">Why I don&#39;t expect it to fix the starts</h3>
+<p data-read>The listening only began after video was moving, since the earlier &quot;nothing extra competes with a video starting&quot; commit. So it can&#39;t have delayed the start on these builds. The 49-second first picture on this play happened before it ran. You&#39;ll see for yourself on the next play.</p>
+<hr>
+<h3 id="what-the-numbers-point-to">What the numbers point to</h3>
+<p data-read>All measured just now, with your Ted Lasso running at the same time, so each is shared with that stream:</p>
+<ul>
+<li><span data-read><strong>Mini PC to VPS:</strong> 81 Mb/s. The relay and its upload are fine.</span></li>
+<li><span data-read><strong>Plain internet into this Mac:</strong> 30 Mb/s.</span></li>
+<li><span data-read><strong>Mini PC into this Mac over Tailscale:</strong> 2.5 to 4 Mb/s.</span></li>
+<li><span data-read><strong>VPS into this Mac over Tailscale:</strong> 2.8 Mb/s.</span></li>
+<li><span data-read><strong>The player&#39;s own speed on this play:</strong> 1.1 Mb/s.</span></li>
+</ul>
+<p data-read>So video coming into this Mac over Tailscale is the slow part, on both routes. A 5 Mb/s copy can&#39;t fill at that speed, which is why it moved to a 0.3 GB copy at 49 seconds. On October 31 the VPS route carried 27 to 58 Mb/s, so something has changed since then. I don&#39;t know what yet. Candidates are Tailscale on this Mac and the filters running here.</p>
+<hr>
+<h3 id="build">Build</h3>
+<p data-read>Built as <code>~/Applications/Mattinee Test new.app</code>, because the first test copy is open and I won&#39;t replace an open app. <code>mac/local.sh</code> now does that on its own. Not launched by me. 69 of 70 tests pass, and the failure is the same old one.</p>
 
 </main>
 </body>
