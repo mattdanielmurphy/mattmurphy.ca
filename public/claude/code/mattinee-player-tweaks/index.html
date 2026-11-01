@@ -70,6 +70,32 @@
 <h3 id="for-wiring-into-the-apps">For wiring into the apps</h3>
 <p data-read>All values live in <code>PLAYER</code> at the top of the script. <code>MIDDLE</code> and <code>CURSOR</code> hold no video state: the player hands <code>MIDDLE</code> its getters and callbacks, and the app sets loading with <code>CURSOR.loading(true)</code>. The fake wait after a seek is in the demo wiring only. To undo, remove rounds 13 and 14 in the CSS and the two modules in the script.</p>
 <p data-read>The Mac app has no web view, so the leaf there will need native cursor images. The loading spin would mean swapping images.</p>
+<h2 id="1810-volume-drag-and-a-paused-tag">18:10 Volume drag and a paused tag</h2>
+<p data-read>You asked for up and down drags to set the volume, the same way as seeking. You also said the paused mark felt wrong: it looked like a button, and the cursor showed play on top of it while it showed pause. Both are done, on the local page only, because Vercel is still refusing deploys.</p>
+<h3 id="volume-drag">Volume drag</h3>
+<p data-read>A drag locks to its first direction, so sideways seeks and up or down sets the volume. It can&#39;t switch partway through.</p>
+<ul>
+<li><span data-read>The mark opens into a tall pill with the percentage, a meter wound like the string, and a speaker that becomes a muted speaker at 0%.</span></li>
+<li><span data-read>300 px goes from silent to full. Volume changes live as you drag, because you need to hear it. Esc puts it back.</span></li>
+<li><span data-read>The pill stays where you pressed and only the meter moves. On release it fades there, and the mark returns at your cursor on the next move.</span></li>
+<li><span data-read>The mark now has four small arrows, so up and down are hinted too.</span></li>
+</ul>
+<p data-read>This page has no sound, so the volume is a stand-in number here. Touch gets the same drag, with the pill above the finger.</p>
+<hr>
+<h3 id="paused-tag">Paused tag</h3>
+<p data-read>The real problem was two icons saying opposite things. The fix is to keep one icon, which is the action under your cursor, and make the state a word.</p>
+<ul>
+<li><span data-read>&quot;Paused&quot; now hangs on a thread from the dot, and swings briefly when you pause. It is not a button: it has no icon, ignores the cursor and sits below the string. It also keeps the middle of the frame clear, which helps when you pause to look at something.</span></li>
+<li><span data-read>I removed the big pause mark and its hover squish.</span></li>
+<li><span data-read>The alternative is the word in the middle of the screen: add <code>&amp;ind=word</code> to the URL.</span></li>
+</ul>
+<hr>
+<h3 id="smaller-fix">Smaller fix</h3>
+<p data-read>The mark and pills were stretched from one shape, which gave them spikes and notches. Each is now drawn at its real size, so the outlines are calmer.</p>
+<hr>
+<h3 id="tested-1">Tested</h3>
+<p data-read>Headless Chrome on the local page, in light and dark, with no page errors: volume up, down to mute, Esc, release, seek after volume, pause tag, and the earlier seek and cursor checks.</p>
+<p data-read>Untested: real mouse feel, a real iPad, real audio, and the public page.</p>
 
 </main>
 </body>
