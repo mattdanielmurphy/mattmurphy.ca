@@ -34,6 +34,8 @@
 <p data-read>The upload reported success. It has not been confirmed as visible in TestFlight. Needs macOS 15+ and Apple Silicon. Unit tests: 50 of 51 test cases passed with one rating-filter failure, and a local-port listen error appeared in this environment; neither was checked against the previous commit. X-Ray and song ID are untested on this build.</p>
 <h2 id="2350-picker-moved-to-your-own-screen">23:50 Picker moved to your own screen</h2>
 <p data-read>Removed the app&#39;s dialog and its Go menu item. Before anyone is picked, the app opens the first person&#39;s server to show Who&#39;s watching; picking moves the app to that person&#39;s server and remembers it. Switch profile in Settings works the same way. &quot;Don&#39;t ask me again&quot; carries over. Not yet tried in the app.</p>
+<h2 id="2330-why-it-buffers">23:30 Why it buffers</h2>
+<p data-read>Relay process IDs from metrics: a new one almost every minute from 23:07 to 23:27, with memory up to about 2 GB. The current relay started at 23:27. The mini PC downloads 100-440 Mbit/s but sends only 2-14 Mbit/s, peak 34 this week, so it pulls far more than it delivers. This started before my Mac servers (23:11), which corrects my earlier suggestion that they were the likely cause. The fix is commit 05f0356 (watchdog and bounded memory). It is not live: the update refuses while anyone streams, and forcing it cuts current streams. Upload capacity with the fixed relay is unmeasured. Real-Debrid&#39;s terms were not checked here.</p>
 
 </main>
 </body>
