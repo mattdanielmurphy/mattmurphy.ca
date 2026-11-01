@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_852a3fe7-cb43-49fa-994f-9901b25740c4">
+<title>Logic catch-up + lunch-then-study habit (2026-10-22)</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · logic-catch-up</p>
+<h1 id="logic-catch-up--lunch-then-study-habit-2026-10-22">Logic catch-up + lunch-then-study habit (2026-10-22)</h1>
+<h2 id="0940-what-you-missed-fol-flashcards-afternoon-study-habit">09:40 What you missed, FOL flashcards, afternoon study habit</h2>
+<p data-read>Matt asked (via coordinator): he&#39;s badly behind in PHIL 120 Symbolic Logic, missed the last two classes, wants accountability, a new afternoon &quot;lunch then study&quot; habit starting really small and ramping slowly, and today&#39;s block is logic only. Flashcards work for him because he answers before he can talk himself out of it.</p>
+<hr>
+<h3 id="what-you-missed">What you missed</h3>
+<p data-read>From the syllabus schedule (<code>~/Documents/School/Symbolic Logic/PHIL120 F26 X1 Course syllabus.pdf</code>): Oct 14 and Oct 21 were both Unit 5, FOL language and syntax, forall x Part V, ch. 23–29 (building blocks, one quantifier, multiple generality, identity, sentences of FOL, definite descriptions, ambiguity). So the missed classes are the whole of Unit 5. Homework due Oct 21 was ch. 25 sets A–E. No graded work missed (grade = 2 midterms + final). Midterm 2 is Wed Nov 4, 18:00 (30%), 13 days away. Unit 6 (FOL semantics) starts Oct 28.</p>
+<p data-read>Existing plan from Oct 20: <code>~/Documents/School/Symbolic Logic/Unit 5/catch-up.md</code> (quiz-first, ~3–4 h total). Still valid; it&#39;s the source for today&#39;s quiz.</p>
+<p data-read>Canvas wasn&#39;t checked: the built-in browser pane is signed out of Canvas now. The syllabus was enough to know what was covered.</p>
+<hr>
+<h3 id="fol-flashcards-added">FOL flashcards added</h3>
+<p data-read>The morning check-in&#39;s logic deck stopped at ch. 15, so it couldn&#39;t drill anything he missed. Added 16 multiple-choice cards for ch. 23–29 (<code>services/assistant/spaced_repetition/decks/forallx_intro_formal_logic_ch23-29.json</code>), imported into the FSRS deck (<code>~/.hermes/assistant.db</code>) as new cards, due now. They&#39;ll start showing up in tomorrow&#39;s morning page (mixed with CMPUT and World Music by exam urgency; logic&#39;s Nov 4 exam gets more slots from Oct 28).</p>
+<p data-read>Content is standard forall x conventions (all → →, some → ∧, quantifier order, identity for &quot;at least two&quot; / &quot;exactly one&quot; / &quot;except&quot;, free vs bound variables, Russell&#39;s descriptions, scope ambiguity). Written by me, not copied from the book; checked against the chapter titles. Not cross-checked line by line against the textbook&#39;s notation.</p>
+<p data-read>Undo: <code>sqlite3 ~/.hermes/assistant.db &quot;delete from fsrs_cards where card_id between &#39;forallx_ch23&#39; and &#39;forallx_ch29_zz&#39;&quot;</code> and remove the JSON.</p>
+<hr>
+<h3 id="lunch-then-study-habit">Lunch-then-study habit</h3>
+<p data-read>Reused the morning check-in habit ladder (<code>services/checkin/ladder.py</code> + <code>ladder.json</code>), same as the SUB thread proposed for SUB study, instead of a new tracker or calendar events.</p>
+<ul>
+<li><span data-read>New habit <code>study</code>, label &quot;Lunch, then study&quot;, minutes: 15 → 20 → 25 → 30 → 40 → 50 → 60. Starts at 15 today.</span></li>
+<li><span data-read>Weekdays only (<code>days: [0..4]</code>). Weekends never count for or against it.</span></li>
+<li><span data-read>Grows on its own weekly clock (<code>own_track</code>): one step after a week of hitting the dose every scheduled day. So +5 min a week at best: 30 min by mid-November, 60 by late December. Without its own clock it would have waited ~10 weeks behind breaths/gratitude/etc. for the shared one-change-per-week slot.</span></li>
+<li><span data-read>Pull back: two school days in a row under the dose steps it down one level; a missed morning check-in undoes its last step (existing ladder rules).</span></li>
+<li><span data-read>It&#39;s not on the morning page (<code>when: afternoon</code>). Instead the morning talk thread gets a line: today&#39;s dose, and asks once how yesterday&#39;s block went (minutes) and records it. If it&#39;s already recorded (e.g. from a thread), it just mentions it.</span></li>
+<li><span data-read>Today: one Apple Reminder at 14:15 (after CMPUT lab ends 13:50) for the first block. One-off, not recurring, so it isn&#39;t a nagging habit reminder.</span></li>
+</ul>
+<p data-read>Shared pieces the SUB thread can use: <code>days</code> and <code>own_track</code> are generic ladder options now. Whether SUB study should be the same habit as this one is Matt&#39;s call (asked in the reply).</p>
+<p data-read>Rejected: calendar blocks (his rule: habits off the calendar), a recurring reminder (nagging), a bigger first dose (he said start really small; the catch-up hours come from the flashcards plus optional extra time).</p>
+<p data-read>Tests: <code>test_ladder</code> + <code>test_daily</code> pass (18), with new tests for weekday-only scheduling, own-track growth and easing after two skipped days. Smoke-tested tomorrow&#39;s plan on a copy of the live data.</p>
+<p data-read>Undo: revert the commit; the <code>study</code> entries in <code>data/state.json</code> and <code>history.jsonl</code> are harmless if left.</p>
+<hr>
+<h3 id="todays-block">Today&#39;s block</h3>
+<p data-read>After lab and lunch, ~14:15: read forall x ch. 23 (p. 190) for 15 minutes, then say &quot;done&quot; in this thread for a 4-question tap quiz (ch. 23–25 basics from catch-up.md). CMPUT Quiz 2 still closes at 20:00.</p>
+
+</main>
+</body>
+</html>
