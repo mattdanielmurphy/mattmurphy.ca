@@ -36,6 +36,8 @@
 <p data-read>Removed the app&#39;s dialog and its Go menu item. Before anyone is picked, the app opens the first person&#39;s server to show Who&#39;s watching; picking moves the app to that person&#39;s server and remembers it. Switch profile in Settings works the same way. &quot;Don&#39;t ask me again&quot; carries over. Not yet tried in the app.</p>
 <h2 id="2330-why-it-buffers">23:30 Why it buffers</h2>
 <p data-read>Relay process IDs from metrics: a new one almost every minute from 23:07 to 23:27, with memory up to about 2 GB. The current relay started at 23:27. The mini PC downloads 100-440 Mbit/s but sends only 2-14 Mbit/s, peak 34 this week, so it pulls far more than it delivers. This started before my Mac servers (23:11), which corrects my earlier suggestion that they were the likely cause. The fix is commit 05f0356 (watchdog and bounded memory). It is not live: the update refuses while anyone streams, and forcing it cuts current streams. Upload capacity with the fixed relay is unmeasured. Real-Debrid&#39;s terms were not checked here.</p>
+<h2 id="2355-link-measurements">23:55 Link measurements</h2>
+<p data-read>Blank test data from the relay: Mac 2.5 Mbit/s per connection, four connections about 10 total; VPS 142 Mbit/s. Mac direct internet 103 Mbit/s. Mac from VPS over Tailscale with ssh 7.1 Mbit/s. So the mini PC upload is not the limit for this path. Suspects are the path into this Mac over Tailscale: Little Snitch, AdGuard, the PIA split tunnel and TripMode are all active filters here, or UDP handling by the network. Turning those off is your call, not mine.</p>
 
 </main>
 </body>
