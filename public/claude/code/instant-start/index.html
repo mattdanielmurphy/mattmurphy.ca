@@ -164,6 +164,14 @@
 <hr>
 <h3 id="build">Build</h3>
 <p data-read>Built as <code>~/Applications/Mattinee Test new.app</code>, because the first test copy is open and I won&#39;t replace an open app. <code>mac/local.sh</code> now does that on its own. Not launched by me. 69 of 70 tests pass, and the failure is the same old one.</p>
+<h2 id="1620-correction-the-line-with-nothing-playing">16:20 Correction: the line with nothing playing</h2>
+<p data-read>I said video was slow into this Mac on both routes. That was wrong for the VPS route, because those tests shared the line with your stream. Measured again with nothing playing:</p>
+<ul>
+<li><span data-read><strong>Mini PC into this Mac, direct:</strong> about 3.9 Mb/s (7 MB in 15 seconds).</span></li>
+<li><span data-read><strong>Through the VPS:</strong> 22 Mb/s.</span></li>
+<li><span data-read><strong>Plain internet:</strong> 28 Mb/s.</span></li>
+</ul>
+<p data-read>So the direct route is the slow one, and the VPS route would carry a 5 Mb/s copy easily. The app is meant to time both and take the faster, but the last play only reached 1 to 2 Mb/s. I don&#39;t yet know which route it used: the app&#39;s own record of that choice wasn&#39;t in the system log, and the VPS byte counter can&#39;t tell for so small a download.</p>
 
 </main>
 </body>
