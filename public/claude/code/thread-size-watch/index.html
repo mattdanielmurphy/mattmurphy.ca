@@ -29,14 +29,17 @@
 <p data-read>The size script read the pre-compaction number after a thread compacted. That&#39;s the stale 370k from the commit you pointed at. Seven recent threads read high, some wrongly refused by the send guard. Fixed.</p>
 <p data-read>The fix that removed the Code-thread hold (0.7.12) was committed but never installed, so the old 0.7.10 hold was still live. 0.7.13 is installed now and carries that fix.</p>
 <p data-read>The mod still showed a &quot;consider /_handoff&quot; toast at 250k, which is exactly the hook telling you to do something. Removed.</p>
+<p data-read>Testing also caught two alert bugs. Two alerts sent in the same second overwrote each other, and a leftover request could compact a thread that had already shrunk. Both are fixed.</p>
 <hr>
 <h3 id="decisions-you-might-veto">Decisions you might veto</h3>
 <p data-read>Compaction keeps a summary rather than a clean slate. It&#39;s slightly less of a reset than a new thread, but it&#39;s the only version that needs nothing from you.</p>
 <p data-read>Five minutes is my guess at a natural break. Too short and it compacts while you&#39;re reading a long reply; your message would then wait about a minute. It&#39;s a knob, so it&#39;s easy to change.</p>
 <hr>
-<h3 id="what-isnt-proven">What isn&#39;t proven</h3>
-<p data-read>Mod updates reach a thread only when its process restarts, so threads running right now keep 0.7.10 until then. Until they do, they only get the old 50-minute idle compaction.</p>
-<p data-read>To undo: unload <code>com.matt.agent.thread-size-watch</code> and revert the commit.</p>
+<h3 id="what-was-tested-and-what-wasnt">What was tested, and what wasn&#39;t</h3>
+<p data-read>The real 643k design thread went through the live system: the watcher flagged it, the Glass TV coordinator was woken, it ran the move, and the handoff was written and committed to the Glass TV repo.</p>
+<p data-read>The last step, the compaction itself, ran live on a small real session using the installed mod. It compacted on its own at the break and kept the next step and the handoff path. It has not yet run on a thread that&#39;s really over the limit, because mod updates reach a thread only when its process restarts. The design thread is still on the old mod, so its existing 50-minute idle compaction will shrink it, and the new mod then drops the leftover request.</p>
+<p data-read>Threads running right now stay on the old mod until their next restart, and until then they only get that 50-minute idle compaction.</p>
+<p data-read>To undo: unload <code>com.matt.agent.thread-size-watch</code> and revert the commits.</p>
 
 </main>
 </body>
