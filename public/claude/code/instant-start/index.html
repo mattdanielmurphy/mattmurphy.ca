@@ -134,6 +134,14 @@
 <hr>
 <h3 id="decision">Decision</h3>
 <p data-read>Recorded in IDEAS.md with my take. Nothing is built. I recommend the sandbox test first.</p>
+<h2 id="0410-forget-the-built-in-server-build-the-mac-app-locally">04:10 Forget the built-in server; build the Mac app locally</h2>
+<p data-read>You said you&#39;d misread me, so the bundled server is dropped. I removed it from IDEAS.md, and the 03:58 section above no longer stands. Tyler&#39;s server on the VPS is still off. That part is a fact, not a plan, and nothing changed it.</p>
+<p data-read>You asked that the Mac app always be built locally so you can test at once. That&#39;s now a saved rule, and <code>mac/local.sh</code> does it: it builds exactly what TestFlight would ship, into <code>~/Applications/Mattinee Test.app</code>, and uploads nothing. I didn&#39;t use <code>build.sh</code>, because it deletes <code>/Applications/Mattinee.app</code>, which is the TestFlight copy you have open, and installs the older kind that needs a server on your Mac.</p>
+<p data-read>The test copy shares its identity with the TestFlight app, so it has the same data and sign-in, and the two shouldn&#39;t run at once. There&#39;s a small risk that a TestFlight update lands on the test copy instead of the one in Applications, since macOS tracks apps by identity. I haven&#39;t seen that happen.</p>
+<h2 id="0420-first-real-start-times">04:20 First real start times</h2>
+<p data-read>The test build opened and is the only Mattinee running. The first real numbers are in, and they miss the 3-second target. Your 14:29 play on the TestFlight build took 35.0 seconds to get video moving, with the first picture at 27.3 seconds. Finding and opening were quick at 5 seconds together. The other 22 seconds went to filling on a 2.0 GB copy, at about 2.5 Mb/s, until the player gave up and moved to a lighter 0.8 GB copy. So the pick itself is fast, and the time is lost in the first seconds of download. The cause isn&#39;t known yet. One play proves little, but it&#39;s the one real sample with a full timeline.</p>
+<p data-read>The two Mac plays logged today average 35 seconds in <code>bin/playlog stats</code>, but only one finished starting.</p>
+<p data-read>X-ray still names nobody until the Mac server restarts: the log shows &quot;0 named&quot; at 16:07.</p>
 
 </main>
 </body>
