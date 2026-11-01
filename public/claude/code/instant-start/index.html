@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_e1c32198-b9e5-4ed5-9574-33f49029d9d6">
 <title>Mattinee: instant start, the play log and moving up</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -191,6 +191,39 @@
 <hr>
 <h3 id="recommendation">Recommendation</h3>
 <p data-read>Let the Mac go straight to Real-Debrid when nobody at the other home is streaming, and fall back to the relay otherwise. Risk: if the check misses someone, Real-Debrid sees two addresses at once on your account, which is what the relay was built to prevent. That risk is yours to accept, so nothing is built yet. Recorded in IDEAS.md.</p>
+<h2 id="1750-x-ray-restored-on-the-mac">17:50 X-ray restored on the Mac</h2>
+<p data-read>You asked to bring X-ray back in full now the slow starts are fixed.</p>
+<hr>
+<h3 id="what-came-back">What came back</h3>
+<p data-read>Everything song detection commit 8124eb5 removed: the player listening to its own sound, the server&#39;s song routes, the Songs panel, the three tweaks and the audio permission text. Later work on those files is untouched. Listening still starts only after video moves, in <code>firstPlay</code>.</p>
+<hr>
+<h3 id="what-was-weaker-than-it-looked">What was weaker than it looked</h3>
+<ul>
+<li><span data-read><strong>Your Mac&#39;s server never got the paused-frame fix.</strong> glass-mac@family was still running 02:04 code, and <code>deploy/vps.sh</code> doesn&#39;t touch it; <code>deploy/mac-people.sh</code> does. That&#39;s why every pause still said 0 named, up to 17:32.</span></li>
+<li><span data-read><strong>Songs on the Mac never worked on the VPS.</strong> The Linux recogniser was missing, so all 16 clips answered &quot;nothing&quot; while the app sent good sound. One of those clips, re-run now, gives Easy Lover.</span></li>
+<li><span data-read><strong>Linux can&#39;t see bodies.</strong> The player now finds people with Apple Vision on the paused frame and sends them along, so someone turned away can keep their name.</span></li>
+<li><span data-read><strong>Song page links from the overlay</strong> had no cross-origin header, so they fell back to the guessed address. Fixed.</span></li>
+</ul>
+<hr>
+<h3 id="decisions">Decisions</h3>
+<p data-read>SongRec 0.4.3 rather than 0.8.0: 0.8.0 needs a newer libsoup than Ubuntu 22.04 has, and its web library may ignore the proxy. 0.4.3 goes through the proxy, and it ran under the same network limits as your server. It sits in /srv/glass-mac/app/tmp, which rsync leaves alone, so it needed no restart.</p>
+<p data-read><code>deploy/mac-people.sh family</code> starts only your server, so this doesn&#39;t switch on the other five.</p>
+<hr>
+<h3 id="tested">Tested</h3>
+<ul>
+<li><span data-read>Spare copy on the VPS, real Ted Lasso frames: named Brett Goldstein, Cristo Fernandez and Phil Dunster in 0.6 to 2.4 seconds. Deleted afterwards.</span></li>
+<li><span data-read>VPS SongRec: Marriage (Gold Panda), I Gotta Rokk (DJ Shadow), Easy Lover.</span></li>
+<li><span data-read>Apple Vision on the same 960-wide frames finds 1 to 6 bodies; the Linux finder finds none.</span></li>
+<li><span data-read>App compiles; 73 of 74 tests pass, the failure is an old categorize test.</span></li>
+</ul>
+<hr>
+<h3 id="not-tested">Not tested</h3>
+<p data-read>The whole thing in Mattinee Beta on the real server, and start time after, because you were watching and the server needs a restart. The player&#39;s own <code>peopleIn</code> hasn&#39;t run on a real pause, only the same Vision search through the older helper.</p>
+<hr>
+<h3 id="known-differences">Known differences</h3>
+<p data-read>The Linux finder is more willing to guess. On one frame it tagged an older extra as Anthony Stewart Head at 0.31; Apple Vision named nobody there. It needs a tuning pass, not a restore.</p>
+<h3 id="more-2">More</h3>
+<p data-read>Undo: <code>git revert 1eb7aff</code>. Beta prompts once for audio capture because it has its own identity. iPad and Streamer never listen, so they have no songs; their faces use the stream route and don&#39;t depend on this.</p>
 
 </main>
 </body>
