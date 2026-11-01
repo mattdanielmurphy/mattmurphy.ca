@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_1efae660-e519-43e0-adab-9d31cb182656">
+<title>Mac app on TestFlight: feasibility</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mac-testflight</p>
+<h1 id="mac-app-on-testflight-feasibility">Mac app on TestFlight: feasibility</h1>
+<h2 id="findings-from-reading-the-code-nothing-built-or-changed">Findings (from reading the code; nothing built or changed)</h2>
+<h3 id="sandbox-is-fine">Sandbox is fine</h3>
+<p data-read>Only spawnServer (app/main.swift) is forbidden, and a VPS build skips it. Needs: outgoing network, microphone entitlement, plain-http exception for 100.x, and all 48 Homebrew libraries behind libmpv copied into the app and signed. Hardened runtime is not required for TestFlight, only the sandbox. Not yet spiked.</p>
+<h3 id="the-real-blocker-is-not-the-sandbox">The real blocker is not the sandbox</h3>
+<p data-read>The Mac app is a shell around the server&#39;s /api. That API keeps one global person and one &quot;now playing&quot;, and the server tracks time through mpv&#39;s unix socket on its own disk (src/player.ts). On the VPS that socket doesn&#39;t exist, so progress would not save, and all Macs would share one profile and one now-playing. 127.0.0.1 is also hard-coded in app/main.swift, app/browser.swift and app/player/core.swift.</p>
+<h3 id="options">Options</h3>
+<ul>
+<li><span data-read>A, recommended: new Mac target using the iPad screens (per-person /tv/v1 already works on the VPS) with the Mac mpv player. Local build untouched, no server change. Loses web-only extras such as the tonight plan.</span></li>
+<li><span data-read>B: rework /api per person and report time over HTTP. Keeps the current UI, but is a large, risky change to the shared server.</span></li>
+</ul>
+<h3 id="app-store-connect">App Store Connect</h3>
+<p data-read>Same bundle ID means the Mac build must use ca.mattmurphy.mattinee.ipad; local stays ca.mattmurphy.mattinee, so both can coexist. macOS must be added as a platform to the record, possibly by hand. As I recall, Apple stops offering the iPad-on-Mac version once a native Mac build exists; not verified.</p>
+
+</main>
+</body>
+</html>
