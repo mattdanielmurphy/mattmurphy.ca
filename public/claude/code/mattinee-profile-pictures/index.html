@@ -54,6 +54,10 @@
 <p data-read>Five across keeps every pair on one row with you first, so the iPad picker moved from four columns to five, and its pictures shrink to fit a narrower screen. The Mac and the Streamer already showed five. The Streamer used to keep its own order, so it now follows the server&#39;s. It keeps any profile made only on that TV at the end.</p>
 <p data-read>I rejected putting you last. It looks fine at four across, but at five it splits Connie and Darryl across rows.</p>
 <p data-read>To undo: reorder <code>/srv/glass-tv/data/people.json</code> and copy it to the Mac servers with <code>deploy/mac-people.sh &lt;id&gt;</code>.</p>
+<hr>
+<h2 id="2324-main-server-restarted">23:24 Main server restarted</h2>
+<p data-read>You asked me to restart the main server for Paige&#39;s picture. No progress had been saved in the last 15 minutes on any profile, and the play log had been quiet for 28 minutes, so I restarted it at 23:22. Home loaded on the first try, and all nine people now have a picture.</p>
+<p data-read>I used a plain restart, not <code>deploy/vps.sh</code>, so nothing else moved with it. That means the fix for pictures added later (b8e0fb9) reaches the main server with its next deploy.</p>
 
 </main>
 </body>
