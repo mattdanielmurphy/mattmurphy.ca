@@ -22,8 +22,8 @@
 			"destination": "/slub-call-2026-10-24/index.html"
 		},
 		{
-			"source": "/claude/:project/:thread",
-			"destination": "/claude/:project/:thread/index.html"
+			"source": "/claude/:path*",
+			"destination": "https://vps.mattmurphy.ca/claude/:path*"
 		},
 		{
 			"source": "/coordinator-instructions",
