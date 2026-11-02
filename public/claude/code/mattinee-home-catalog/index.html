@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_23357ffe-94f4-4cf4-b9a2-950a8c526ff8">
+<meta name="claude-thread" content="local_47a4afc1-cc5e-4614-8fee-5f95f7b30732">
 <title>Mattinee Home: catalog, grids, search</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -74,6 +74,36 @@
 <li><span data-read>Episodes and play failures.</span></li>
 <li><span data-read>Remove Browse everything, after 4-7 are merged.</span></li>
 </ol>
+<h2 id="2355-built-and-merged">23:55 Built and merged</h2>
+<p data-read>Everything below went to master in five commits and was tested headlessly on fake server data, in Chrome, with no input on your Mac.</p>
+<hr>
+<h3 id="top-padding">Top padding</h3>
+<p data-read>The title, buttons and picture all moved down. The picture is now a bean coming in from the right with space above it, so the buttons sit on plain background. The budget pill moved into the button row, off the picture too. Checked on Ted Lasso, South Park, Rooster, Attack on Titan, One Piece, VisionQuest, Project Hail Mary and Dune: Part Two; light and dark; at 900×620, 1400×900, 1600×800 and 2200×1200. The wave now stays between the first two rows at any window shape.</p>
+<p data-read>Knobs: <code>home.topBand</code>, <code>home.artTop</code>, <code>home.artWidth</code>, <code>home.artHeight</code>, <code>home.artCropX</code>, <code>home.artCropY</code>.</p>
+<hr>
+<h3 id="row-shift">Row shift</h3>
+<p data-read>The cause was <code>inline:&#39;center&#39;</code> in <code>padSet</code>: every move centred the poster. Now a row scrolls only if the poster is off screen, and up or down lands on the nearest poster that&#39;s fully showing. The test recorded every row&#39;s position across 12 up and down presses, including a part-scrolled row, and none moved.</p>
+<hr>
+<h3 id="everything-from-the-old-screen">Everything from the old screen</h3>
+<p data-read>See the audit above. Also added: row arrows, a See all card at the end of long rows, and Left off the first poster reaches the row&#39;s name, whose Right reaches the IMDb filter.</p>
+<hr>
+<h3 id="grids">Grids</h3>
+<p data-read>The name opens a grid of every title in the category (300, against the row&#39;s 40). The first 36 draw at once and the rest follow, so the press lands immediately. Esc, Back, ⌘[ and ⌘] all work; Home&#39;s scroll, the row&#39;s sideways place and key focus come back.</p>
+<hr>
+<h3 id="search">Search</h3>
+<p data-read>As decided in the plan. Silence ends listening 1.1 s after you stop talking (<code>voice.hushMs</code>), and it gives up after 6 s if nothing is said. Typing takes over from the mic.</p>
+<hr>
+<h3 id="checked-outside-chrome">Checked outside Chrome</h3>
+<p data-read>A headless WebKit probe confirmed the app&#39;s page may use the mic (secure, <code>mediaDevices</code>, <code>MediaRecorder</code>, mp4 audio). The live server&#39;s <code>/api/stt</code> turned a spoken &quot;Ted Lasso&quot; in Mac audio format into the right words. The native change typechecks, and Beta&#39;s own archive built it.</p>
+<hr>
+<h3 id="not-tested">Not tested</h3>
+<ul>
+<li><span data-read>A real microphone in the real app, including the first macOS permission prompt.</span></li>
+<li><span data-read>Real mouse feel: hover at edges, wheel in grids, the row arrows.</span></li>
+<li><span data-read>A real failed play: those dialogs ran on fake server replies.</span></li>
+</ul>
+<h3 id="undo">Undo</h3>
+<p data-read><code>git revert</code> the five commits; <code>web/app.ts</code> and <code>src/tweaks.ts</code> only take effect when the server next updates, and neither is required.</p>
 
 </main>
 </body>
