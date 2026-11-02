@@ -101,6 +101,9 @@ EOF # long-ok</p>
 <p data-read>You said the cursor disappears after you drag to seek, so nothing shows it&#39;s loading. Now, if a seek is still loading after 0.35 seconds (<code>tankAfter</code>) and the leaf isn&#39;t on screen or the mouse is sitting in the middle, the filling tank appears there. It keeps checking while loading, so it also appears if the leaf fades out later. Real slow-connection waits still use the app&#39;s own tank level. Project note, not a saved rule: this is a direction for this player.</p>
 <p data-read>Tested headless with a stand-in host. On a fast seek you won&#39;t see it at all, so test it on a real slow seek.
 EOF # long-ok</p>
+<h2 id="2310-crackle-during-a-volume-drag">23:10 Crackle during a volume drag</h2>
+<p data-read>The drag sent about 80 volume levels a second, and each jump in level makes a tiny click in the sound. A pure test tone shows this far more than a film would, but it&#39;s a real effect. The real volume now glides to the newest level in small steps, about 60 a second. Built as <code>bin/Glass Player Glide.app</code>. I can&#39;t hear it, so whether the crackle is gone is yours to judge.
+EOF # long-ok</p>
 
 </main>
 </body>
