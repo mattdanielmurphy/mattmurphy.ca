@@ -351,6 +351,17 @@
 <p data-read>The 512 MB buffer held 1,457 seconds, about 3 Mb/s, not the 23 listed for that copy. I haven&#39;t explained that.</p>
 <h3 id="how-to-undo-1">How to undo</h3>
 <p data-read>Revert the commit in glass-tv, or set <code>upgrade.on</code> to 0.</p>
+<h2 id="2015-best-picture-and-falling-back-without-a-stop">20:15 Best picture, and falling back without a stop</h2>
+<p data-read>You said yes to all three: restart, the no-stop fall back and the best-picture rule. Your server has the new code; only yours was restarted.</p>
+<hr>
+<h3 id="best-picture">Best picture</h3>
+<p data-read>The Mac now weighs a copy by its bitrate in HEVC terms (H.264 counts for about half, AV1 for about a third more) against a good-enough bar: 5 Mb/s at 1080p, about 14 at 4K. The highest resolution that clears the bar wins, then HDR, and a heavier copy of the same picture earns nothing. A clean copy replaces a compressed one at the same resolution. The bar is my judgment, not measured on real frames, and it can be tuned with the <code>picture.enoughMbps</code> tweak. Release names can&#39;t show a bad re-encode. It only decides what to move up to on the Mac, not the first copy, and not iPad or the Streamer.</p>
+<hr>
+<h3 id="falling-back">Falling back</h3>
+<p data-read>Once moved up, if speed drops under what the copy plays at with under 25 seconds loaded, the copy it left loads behind the picture and cross-fades in, with no more tries for 15 minutes. If the buffer runs out first, the old stop and card still happen. On a stand-in film with the 4K cut to 6 Mb/s it went back at 39.9 seconds with 12 seconds left and no card. The worst hold was 0.29 seconds, when the second player opened. Not tried on a real play.</p>
+<hr>
+<h3 id="the-listed-size">The listed size</h3>
+<p data-read>The play log now records what each file really is, which should explain the 3 Mb/s gap on the next play.</p>
 
 </main>
 </body>
