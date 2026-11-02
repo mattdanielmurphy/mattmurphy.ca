@@ -279,13 +279,21 @@
 <h3 id="what-you-give-up">What you give up</h3>
 <p data-read>A new task typed into the wrong worker now gets routed only when you next talk to its coordinator, not within 30 seconds. The worker still sees it and can answer it.</p>
 <h3 id="rule-saved-1">Rule saved</h3>
-<p data-read>Added to &quot;No Filler Replies&quot; in <code>.rules/core_safety.md</code>: never wake an agent just to decide whether something matters. It is global and syncs to Tyler through slub-hq.</p>
+<p data-read>Added to &quot;No Filler Replies&quot; in <code>.rules/core_safety.md</code>. You corrected the first wording at 21:40: see below. It is global and syncs to Tyler through slub-hq.</p>
 <h3 id="tested-1">Tested</h3>
 <p data-read>Ran the feed with a stubbed registry: the message queued, the wake call never fired, and the next turn drained it. Not yet seen on a real message from you.</p>
 <h3 id="same-problem-elsewhere">Same problem elsewhere</h3>
 <p data-read>The daily custodian (<code>scripts/coordinator_custodian.py</code>, 08:41) still wakes this Coordinator with &quot;stay silent if nothing needs Matt&quot;, and the app can&#39;t stay silent. Left unchanged.</p>
 <h3 id="undo">Undo</h3>
 <p data-read>Revert this commit in ai-os.</p>
+<h2 id="2140-invisible-not-unwoken">21:40 Invisible, not unwoken</h2>
+<p data-read>You corrected me: you never said coordinators shouldn&#39;t be woken, only that it should be invisible to you. I had turned your words into a ban on waking.</p>
+<h3 id="note-saved">Note saved</h3>
+<p data-read>The idea is in <a href="/Users/matt/projects/ai-os/IDEAS.md">ai-os IDEAS.md</a> under &quot;Our own coordinator&quot;: coordinators get woken freely and stay hidden unless they have something for you. Claude.app can&#39;t do that, because it shows every woken turn and refuses a silent one.</p>
+<h3 id="rule-corrected">Rule corrected</h3>
+<p data-read>The rule now says waking is fine and seeing it is not. The docs and the script&#39;s header say the same.</p>
+<h3 id="wake-left-off">Wake left off</h3>
+<p data-read>You asked only for a note, so I changed no behaviour. The wake stays off as a stopgap, because turning it back on would bring the visible turns back. To restore it, revert d7c2de93.</p>
 
 </main>
 </body>
