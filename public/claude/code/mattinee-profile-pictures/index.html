@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_842d52be-715f-40dc-8982-fec8b0fee3ea">
+<title>Mattinee: Mike, Elisa and a picture for everyone</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mattinee-profile-pictures</p>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h1 id="mattinee-mike-elisa-and-a-picture-for-everyone">Mattinee: Mike, Elisa and a picture for everyone</h1>
+<h2 id="working-notes-kept-current-so-a-compaction-loses-nothing">Working notes (kept current, so a compaction loses nothing)</h2>
+<p data-read>Worktree: <code>/Users/matt/projects/glass-tv/.claude/worktrees/profile-pictures</code>, branch <code>claude/profile-pictures</code>, from origin/master.</p>
+<p data-read>Done:</p>
+<ul>
+<li><span data-read>Job 1 data: Mike and Elisa added on the VPS (<code>/api/people</code>, no restart) and the home Mac server. Mac servers on 4807 and 4808 are up and enabled. Every Mac server&#39;s people.json has 8 people.</span></li>
+<li><span data-read>Art: <code>web/people/src/*.svg</code> (exact copies), <code>web/people/art.json</code> (who uses which file, colour, blob), <code>bin/people-art</code> draws <code>web/people/png/&lt;id&gt;.png</code> at 640 px. Both deploy scripts run it.</span></li>
+<li><span data-read>Server: <code>/people/&lt;id&gt;.png</code>, <code>picture</code> in <code>/tv/v1/people</code> and <code>/api/state</code> (versioned URL). <code>people()</code> stays raw so <code>addPerson</code> never writes pictures into people.json.</span></li>
+<li><span data-read>Mac: <code>face()</code> in <code>app/ui/home.js</code>, tiles in Who&#39;s watching, <code>.who-me</code> in Home&#39;s top-right, classic chips, credit in classic Settings.</span></li>
+<li><span data-read>Mock: <code>e.html</code> has the same corner (pages repo, committed).</span></li>
+<li><span data-read>iPad: <code>PersonPicture</code>, grid in <code>WhoView</code>, toolbar picture, credit in Setup.</span></li>
+<li><span data-read>Android: <code>Person.picture</code>, <code>Badge</code> with <code>AsyncImage</code>, <code>TileRows</code> (5 per row; one row overflowed at 9 tiles), credit row in Settings.</span></li>
+</ul>
+<p data-read>To do: builds, simulator check, merge to master, ship server (when nobody is watching and Matt says it&#39;s fine), TestFlight, Android publish.</p>
+
+</main>
+</body>
+</html>
