@@ -47,6 +47,13 @@
 <h2 id="2318-paige-and-the-pictures-went-live">23:18 Paige, and the pictures went live</h2>
 <p data-read>You asked for a profile for Paige, Brandon&#39;s girlfriend, from your photo. She has her own Mac server on port 4809 and is on every list. Her character has long honey blonde hair, a big smile, a gold necklace and a dark brown top. Micah&#39;s only long hair is wavy, so hers is wavy, not straight like the photo.</p>
 <p data-read>The other eight pictures are live. Another session restarted the main server and the Mac servers at 23:12, so the &quot;waiting&quot; part above is out of date, apart from one thing. That restart came before Paige&#39;s picture existed, and the running main server remembered she had none. iPad and Android show her initial until it restarts once more. The code that caused this is fixed, so a new picture won&#39;t need a restart again. The picture file is already on the VPS.</p>
+<hr>
+<h2 id="2330-partners-side-by-side">23:30 Partners side by side</h2>
+<p data-read>You asked for Brandon and Paige, Tyler and Kristy, Connie and Darryl, and Mike and Elisa to sit next to each other.</p>
+<p data-read>The order is now Matt, Brandon, Paige, Tyler, Kristy, Connie, Darryl, Mike, Elisa, set in <code>people.json</code> on the VPS, on every Mac server and on the home Mac. No restart was needed, because servers read that file on each request.</p>
+<p data-read>Five across keeps every pair on one row with you first, so the iPad picker moved from four columns to five, and its pictures shrink to fit a narrower screen. The Mac and the Streamer already showed five. The Streamer used to keep its own order, so it now follows the server&#39;s. It keeps any profile made only on that TV at the end.</p>
+<p data-read>I rejected putting you last. It looks fine at four across, but at five it splits Connie and Darryl across rows.</p>
+<p data-read>To undo: reorder <code>/srv/glass-tv/data/people.json</code> and copy it to the Mac servers with <code>deploy/mac-people.sh &lt;id&gt;</code>.</p>
 
 </main>
 </body>
