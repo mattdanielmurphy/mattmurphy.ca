@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_1e81929a-910c-4763-b1a5-d82c16b49ca5">
+<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
 <title>Mattinee player tweaks</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -229,6 +229,56 @@
 <hr>
 <h3 id="tested-6">Tested</h3>
 <p data-read>Headless Chrome, light and dark, with no page errors: keys and mouse modes, title hover, title click, back, and each <code>&amp;show=</code>.</p>
+<h2 id="2210-auto-hide-x-ray-parity-searchable-dialogue-and-hover-rings">22:10 Auto-hide, X-ray parity, searchable dialogue and hover rings</h2>
+<p data-read>A long batch of your notes, all on the local page. Nothing was deployed, as you asked.</p>
+<h3 id="controls-fade-away">Controls fade away</h3>
+<ul>
+<li><span data-read>With nothing happening the controls now disappear completely: 3 seconds with the mouse in the middle, 5 seconds with it on the controls, and 1.2 seconds after an arrow-key seek.</span></li>
+<li><span data-read>When they go, subtitles drop to 44 px from the bottom. Any movement brings the controls back with a fresh shuffle.</span></li>
+<li><span data-read>The settings are <code>hideControls</code>, <code>hideOverBar</code> and <code>seekLinger</code> in <code>PLAYER.bits</code>.</span></li>
+</ul>
+<hr>
+<h3 id="arrow-keys">Arrow keys</h3>
+<p data-read>Holding a key was broken: going backwards could reverse the speed-up, and every repeat restarted the flash. A tap now skips 10 seconds and taps add up. Holding scans, speeding from 20 to 240 seconds per second over 3 seconds, with one steady pill that fades on release. The settings are <code>skip</code> and <code>scanAfter</code>, <code>scanFrom</code>, <code>scanTo</code>, <code>scanRamp</code>.</p>
+<hr>
+<h3 id="x-ray">X-ray</h3>
+<p data-read>The card now matches the Mac: character name, actor, age here and age now (or &quot;died at&quot;), Small part when it applies, and best known for. It has 3 posters, each opening its own IMDb page.</p>
+<ul>
+<li><span data-read>Clicking anywhere on the card opens IMDb, and the IMDb button is coloured to show that.</span></li>
+<li><span data-read>Wikipedia stays a separate button. Hide became a small x in the corner.</span></li>
+<li><span data-read>Actors seen so far grows into little cards on hover, with character, actor, ages and known for. Each is clickable.</span></li>
+<li><span data-read>Songs are clickable too. I added that myself, since the box is interactive now.</span></li>
+</ul>
+<p data-read>Stand-ins: two of the posters are other shows&#39; art, and the other actors show initials instead of photos.</p>
+<hr>
+<h3 id="cursor-and-the-floating-boxes">Cursor and the floating boxes</h3>
+<p data-read>The boxes on the X-ray screen now take the mouse, so the cursor is the normal leaf as soon as it enters them.</p>
+<p data-read>The pointer leaf now curls slightly with its tip bent over. On press it bends hard so the tip hooks onto the page, with a small ripple where it lands. The default leaf is unchanged. The bend relies on a browser feature Safari doesn&#39;t animate, so there it would snap between shapes.</p>
+<hr>
+<h3 id="sprout-and-hover-rings">Sprout and hover rings</h3>
+<p data-read>The two sprout buttons sit closer, and the whole thing stands on one background blob, so it reads as a single control.</p>
+<p data-read>Every button now shows a ring on hover, the same shape as the pressed ring in a darker colour (<code>--hover-back</code>), so pressed still looks different.</p>
+<hr>
+<h3 id="what-did-they-say">What did they say?</h3>
+<ul>
+<li><span data-read>It now shows every line heard so far, opens at the latest line, and scrolls back to the very start of the episode.</span></li>
+<li><span data-read>Search only looks through what&#39;s been heard. A line ahead of the position never shows, and the test confirmed that with a planted future line.</span></li>
+<li><span data-read>Clicking a line jumps there.</span></li>
+<li><span data-read>Lines are stand-ins here.</span></li>
+</ul>
+<hr>
+<h3 id="subtitles-and-the-preview">Subtitles and the preview</h3>
+<p data-read>Subtitles lift above the preview frame while it shows, then come back down.</p>
+<hr>
+<h3 id="external-links">External links</h3>
+<p data-read>The arrows are now small, thick, hand-drawn marks in the top right corner, at half strength.</p>
+<p data-read>The Mac app opens these links in its built-in browser on purpose. That browser is where Play in Mattinee on IMDb pages lives. Switching to your default browser is a small change in <code>app/player/core.swift</code>, but it would lose that button, so I left the choice with you. This page has no real links yet.</p>
+<hr>
+<h3 id="deploying">Deploying</h3>
+<p data-read>Saved as a global rule in <code>.rules/core_safety.md</code>: while iterating, use <code>pages.test</code>, and run <code>pages deploy</code> only when someone needs the public link. The public link is several rounds behind until then.</p>
+<hr>
+<h3 id="tested-7">Tested</h3>
+<p data-read>Headless Chrome on the local page, light and dark, with no page errors: fade timings, arrow tap and hold, sprout, panels, scrolling, search, line click, X-ray and its boxes. A real mouse is untested.</p>
 
 </main>
 </body>
