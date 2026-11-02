@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_5cd7f3ec-5c5e-4576-ad48-77e5d3454af6">
+<meta name="claude-thread" content="local_6073d90e-0b5d-4b68-a1a2-f3e9057190fd">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -237,6 +237,23 @@ EOF # long-ok</p>
 <p data-read>You asked for the source indicator to be tiny and plain, just for your own testing. It&#39;s now 13px white text at the very bottom centre, with a thin dark outline so it reads over a bright picture and no pill or box. It sits under the captions and the controls, and the bottom was chosen over the top so a MacBook notch can&#39;t hide it.</p>
 <p data-read>Only &quot;Now playing&quot; moved; the other big messages, including &quot;Switching to…&quot;, are unchanged. It&#39;s on in Beta and off everywhere else through one switch, <code>sourceNoteEnabled</code> in <code>app/player/core.swift</code>. Returning false retires it. How long it stays is <code>noteSeconds</code>, still 3 seconds.</p>
 <p data-read>The iPad has its own separate &quot;Now playing&quot; message, which I left alone.</p>
+<h2 id="2220-cursor-offset-on-home-and-the-whos-watching-screen">22:20 Cursor offset on Home, and the Who&#39;s watching screen</h2>
+<p data-read>You said the cursor was off by about 300px, up and to the left, except near the top.</p>
+<hr>
+<h3 id="cause">Cause</h3>
+<p data-read>Home and Detail scale the whole page to the window with a CSS zoom. The drawn leaf is placed from the mouse position, which is in real pixels, and that same zoom scaled it again. So the leaf sat short of the mouse by a share of its distance from the top-left corner. In the default 1200-wide window at x 900, y 645 it was 337px left and 242px up. It shrank to nothing at the top and left edges.</p>
+<p data-read>Clicks and hover were always correct, only the leaf was wrong. The size of the error depends only on window width: none at 1920 wide. So it isn&#39;t the HDR switch, and it isn&#39;t which screen the window is on.</p>
+<hr>
+<h3 id="fix">Fix</h3>
+<p data-read>One line in <code>app/ui/mattinee.html</code>, and the same in the design&#39;s <code>e.html</code>: the leaf&#39;s position is divided by the page&#39;s zoom. The leaf&#39;s size and everything tuned stay the same. Commit 1846a6e on master; design 6a87f12.</p>
+<hr>
+<h3 id="checked">Checked</h3>
+<p data-read>Real WebKit in an invisible window, with real mouse events sent only to that window. The leaf was found by its pixels at nine points on the corners and edges, plus one inside, at five window sizes from 800 to 1920 wide: within 1px at all of them, on Home only. Detail was not run. Before the fix, 1728 wide was off by 173px.</p>
+<p data-read>Not checked: the real mouse in the real app, Detail, the player page, HDR, moving between screens, full screen. The player doesn&#39;t use the CSS zoom, so this bug can&#39;t apply there, but that&#39;s reasoning, not a measurement. Stopped there because you asked to test it yourself.</p>
+<hr>
+<h3 id="whos-watching">Who&#39;s watching</h3>
+<p data-read>Not a fluke, and not a bug. It shows on every launch unless &quot;Don&#39;t ask me again&quot; is ticked. The VPS server and Beta both have the new look, and in real WebKit it comes up with the design&#39;s colours and Nunito in light and dark. But it&#39;s the same layout as before, and its title isn&#39;t in the design&#39;s display font, so it looks like the old screen. It needs a drawn design.</p>
+<p data-read>Undo: revert 1846a6e.</p>
 
 </main>
 </body>
