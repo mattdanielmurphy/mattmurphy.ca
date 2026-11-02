@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_1e81929a-910c-4763-b1a5-d82c16b49ca5">
+<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
 <title>Mattinee player tweaks</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -325,6 +325,63 @@
 <h3 id="tested-8">Tested</h3>
 <p data-read>Headless Chrome, light and dark, no page errors. Width stays 440 throughout the grow. Songs stays visible at every step. Moving from Actors onto Songs moves nothing. Parked cursor fires nothing. Fast wiggling leaves nothing stuck. Diagonal travel keeps the right card. Long lists scroll. A first tap on touch opens the box, the second opens the card, and tapping away closes it. The older player test still passes.</p>
 <p data-read>Not tested with a real mouse or on iPad. Other actors still show initials and their posters are stand-ins.</p>
+<h2 id="1951-card-padding-a-shorter-linger-and-seasons">19:51 Card padding, a shorter linger and seasons</h2>
+<p data-read>Three notes from your screenshot. All on the local page, nothing deployed.</p>
+<hr>
+<h3 id="card-padding">Card padding</h3>
+<p data-read>The Small part tag sat on its own line, which pushed the buttons down to the card&#39;s edge. It now shares the ages line, so every card is the same height and keeps about 45 px below the buttons.</p>
+<p data-read>A very long character name wraps, so cards now take the height their words need instead of overflowing. I tested that with a deliberately long name, and the bottom gap stayed at 45 px.</p>
+<hr>
+<h3 id="controls-linger">Controls linger</h3>
+<p data-read>With the mouse left on the controls they now fade after 4 seconds instead of 5, which is your 20%. The setting is <code>hideOverBar</code>.</p>
+<hr>
+<h3 id="seasons">Seasons</h3>
+<p data-read>The picker heading now reads &quot;Season 1 2 3&quot;, with the numbers as round buttons and the current one coloured. Clicking one swaps the episodes, which pop in one after another.</p>
+<p data-read>I chose numbers beside the word, not a dropdown or tabs, because the heading was already there and a choice stays one click away with nothing hidden.</p>
+<ul>
+<li><span data-read>It opens on the season you&#39;re watching, scrolled to your episode.</span></li>
+<li><span data-read>The episode row now scrolls, since real seasons run past the 5 that fit. Edges fade to show there&#39;s more.</span></li>
+<li><span data-read>Arrow keys and the remote: left and right stay in a row, up and down hop between seasons and episodes. Enter picks a season.</span></li>
+<li><span data-read>A show with many seasons scrolls that row too, tested with 23.</span></li>
+<li><span data-read>Long episode titles end in dots rather than running into the next tile.</span></li>
+</ul>
+<p data-read>The stand-in data is now all of Ted Lasso&#39;s real episode titles, with made-up run times. Stills are the same stand-in frame.</p>
+<hr>
+<h3 id="tested-9">Tested</h3>
+<p data-read>Headless Chrome, light and dark, no page errors: clicking seasons, arrow keys through both rows, Enter, and fade timing of 4.0 seconds on the controls. The earlier X-ray and player tests still pass. Not tested with a real remote, a real mouse or on iPad.</p>
+<h2 id="2001-mouse-wheel-on-sideways-lists-and-the-sprouts-three-glitches">20:01 Mouse wheel on sideways lists, and the sprout&#39;s three glitches</h2>
+<hr>
+<h3 id="mouse-wheel">Mouse wheel</h3>
+<p data-read>The normal mouse wheel now scrolls the episode row and the season row, eased, based on which one the mouse is over. Real sideways trackpad scrolling still works as usual.</p>
+<p data-read>My last section said the wheel already worked. It didn&#39;t: I wrote that down and never built it.</p>
+<p data-read>Saved as a global rule in <code>.rules/ui_web.md</code>: on a screen that doesn&#39;t scroll vertically, the wheel drives a sideways list.</p>
+<hr>
+<h3 id="season-buttons">Season buttons</h3>
+<p data-read>The season row scrolls, tested with 23 seasons. It opens with your current season in the middle, and each edge fades only when there&#39;s more that way. Clicking a season doesn&#39;t scroll the row, so the button stays under the mouse.</p>
+<hr>
+<h3 id="sprout-leaf">Sprout leaf</h3>
+<p data-read>That stray leaf was one of two leaves meant to sit on the stalk. A style overwrote their position, so both landed in the sprout&#39;s top corner. They&#39;re gone.</p>
+<hr>
+<h3 id="sprout-fading-out">Sprout fading out</h3>
+<p data-read>The line used to retract by shrinking its dash, which is what broke into segments. It still draws itself in, but now it leaves by fading with the rest. In the test, the line, background and buttons all reach zero together.</p>
+<hr>
+<h3 id="the-blue-flash">The blue flash</h3>
+<p data-read>Every button&#39;s hover ring sat in the pressed colour, which is blue in dark mode, even while hidden. On hover it faded in while also changing to its real dark colour, which is the same as the box behind it. So you saw blue, then nothing.</p>
+<p data-read>The ring now always sits in its hover colour, so blue never appears. On boxes in dark mode it uses a slightly lighter green so it&#39;s actually visible, which also fixes the same flash on every other panel button.</p>
+<hr>
+<h3 id="tested-10">Tested</h3>
+<p data-read>Headless Chrome, light and dark, no page errors. The ring colour stayed constant through the fade. Wheel up, down and to both ends works on both rows. Not tested with a real mouse wheel.</p>
+<h2 id="2004-an-invisible-field-round-the-controls">20:04 An invisible field round the controls</h2>
+<hr>
+<h3 id="the-field">The field</h3>
+<p data-read>The play/pause cursor now only shows where a click would really pause. Everything on screen has an invisible 60 px field around it: the title pill, back, fullscreen, any open panel, both X-ray boxes and the X-ray card. Inside the field the cursor is the plain leaf. The bottom controls keep the band they already had.</p>
+<p data-read>The field follows the real size of things, so it moves down with Songs and grows with the Actors box, and it&#39;s gone once a box has gone. The setting is <code>field</code> in <code>PLAYER.middle</code>.</p>
+<hr>
+<h3 id="clicks-in-the-field">Clicks in the field</h3>
+<p data-read>I made a click in the field do nothing, which you didn&#39;t ask for. With a plain cursor, a click that pauses would be a surprise, and it would punish just missing a button. Clicks in the top and bottom bands behave the same way now, so the cursor always tells the truth. To undo that, remove the first check in the page&#39;s pointerdown handler.</p>
+<hr>
+<h3 id="tested-11">Tested</h3>
+<p data-read>Headless Chrome, no page errors. 30 to 50 px from the title, fullscreen, Songs and the card gives the leaf, and 80 px away gives the mark. The gap between boxes is leaf. Once playing, the spot where a box was goes back to the mark. Not tested with a real mouse.</p>
 
 </main>
 </body>
