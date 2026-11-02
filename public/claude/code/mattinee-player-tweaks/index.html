@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_1e81929a-910c-4763-b1a5-d82c16b49ca5">
 <title>Mattinee player tweaks</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -159,6 +159,36 @@
 <p data-read>Rounded corners sit outside their rounded shape, so hover there simply never starts. That is stable, not a flicker.</p>
 <p data-read>All the earlier seek, volume, pause and cursor checks still pass in light and dark with no page errors.</p>
 <p data-read>Untested: a real mouse. The automated cursor can&#39;t prove there&#39;s no flicker in your hands, so park your real cursor on a few poster edges.</p>
+<h2 id="2000-filling-the-players-design-gaps">20:00 Filling the player&#39;s design gaps</h2>
+<p data-read>You asked me to fill every gap in the existing style, connected and organic. All of it is now in <code>e.html</code>, built as one system, on the local page only because Vercel is still refusing deploys. This chose one direction instead of three, because you said to just extend the style.</p>
+<h3 id="the-system">The system</h3>
+<p data-read>Everything hangs off the string: one organic panel that grows up from its bead on two threads, sits a little crooked, and re-rolls its outline each time it opens. <code>PLAYER.panel</code> holds its settings.</p>
+<hr>
+<h3 id="what-was-added">What was added</h3>
+<ul>
+<li><span data-read><strong>Episodes:</strong> season and five stills. The current one is marked. Previous is here too.</span></li>
+<li><span data-read><strong>Subtitles panel:</strong> Subtitles, Show, Size, Audio, Delay and Speed, all in one panel, because the string has no spare slots.</span></li>
+<li><span data-read><strong>Captions:</strong> each line sits on its own torn scrap, with a new outline per line, and follows the size setting.</span></li>
+<li><span data-read><strong>Source:</strong> the copies, with the one playing marked, plus Let Mattinee choose.</span></li>
+<li><span data-read><strong>What did they say?:</strong> a new small bead right of the timeline, also the W key.</span></li>
+<li><span data-read><strong>Next episode:</strong> a new small bead left of the timeline, also the N key. Up next opens by itself near the end, with a string that unwinds for 8 seconds.</span></li>
+<li><span data-read><strong>X-ray:</strong> shows after a pause. Looking for faces, then a brush ring round the face tied by a thread to the card, with IMDb, Wikipedia, More and Hide. Actors seen so far sits on the left. The empty state is <code>&amp;xray=none</code>.</span></li>
+<li><span data-read><strong>Songs:</strong> Playing now and Songs so far, beside X-ray, because that is when the Mac shows them.</span></li>
+<li><span data-read><strong>Slow connection and failure:</strong> a card beside the wait meter on the buffering screen. It arrives after 4 seconds, or use <code>&amp;gate=slow</code> or <code>&amp;gate=error</code>.</span></li>
+<li><span data-read><strong>Skip feedback:</strong> a +10 flash on the side you skipped, adding up as you keep pressing.</span></li>
+<li><span data-read><strong>Muted:</strong> a tag hanging under the total time, plus a flash. The M key.</span></li>
+<li><span data-read><strong>Full screen:</strong> a small bead at the top right, also F.</span></li>
+</ul>
+<hr>
+<h3 id="decisions">Decisions</h3>
+<p data-read>The two small beads sit in the gaps either side of the timeline, so your tuned string layout did not move. Rejected: a third full button each side, which would have changed your spacing.</p>
+<p data-read>You said the panel buttons were a little too crazy, so they are now rounded pills with a slight wobble (<code>PLAYER.panel.button</code>), not the big blobs from the main buttons. On hover they move only a little.</p>
+<hr>
+<h3 id="limits">Limits</h3>
+<p data-read>Lines, songs, copies and episodes are stand-ins. X-ray shows one person, so there is no Next person yet, and the mute and speed choices change nothing real because this page has no video. Panels are built once at load. When wired to the apps, a new list of copies or episodes will need its outlines redrawn.</p>
+<hr>
+<h3 id="tested-4">Tested</h3>
+<p data-read>Headless Chrome on the local page, light and dark, with no page errors: every panel opened, X-ray, flash and the gate card, and the earlier seek, volume, cursor and parked-hover checks. Untested with a real mouse or remote.</p>
 
 </main>
 </body>
