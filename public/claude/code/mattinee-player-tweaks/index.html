@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_1e81929a-910c-4763-b1a5-d82c16b49ca5">
 <title>Mattinee player tweaks</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -279,6 +279,52 @@
 <hr>
 <h3 id="tested-7">Tested</h3>
 <p data-read>Headless Chrome on the local page, light and dark, with no page errors: fade timings, arrow tap and hold, sprout, panels, scrolling, search, line click, X-ray and its boxes. A real mouse is untested.</p>
+<h2 id="1931-the-two-x-ray-boxes-on-the-left">19:31 The two X-ray boxes on the left</h2>
+<p data-read>Your notes from the 19:09 recording. All on the local page, nothing deployed, nothing wired into the app.</p>
+<h3 id="what-the-recording-showed">What the recording showed</h3>
+<p data-read>The Actors box sat on top of the Songs box when it grew, so Songs was only hidden behind it. The shrink you saw was the text: the rows appeared while the box was still narrow, wrapped onto extra lines, then unwrapped as it widened, so the box lost height just after reaching full width.</p>
+<hr>
+<h3 id="the-box-stays-one-width">The box stays one width</h3>
+<p data-read>Actors no longer changes width at all, so nothing can rewrap. Text in the rows stays on one line. It only grows downward, on a spring.</p>
+<hr>
+<h3 id="songs-steps-aside">Songs steps aside</h3>
+<p data-read>Songs now sits in the same column as Actors. When Actors grows, Songs moves down and shrinks to 88%. It stays visible the whole time.</p>
+<hr>
+<h3 id="nothing-moves-under-a-still-cursor">Nothing moves under a still cursor</h3>
+<p data-read>The column only tucks away once the mouse has left the whole of it. So if you move down onto Songs while it&#39;s stepped aside, it stays where it is, instead of springing back up out from under you. The mouse has to leave the column, and 240 ms pass, before anything moves.</p>
+<p data-read>Rows ignore the mouse for 0.4 seconds while the box grows, and then wait for a real movement. So a row sliding under a still cursor does nothing.</p>
+<hr>
+<h3 id="three-levels">Three levels</h3>
+<ul>
+<li><span data-read>At rest: a small round pic and the name. I added the small pics so there is something to grow.</span></li>
+<li><span data-read>Mouse on the box: the pic grows, and the actor&#39;s name and ages appear. Nothing else.</span></li>
+<li><span data-read>Mouse on a row, for 0.14 seconds: the full card, the same one you get when paused on a face, with character, ages, Small part, 3 posters, IMDb, Wikipedia and the x.</span></li>
+</ul>
+<hr>
+<h3 id="the-card-grows-sideways-not-inside-the-list">The card grows sideways, not inside the list</h3>
+<p data-read>This is the one place I went a different way from &quot;expand&quot;. A card growing inside the list would push the other actors down, then they would jump back when it closed, which is the exact thing your hover rule forbids. It would also cover the actors below it.</p>
+<p data-read>So the card bursts out of the row to the right and lands exactly where the face card sits, tied to its row by the three-coloured thread. The Ted card and its ring fade while it&#39;s up. The list stays still, so you can run down it and the card swaps actor. Moving fast across rows on the way to the card doesn&#39;t swap it, because a swap waits 0.16 seconds.</p>
+<p data-read>Clicking the card opens that actor&#39;s IMDb, and its x just closes that card and returns to the face card.</p>
+<hr>
+<h3 id="hover-effects">Hover effects</h3>
+<p data-read>These now use the same machinery as the rest of the player:</p>
+<ul>
+<li><span data-read>Each box draws a brand-new random outline and springs into it, and jiggles when you land.</span></li>
+<li><span data-read>Rows and songs get their own random lumpy shape on hover, a ring, and a squish that&#39;s different each time.</span></li>
+<li><span data-read>Pics take a new organic shape each time, and tilt and pop on the hovered row.</span></li>
+<li><span data-read>Rows grow at slightly different speeds each time.</span></li>
+</ul>
+<p data-read>The dark theme uses a lighter ring here, because the usual dark ring is the same colour as the box and disappeared.</p>
+<hr>
+<h3 id="long-lists">Long lists</h3>
+<p data-read>A late episode could have dozens of actors, which would have run off the screen. The list now shows 4.5 rows and scrolls, and the half row hints there&#39;s more. Songs does the same at 3.5. Scrolling closes the card. See it with <code>&amp;cast=many</code>.</p>
+<hr>
+<h3 id="settings">Settings</h3>
+<p data-read>All of it is in <code>PLAYER.xray</code>: row heights, rows shown, gap, how far Songs shrinks, and the timings.</p>
+<hr>
+<h3 id="tested-8">Tested</h3>
+<p data-read>Headless Chrome, light and dark, no page errors. Width stays 440 throughout the grow. Songs stays visible at every step. Moving from Actors onto Songs moves nothing. Parked cursor fires nothing. Fast wiggling leaves nothing stuck. Diagonal travel keeps the right card. Long lists scroll. A first tap on touch opens the box, the second opens the card, and tapping away closes it. The older player test still passes.</p>
+<p data-read>Not tested with a real mouse or on iPad. Other actors still show initials and their posters are stand-ins.</p>
 
 </main>
 </body>
