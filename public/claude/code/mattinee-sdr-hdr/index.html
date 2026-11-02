@@ -97,6 +97,31 @@
 </ul>
 <h2 id="how-to-undo">How to undo</h2>
 <p data-read>Set <code>player.sdrOnHdr</code> to 0 where the server passes it, or revert the commit.</p>
+<h2 id="please-wait-stuck-and-the-loader-showing-twice">Please wait stuck, and the loader showing twice</h2>
+<p data-read>You reported two more player bugs: the &quot;Please wait&quot; screen stayed up after a source switch, and the buffering loader filled twice.</p>
+<hr>
+<h3 id="why-please-wait-stuck">Why Please wait stuck</h3>
+<p data-read>The card put up for a switch only came down when mpv reported that buffering had ended. A copy that has loaded enough by its first frame never starts buffering, so that report never came. This is what you saw: the faster the copy, the surer it stuck. I reproduced it in the headless player test with a very fast copy: &quot;Trying a smoother copy&quot; stayed up to the end of the run with the video playing.</p>
+<h3 id="the-please-wait-fix">The Please wait fix</h3>
+<p data-read>The card now comes down by checking how things are, at the first frame, when buffering ends and on the once-a-second check. So it doesn&#39;t depend on any event arriving, or on their order. A long-wait card still stays, and the same test now shows it clearing at once, playing or paused.</p>
+<h3 id="why-the-blob-was-empty">Why the blob was empty</h3>
+<p data-read>The switch set the level to zero, and nothing ever raised it: the measuring is off during a switch, and afterwards the gate never closed. It now fills by itself until a real level arrives.</p>
+<h3 id="the-x-ray-pill-during-a-switch">The X-ray pill during a switch</h3>
+<p data-read>It shouldn&#39;t be up. It was left from your pause and was talking about a picture that was on its way out. A switch now clears it, and if you&#39;re still paused, X-ray looks again at the new copy&#39;s first frame. Tested: one look at the pause and one after the switch.</p>
+<h3 id="why-the-loader-showed-twice">Why the loader showed twice</h3>
+<p data-read>There are two loaders behind one tank. While the file opens, the page guesses and fills to about 0.9. At the first frame that guess finishes, and at almost the same moment the player&#39;s real meter starts at its true level, about 0.1. So it dropped from nearly full to nearly empty and filled again in about a second. Your logs show it: &quot;filling&quot; with no text, first picture, then &quot;Buffering Starting soon&quot; for 1.1 s. Seeks went the same way.</p>
+<h3 id="the-one-loader-fix">The one-loader fix</h3>
+<ul>
+<li><span data-read><strong>It only ever rises.</strong> The guess now holds at 0.6, and the real meter carries on from there to the top.</span></li>
+<li><span data-read><strong>Nothing about buffering changed.</strong> This is only what&#39;s shown.</span></li>
+<li><span data-read><strong>A second wait straight after the first keeps the same loader.</strong> It stays for 0.3 s at the top before leaving, so a wait starting within about half a second of the first ending continues the loader. Later than that counts as a new wait.</span></li>
+<li><span data-read><strong>A switch with nothing to measure</strong> rises by itself the same way.</span></li>
+<li><span data-read><strong>Knobs:</strong> <code>tankHold</code> and <code>tankLinger</code> in the page&#39;s <code>bits</code>, in <code>app/ui/mattinee.html</code>.</span></li>
+</ul>
+<h3 id="tests">Tests</h3>
+<p data-read><code>tests/player-loader.cjs</code> runs the real page in a headless browser through six orders of events, and checks the loader appears once, never falls and reaches the top. The page before the fix fails five of six, falling by up to 0.80. The fixed page passes all six.</p>
+<h3 id="untested">Untested</h3>
+<p data-read>The headless runs prove the order and the levels. The feel of the fill, and whether 0.6 is the right hold, are for your eyes.</p>
 
 </main>
 </body>
