@@ -110,6 +110,55 @@
 <hr>
 <h3 id="tested-2">Tested</h3>
 <p data-read>Headless Chrome on the local Home page, in light and dark, with no page errors. Untested: how it feels with a real mouse.</p>
+<h2 id="1915-hover-targets-poster-feel-and-what-the-designs-leave-out">19:15 Hover targets, poster feel and what the designs leave out</h2>
+<p data-read>You and the coordinator raised three things: hover targets moving away from a still cursor, the poster hover running too long and feeling jerky on quick moves, and player features missing from the designs.</p>
+<h3 id="hover-targets">Hover targets</h3>
+<p data-read>The hit areas from round 7 were still, but the moving layers inside them still took the mouse. A poster&#39;s stretched edge counted as hover, so hover ended when that edge shrank back, with no cursor movement. The same thing could happen against a neighbour&#39;s stretched edge. Round 7 only moved the animation inward; it never turned the mouse off for that layer.</p>
+<ul>
+<li><span data-read>The moving layer now takes no pointer events, everywhere.</span></li>
+<li><span data-read>Press and selected effects used to scale the hit area itself on buttons and posters. They now run on the inner layer.</span></li>
+<li><span data-read>String buttons have a wider still hit area, because their label opens past the icon. Otherwise moving onto the label would close it.</span></li>
+</ul>
+<p data-read>One small loss: the progress bar under a poster no longer has its own hover wobble, since it sits on the poster&#39;s moving layer.</p>
+<hr>
+<h3 id="poster-feel">Poster feel</h3>
+<p data-read>The bounce is shorter, and the snap on quick moves is gone.</p>
+<ul>
+<li><span data-read><code>length</code> .55 makes the bounce last about half as long. Measured time went from about 600 ms to about 360 ms.</span></li>
+<li><span data-read>Every bounce used to start already offset, which made one sudden frame on every hover. It now swells in over 0.12 seconds (<code>ease</code>).</span></li>
+<li><span data-read>A new hover used to cancel the running bounce, which jumped the poster back. Bounces now carry on, and landing again early just lets the current one finish.</span></li>
+<li><span data-read>Leaving used to fast-forward the bounce at 7 times speed. Posters now use 1.8 (<code>leave</code>), and the outline returns on a soft spring (<code>backStiff</code>, <code>backDamp</code>).</span></li>
+<li><span data-read>Outline points keep their speed when the target changes, so a change of direction bends the motion instead of kicking it.</span></li>
+</ul>
+<p data-read>Flicking on, off and on again, the biggest single-frame jump fell from about 9% to about 1%.</p>
+<p data-read>The soft start, no-cancel and outline changes apply to every bouncing element, because they were faults everywhere. Length and leave speed are poster-only.</p>
+<hr>
+<h3 id="what-the-designs-leave-out">What the designs leave out</h3>
+<p data-read>Compared with what the Mac, iPad and Streamer players do today.</p>
+<p data-read>Your three:</p>
+<ul>
+<li><span data-read><strong>X-ray:</strong> cards beside faces on pause, &quot;Actors seen so far&quot;, next person, more, hide, and IMDb and Wikipedia links.</span></li>
+<li><span data-read><strong>What did they say?:</strong> the recap card of recent lines.</span></li>
+<li><span data-read><strong>Subtitles:</strong> both the settings panel (track, type, size) and how the captions themselves look on the video.</span></li>
+</ul>
+<p data-read>Also missing:</p>
+<ul>
+<li><span data-read><strong>Panels behind existing buttons:</strong> Episodes and Source are on the string but open nothing. Source needs the list of copies, with the one playing marked.</span></li>
+<li><span data-read><strong>Audio:</strong> track choice, plus audio delay on iPad.</span></li>
+<li><span data-read><strong>Speed:</strong> the Streamer has a speed picker.</span></li>
+<li><span data-read><strong>Slow-connection card:</strong> the meter exists, but not the choices &quot;Play now, it may stop&quot;, &quot;Let Mattinee choose&quot; and &quot;Go back&quot;.</span></li>
+<li><span data-read><strong>Songs:</strong> &quot;Songs so far&quot; and &quot;Playing now&quot;, with Open in Music, from the Mac overlay.</span></li>
+<li><span data-read><strong>Next and Previous episode,</strong> and what happens at the credits.</span></li>
+<li><span data-read><strong>Skip feedback:</strong> the +10 and -10 flashes, and the hold-to-scan state on the remote.</span></li>
+<li><span data-read><strong>Smaller states:</strong> mute, full screen, iPad&#39;s close button and skip buttons, and playback errors.</span></li>
+</ul>
+<p data-read>The string has only four slots, so most of these need one shared panel pattern rather than separate screens. Open design like this suits your own thinking first, so it stays unanchored.</p>
+<hr>
+<h3 id="tested-3">Tested</h3>
+<p data-read>Headless Chrome on the local page. A cursor parked for 1.2 seconds on each of 8 edge and corner spots of 11 elements, once just inside and once just outside: 176 parks on the home, detail and buffering setup plus the player rerun. No hover flipped in any park on the new version. On the old version the same test caught 2 flips, one on a detail button and one on a player button, so it does reproduce the fault, though rarely. Parks only caught the case that happened within 1.2 seconds.</p>
+<p data-read>Rounded corners sit outside their rounded shape, so hover there simply never starts. That is stable, not a flicker.</p>
+<p data-read>All the earlier seek, volume, pause and cursor checks still pass in light and dark with no page errors.</p>
+<p data-read>Untested: a real mouse. The automated cursor can&#39;t prove there&#39;s no flicker in your hands, so park your real cursor on a few poster edges.</p>
 
 </main>
 </body>
