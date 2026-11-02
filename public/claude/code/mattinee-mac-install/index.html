@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_8bcdecd7-3f5b-42b6-a550-9d49accdb1c0">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -186,6 +186,29 @@ EOF # long-ok</p>
 <hr>
 <h3 id="waiting">Waiting</h3>
 <p data-read>The check in the real app&#39;s web view waits until you stop watching. So does the server restart you asked for.</p>
+<h2 id="2220-hdr-test-result-on-your-sony">22:20 HDR test result on your Sony</h2>
+<p data-read>Tested on macOS 15.7.8 with a short HDR10 test clip, silent. The first two runs were invalid: another session&#39;s build had replaced mine, so HDR was never requested. Then, on a build confirmed to contain the change, the player really switched to PQ output, in a window and in full screen, for about 8 seconds each.</p>
+<p data-read>Your TV&#39;s HDR range stayed at 1.0 both times. So macOS did not switch this TV by itself for our player. Apple&#39;s &quot;might&quot; could still apply to other apps; I can&#39;t test those. A normal clip plays the same as before on the new surface. Frames dropped in a small window are about 170 of 180 with and without this change; full screen dropped 5. So that isn&#39;t new, but it is worth a look.</p>
+<p data-read>HDR output is on master. With the setting off nothing changes except the one-time hint. Real HDR on the TV is still unconfirmed, because it needs the Displays setting on, and changing system settings is yours to do.</p>
+<p data-read>The way to avoid leaving it on: flip the setting per film. BetterDisplay can do this, not confirmed which version, or a small helper using a private macOS call. Either way the player would switch the TV at the start of an HDR film and back at the end, with a blink of a few seconds. Not built.</p>
+<h2 id="2240-home-and-detail-on-master-servers-restarted">22:40 Home and Detail on master, servers restarted</h2>
+<p data-read>Master is at 955d2c1, and Beta has built it.</p>
+<hr>
+<h3 id="servers">Servers</h3>
+<p data-read>All six Mac servers and the main server were restarted once nobody was playing, on 955d2c1. Episode pictures now reach the app. The five other people&#39;s Mac servers had been off since Oct 31, and <code>deploy/mac-people.sh</code> starts them, so they&#39;re running again.</p>
+<hr>
+<h3 id="checked-in-the-real-app-hidden-and-silent">Checked in the real app, hidden and silent</h3>
+<p data-read>The server&#39;s page handed over to the new Home. The Home page reached the server from inside the app, with real rows and art. Detail and Episodes opened. A short play started through the app, the player&#39;s Home button closed it, and the app came back through the server&#39;s page to the new Home with all 13 rows.</p>
+<p data-read>The play used the same steps as Resume, but sent from a test script with full screen and sound off. Pressing Resume itself is not tested in the app.</p>
+<hr>
+<h3 id="not-tested-1">Not tested</h3>
+<p data-read>Everything with a real mouse: hover, scrolling rows, the leaf cursor on Home, and Search, Settings and Browse everything by hand. Who&#39;s watching and the limits screens in the new look: only Settings was seen. End of a film into the between screen. Limits-reached on Play. The Who&#39;s watching first run on a fresh install. Light mode in the app: seen in a browser, and the app follows the system.</p>
+<hr>
+<h3 id="clean-up">Clean-up</h3>
+<p data-read>The Rookie is off your recents again. S1 E2 keeps a partial position, and tonight&#39;s list holds it at 26 seconds, uncounted.</p>
+<hr>
+<h3 id="still-open">Still open</h3>
+<p data-read>Bundle the two fonts (needs your OK to download). Delete the old native controls once Beta has run a while. Paused and Muted overlap near the end of the string. X-ray on Detail has names, no faces. The taste ask has its place on Detail (<code>#realTaste</code>) and on Up next.</p>
 
 </main>
 </body>
