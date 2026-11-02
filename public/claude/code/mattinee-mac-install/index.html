@@ -97,6 +97,10 @@ EOF # long-ok</p>
 <li><span data-read>The shoot now starts below the Paused tag and ends under the ball.</span></li>
 </ul>
 <p data-read>Tested headless, including the hover time holding after you leave and after a time update. The first-seconds state was rendered in dark only.</p>
+<h2 id="2300-the-tank-after-a-seek">23:00 The tank after a seek</h2>
+<p data-read>You said the cursor disappears after you drag to seek, so nothing shows it&#39;s loading. Now, if a seek is still loading after 0.35 seconds (<code>tankAfter</code>) and the leaf isn&#39;t on screen or the mouse is sitting in the middle, the filling tank appears there. It keeps checking while loading, so it also appears if the leaf fades out later. Real slow-connection waits still use the app&#39;s own tank level. Project note, not a saved rule: this is a direction for this player.</p>
+<p data-read>Tested headless with a stand-in host. On a fast seek you won&#39;t see it at all, so test it on a real slow seek.
+EOF # long-ok</p>
 
 </main>
 </body>
