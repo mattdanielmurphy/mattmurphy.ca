@@ -304,6 +304,64 @@ EOF # long-ok</p>
 <p data-read>You sent photos of Brandon, Darryl, Tyler, Kristy, Connie, Mike and Elisa, said Liam doesn&#39;t need a profile, and asked to add Mike and Elisa now.</p>
 <p data-read>All eight are built from Micah parts on the moss palette. Micah has no hats, so I drew two caps in its line style. Tyler has the cap you asked for, and Brandon has a backwards one from his photo, which you didn&#39;t ask for; it also keeps him from looking like Mike. Darryl has the neater hair from the group photo, not the spiky one. Kristy is blond with her hoops. Connie&#39;s stripes and Brandon&#39;s blue eyes can&#39;t be shown.</p>
 <p data-read>The pictures are SVG files in the micah-profiles page folder. Not public.</p>
+<h2 id="2305-home-the-full-catalog-grids-and-a-real-search">23:05 Home: the full catalog, grids and a real search</h2>
+<p data-read>You sent a list on the new Home: more top padding, the buttons covering Ted Lasso&#39;s face, Browse everything going to the old screen, every category and filter missing, grids when you click a category name, ⌘F for voice search, the sideways shift on arrow keys, and a search bar that needs doing properly.</p>
+<hr>
+<h3 id="one-new-thread">One new thread</h3>
+<p data-read>All of this is in the same three files, so it goes to one thread, <a href="#local_47a4afc1-cc5e-4614-8fee-5f95f7b30732">Mattinee Home: full catalog, category grids, real search</a>, at high effort. The cursor thread was out of scope for work this size. Profiles and the player keep running beside it, since they barely touch the same code.</p>
+<hr>
+<h3 id="decisions">Decisions</h3>
+<ul>
+<li><span data-read><strong>Order:</strong> Browse everything is removed only after the catalog is on Home, so nothing becomes unreachable for a while.</span></li>
+<li><span data-read><strong>No design options:</strong> the look is chosen and you specified the behaviour, so the thread builds directly in the real UI.</span></li>
+<li><span data-read><strong>Voice:</strong> reuses the Groq voice search the old screen already has.</span></li>
+<li><span data-read><strong>Mac only:</strong> iPad and Android are not part of this.</span></li>
+</ul>
+<hr>
+<h3 id="also-done">Also done</h3>
+<p data-read>The stuck &quot;Please wait&quot; card and the double loader are merged in 88c1eda. Not installed in Beta until ⌘Q and reopen. Not tested with a real mouse by you yet.</p>
+<h2 id="2312-wrong-home-flash-on-whos-watching">23:12 Wrong Home flash on Who&#39;s watching</h2>
+<p data-read>You picked Matt when Matt was already active. It said &quot;Switching...&quot;, showed a Home with other titles, then cleared and showed yours.</p>
+<p data-read>Sent to <a href="#local_47a4afc1-cc5e-4614-8fee-5f95f7b30732">the Home thread</a>, because it owns how Home loads. The cursor and profiles threads are both over the size limit. The message is queued until that thread&#39;s current turn ends, so it may not start right away. The ask: picking the active profile goes straight to Home, picking another shows loading then that person&#39;s Home once, and a late answer can never paint over the current profile. Cause not confirmed yet.</p>
+<h2 id="2320-servers-restarted-for-the-pictures">23:20 Servers restarted for the pictures</h2>
+<p data-read>You said to restart. The profiles thread is over the size limit, so a message to it was blocked. Its work was finished and on master, so I ran the two deploys myself from master.</p>
+<p data-read>Before: every server showed nothing playing and the VPS was sending 0 kb/s. Ft Sask Streamers go direct to the mini PC and weren&#39;t measured that way, only by the server&#39;s own now-playing state.</p>
+<p data-read>After: the main server and all Mac servers answer, and <code>glass-mac@mike</code> and <code>glass-mac@elisa</code> are running.</p>
+<h3 id="from-the-profiles-thread">From the profiles thread</h3>
+<ul>
+<li><span data-read>Mike and Elisa are live with their own Mac servers (4807, 4808). iPad TestFlight 202611012309 is uploaded and Android 0.3.103 is published.</span></li>
+<li><span data-read>New looks it chose: Kristy with big magenta frames, Brandon as a clean-shaven firefighter with a moustache, Mike as a cop.</span></li>
+<li><span data-read>Untested: the Android picker on a real screen, and the Mac screens in the real app.</span></li>
+<li><span data-read><code>bun test</code>: two failures, in ratings sort and player memory, which that thread says its work didn&#39;t touch.</span></li>
+</ul>
+<h2 id="2335-selected-profile-on-top">23:35 Selected profile on top</h2>
+<p data-read>You said the profile the controls are on must sit above the others, including the active one. The active tile had a stacking level of 2 and the selected tile had none, so the active tile painted over its neighbour.</p>
+<p data-read>Fixed in <code>app/ui/home.css</code>: hovered is level 5 and selected is level 6. I made this one-line change directly because both the Home and profiles threads are over the size limit. Headless check confirms the levels. Not seen on a real screen yet. Beta picks it up after it rebuilds, then ⌘Q and reopen.</p>
+<p data-read>The Home thread is over the limit too and hasn&#39;t merged yet. The wrong Home flash request is still queued with it, so its next turn starts with that.</p>
+<p data-read>Paige: the profiles thread added her (b8e0fb9). Her picture shows on the Mac. iPad and the Streamer show a P until the main server restarts once more, which needs your OK.</p>
+<h2 id="2350-shirts-pink-and-octagons">23:50 Shirts, pink and octagons</h2>
+<p data-read>You asked for a black tee, a Brandon shirt that doesn&#39;t look like a prison shirt, a blouse for Connie, pink for Paige and octagonal glasses for Connie. All five are on master (a487c59). The profiles thread is over the size limit, so I made these edits directly in <code>web/people/src</code>.</p>
+<ul>
+<li><span data-read><strong>You:</strong> black tee with a barely lighter neck rib.</span></li>
+<li><span data-read><strong>Brandon:</strong> the dark body with a grey collar was the prison look, so it&#39;s now a tan fire coat with a matching collar and a lime reflective stripe.</span></li>
+<li><span data-read><strong>Connie:</strong> Micah has no blouse, so this is the open neck in soft periwinkle with two drawn collar leaves and a button, plus octagonal glasses in her same brown.</span></li>
+<li><span data-read><strong>Paige:</strong> pink, keeping her necklace.</span></li>
+</ul>
+<p data-read>Apps get a picture&#39;s version when the server starts, so these and Paige&#39;s picture on iPad and the Streamer all wait on one restart. To undo, revert a487c59 and deploy.</p>
+<h2 id="0025-new-logo">00:25 New logo</h2>
+<p data-read>You asked for a new logo to fit the playful style. <a href="#local_d7337deb-9526-4b8b-bdbd-51db3c116a24">The logo thread</a> is on it at high effort. It makes 3 to 4 separate directions in the Moss colours, each tested as a Mac icon, iPad icon, Streamer banner and down to 16 px, on one page with a link. Nothing goes into the apps until you pick. The current ticket icon stays until then.</p>
+<p data-read>The profiles thread restarted the main server at 23:22 for Paige&#39;s picture without touching code. That restart didn&#39;t carry the new shirts or glasses, so those still need a deploy.</p>
+<h2 id="0035-new-pictures-deployed">00:35 New pictures deployed</h2>
+<p data-read>You said to deploy the new pictures.</p>
+<hr>
+<h3 id="what-went-out">What went out</h3>
+<p data-read>Nobody was playing on the main server or any of the nine Mac servers, so I deployed master (015477d) to all of them. That carries your black tee, Paige in pink, Connie&#39;s blouse and octagonal glasses, Brandon&#39;s tan coat, and the change that lets a picture added later show without a restart.</p>
+<p data-read>Every server answers, and each serves the same picture files as master, compared on four pictures (Matt, Connie, Brandon, Paige).</p>
+<hr>
+<h3 id="worth-knowing">Worth knowing</h3>
+<p data-read>The deploy prints &quot;cannot delete non-empty directory&quot; for old <code>.claude/worktrees</code> folders on the far side. They&#39;re leftovers and do no harm. Nothing was changed there.</p>
+<p data-read>Master also carried the Home thread&#39;s category grid (015477d). That&#39;s Mac app code, so it reaches you through Mattinee Beta, not through this deploy.</p>
+<p data-read>Not checked: the pictures on a real iPad, Streamer or Mac app screen. An app that&#39;s already open may keep the old picture until it next loads the profile list.</p>
 
 </main>
 </body>
