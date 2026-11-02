@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_5cd7f3ec-5c5e-4576-ad48-77e5d3454af6">
+<meta name="claude-thread" content="local_d6c5b042-8557-4d6b-b2c7-1890d96ed601">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -171,6 +171,21 @@ EOF # long-ok</p>
 <li><span data-read><strong>Newest seen first:</strong> the server remembers only when each person was first seen. Fix: keep sightings per episode so the list sorts by the latest one before where you are; the page lifts people in this frame to the top and holds the list still under the mouse. Needs a server pull and restart for the full order.</span></li>
 <li><span data-read><strong>Card X:</strong> it sends the same action as hiding X-ray. Fix: its own close-this-card action; a click on that person&#39;s face or row brings it back.</span></li>
 </ul>
+<h2 id="2220-real-home-and-detail">22:20 Real Home and Detail</h2>
+<p data-read>This work moved to its own session when you raised HDR. It&#39;s on branch <code>claude/priceless-boyd-538ab7</code>, not on master yet.</p>
+<hr>
+<h3 id="how-its-built">How it&#39;s built</h3>
+<p data-read>Home and Detail are the design&#39;s own page, shipped inside the app. A small script, <code>app/ui/home.js</code>, fills it with real data. A press on a card opens Detail, as you confirmed. The page runs at any window size and scrolls down to more rows.</p>
+<p data-read>Screens the design hasn&#39;t drawn stay on the server&#39;s pages, and they now wear the design&#39;s fonts and colours in light and dark: Who&#39;s watching, Settings, and the nightly limits screens. Browse everything opens the old Home, which still has voice search, On this Mac, the IMDb filter and every shelf. So nothing is lost.</p>
+<p data-read>A new app build sets a flag, and only then does any of this appear. Older builds and TestFlight stay exactly as they were.</p>
+<hr>
+<h3 id="tested-in-a-hidden-browser-on-your-real-server-nothing-played">Tested in a hidden browser, on your real server, nothing played</h3>
+<p data-read>Dark and light at 1200 by 860. Hero with real art and rating, 13 rows, Detail with art, description, rating, Resume, Episodes, X-ray, IMDb, library and Remove from recents. Episodes with seasons and seen marks. Search, TV and Films. Settings and Browse everything hand over. The classic page hands Home to the design and stays when asked.</p>
+<p data-read>Rows show the first 40 titles. Loading all 300 of each made the image server refuse requests.</p>
+<p data-read>X-ray on Detail lists cast names, each opening IMDb. It has no faces, because the Mac server has no cast route with photos.</p>
+<hr>
+<h3 id="waiting">Waiting</h3>
+<p data-read>The check in the real app&#39;s web view waits until you stop watching. So does the server restart you asked for.</p>
 
 </main>
 </body>
