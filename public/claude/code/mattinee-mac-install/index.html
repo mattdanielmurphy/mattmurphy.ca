@@ -106,6 +106,10 @@ EOF # long-ok</p>
 EOF # long-ok</p>
 <h2 id="2320-volume-pill-jumping-to-the-centre-not-reproduced">23:20 Volume pill jumping to the centre: not reproduced</h2>
 <p data-read>You reported the volume pill moving with the cursor, then jumping to the centre of the window. A headless drag kept the pill exactly where the press began, and your log shows no scroll-wheel volume, so the centre &quot;Volume&quot; flash isn&#39;t the cause. One suspect is the tank, which sits in the centre and could show during a drag if a seek&#39;s wait was still open, so I blocked it during volume drags. That&#39;s a guess, not a confirmed fix. Headless ran in Chrome, not the app&#39;s WebKit, so a WebKit-only cause is still possible.</p>
+<h2 id="2330-the-tank-learns-and-always-fills">23:30 The tank learns and always fills</h2>
+<p data-read>You wanted the tank to learn from past loads and always fill. Each seek&#39;s real time now feeds one learned number (<code>mattinee-load-seconds</code>, 40% new, 60% old). The tank then fills so half that time is half full, slows near the top if it runs long, and when the load ends it runs up to 100% in 0.22 seconds before leaving. The first seek guesses 1.5 seconds. Slow-connection waits also finish by filling up. Their level still comes from the app&#39;s own gate, not from this learned number.</p>
+<p data-read>The learned number lives in this web view&#39;s local storage, for seeks only. Starts aren&#39;t learned yet. Sharing it with the telemetry that picks streams is recorded in <code>IDEAS.md</code>, not built.
+EOF # long-ok</p>
 
 </main>
 </body>
