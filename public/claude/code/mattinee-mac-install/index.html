@@ -48,6 +48,9 @@
 </ul>
 <h3 id="state-of-the-work">State of the work</h3>
 <p data-read>All on branch <code>claude/mac-design-live-becb43</code>, not on master. Done: player page, bridge, panels, X-ray, wait meter and card, keys, toolbar. Tested headless with stand-in data, and on a local 4K clip with no server. Not done: a real play in the Mattinee app, native control code removal, home and detail.</p>
+<h2 id="2130-low-power-mode-confirmed-next-the-60-hz-cap">21:30 Low Power Mode confirmed, next the 60 Hz cap</h2>
+<p data-read>Your log shows frame gaps of 35 ms falling to 18 ms at 20:36:05, when Low Power Mode went off. That is about 60 Hz, WebKit&#39;s own default limit for pages. The player&#39;s web view now switches that limit off through a private WebKit setting, guarded so nothing breaks if the setting ever disappears. It could matter if this build ever goes through App Store review. Trace now logs frames per second as <code>fps</code>.
+EOF # long-ok</p>
 
 </main>
 </body>
