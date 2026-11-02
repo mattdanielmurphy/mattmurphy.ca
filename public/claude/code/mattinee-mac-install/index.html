@@ -18,6 +18,13 @@
 <p data-read>Worktree: <code>/Users/matt/projects/glass-tv/.claude/worktrees/mac-design-live-becb43</code>, branch <code>claude/mac-design-live-becb43</code>.</p>
 <p data-read>Design source: <code>~/projects/pages/site/mattinee-playful/e.html</code> at 78b6659. Layout: CSS lines 20-1034, HTML 1036-1153, JS 1154-1621. <code>PLAYER</code> settings at 1210. <code>SURFACES(el,data,on)</code> builds all panels and calls <code>on(group,value)</code>. <code>DEMO</code> at 1470. The IIFE at about 1497 is the player state machine; the &quot;Fake video state&quot; part from about 1533 is what real state replaces.</p>
 <p data-read>Order: player first (riskiest: web overlay driving real playback), then home and detail.</p>
+<p data-read>Progress notes:</p>
+<ul>
+<li><span data-read><code>app/ui/mattinee.html</code> is the design moved into the repo (same code, plus <code>assets/</code>). In a browser it runs on DEMO; in the app <code>data-host=app</code>, it talks to Swift: <code>MATTINEE.update({...})</code> in, <code>tell(what,value)</code> out. <code>dress(el)</code> dresses new content; <code>UI.refill(id)</code> redraws a panel.</span></li>
+<li><span data-read><code>app/player/face.swift</code> holds the web view and bridge. Native controls are hidden, not deleted yet.</span></li>
+<li><span data-read>Decisions so far: Up/Down stay volume on the Mac (existing feature); Tab picks a button instead of Down. A click pauses at once; a double-click undoes that and goes full screen. Window drag from the top band only, because press and slide on the picture now seeks.</span></li>
+<li><span data-read>Hook quirk: any Bash command containing playback-ish words gets blocked by the hang guard; add <code># long-ok</code> or run in the background.</span></li>
+</ul>
 
 </main>
 </body>
