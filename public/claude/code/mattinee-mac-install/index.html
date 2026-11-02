@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_8bcdecd7-3f5b-42b6-a550-9d49accdb1c0">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -116,6 +116,35 @@ EOF # long-ok</p>
 <h2 id="2350-crackle-fixed-pill-jump-narrowed">23:50 Crackle fixed, pill jump narrowed</h2>
 <p data-read>You confirmed the crackle is gone. The trace from the real app shows the pill&#39;s position never changes during a drag, so the jump is in how WebKit draws it while it grows, not in the code that places it. The pill was centred with a percentage shift; it&#39;s now centred by layout. This is my best explanation, not proven. If it still jumps, next look at <code>.hand-back</code> and the outline being redrawn at the new size.
 EOF # long-ok</p>
+<h2 id="2130-real-play-checked-player-merged-home-and-detail-next">21:30 Real play checked, player merged, home and detail next</h2>
+<p data-read>This thread took over from the one that stopped on the false safety flag. Nothing was lost; the last build had in fact finished.</p>
+<hr>
+<h3 id="real-play-results">Real play results</h3>
+<p data-read>A Debug copy of the branch played The Rookie S1 E2 from your own server, with sound output switched off (<code>ao=null</code>). It can now be checked without input: the page answers scripts through a temp file, only in Debug builds (<code>Face.probe</code>).</p>
+<p data-read>Worked on real data, checked in the page and in the player: real X-ray faces and the role, age and links card; 3 subtitle tracks plus the Dialogue, Descriptions and size rows; audio; delay (moved 50 ms and back); speed (1.25x and back); 13 sources with sizes and Let Mattinee choose; 9 seasons of episodes with titles and &quot;Watching now&quot;; What did they say? with real lines; the Up next card with the real next episode; Please wait after a seek; captions reaching the page.</p>
+<hr>
+<h3 id="what-i-did-wrong">What I did wrong</h3>
+<p data-read>The first run went full screen over your work for about a minute, because the server&#39;s play arguments ask for full screen and my test didn&#39;t stop that. You were at the Mac: the log shows your mouse, a seek and a volume drag. I then closed that window on you without warning. Later runs were hidden and windowed. Each launch went through the clearance banner.</p>
+<hr>
+<h3 id="the-one-bug-found">The one bug found</h3>
+<p data-read>The Episodes panel had empty pictures: the server never sent them. It now sends Cinemeta&#39;s stills (<code>still</code> in <code>/api/library/episodes</code>). This needs your Mac server restarted to take effect, which I have not done, because a restart while you may be using it is your call.</p>
+<hr>
+<h3 id="merged">Merged</h3>
+<p data-read>The player is on master at 87017bb, so Beta picks it up. Master reaches only Beta: TestFlight is a separate upload, and other people&#39;s servers are untouched.</p>
+<hr>
+<h3 id="not-tested">Not tested</h3>
+<p data-read>Hover and feel with a real mouse. Whether the volume pill still jumps. Captions visibly showing during play: a hidden app runs no animation, so the text reached the page but I couldn&#39;t see it appear. A real press of Play next, a real source switch, and two audio tracks. Going home and quitting from the real buttons. Moving up to 4K on this UI: the test episode was 1080p only. The slow-connection card on a really slow line. Light mode on the real app: checked with stand-in data only.</p>
+<hr>
+<h3 id="test-clean-up">Test clean-up</h3>
+<p data-read>The Rookie is off your recents. Its saved progress could not be cleared: S1 E2 still shows about 12%, because the server has no route to erase a partial position. You weren&#39;t watching that show, so I left it rather than edit your server&#39;s data by hand. Tonight&#39;s list holds it at 23 seconds, uncounted, so your episode count stays 2 of 3. &quot;Last ended&quot; now says The Rookie instead of Ted Lasso S2 E11; Ted Lasso&#39;s resume point is untouched. The Rookie is also on the hidden-from-recents list, until you play it.</p>
+<hr>
+<h3 id="left-on-the-player">Left on the player</h3>
+<p data-read>Delete the old native controls once Beta has run for a while (<code>buildControls</code>, <code>Scrubber</code>, <code>VolumeBar</code>, <code>RecapPanel</code>, <code>TopBar</code>, <code>BackPill</code>, <code>EscHint</code>, old <code>XRay.key</code>, <code>Player.oldKeys</code>). Bundle Caprasimo and Nunito, which means downloading them from Google Fonts, so I&#39;m asking first. Paused and Muted overlap when the ball is near the end of the string.</p>
+<hr>
+<h3 id="home-and-detail-the-plan">Home and detail: the plan</h3>
+<p data-read>The design&#39;s Home and Detail are static mock-ups, and the real app has no Detail page at all: a card press plays at once.</p>
+<p data-read><code>web/</code> is safe to change: only the Mac app and a browser use it, since iPad and the Streamer are native. The rejected option was bundling the pages in the app: it would mean rebuilding search, settings, Who&#39;s watching and every limits screen, about 1,100 lines, in a page with no design for them.</p>
+<p data-read>The plan: keep <code>web/</code> as the working app and move the design&#39;s Home and Detail into it, behind a flag only new app builds set, so nobody on TestFlight changes until you upload. Every other screen keeps its logic and takes the design&#39;s fonts and colours. A card press opens Detail, and Resume there plays. The hero is the top of Recently watched. Popular is the first Explore row. The Search and Settings icons on Home open the real ones. Taste asks have a home at the end of a title: Up next, or a row on Detail.</p>
 
 </main>
 </body>
