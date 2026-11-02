@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_6073d90e-0b5d-4b68-a1a2-f3e9057190fd">
+<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -254,6 +254,11 @@ EOF # long-ok</p>
 <h3 id="whos-watching">Who&#39;s watching</h3>
 <p data-read>Not a fluke, and not a bug. It shows on every launch unless &quot;Don&#39;t ask me again&quot; is ticked. The VPS server and Beta both have the new look, and in real WebKit it comes up with the design&#39;s colours and Nunito in light and dark. But it&#39;s the same layout as before, and its title isn&#39;t in the design&#39;s display font, so it looks like the old screen. It needs a drawn design.</p>
 <p data-read>Undo: revert 1846a6e.</p>
+<h2 id="2230-normal-video-too-bright-with-hdr-on">22:30 Normal video too bright with HDR on</h2>
+<p data-read>You said a stream looked far too bright with HDR on, then said you like HDR on system-wide and YouTube&#39;s normal video looks fine there, and asked to unmap scroll for volume.</p>
+<p data-read>The Ted Lasso S2 E11 play was a 1080p Blu-ray AVC remux, so normal range, and the log shows no move to another copy. I first blamed the HDR setting and suggested switching it per film. Your YouTube point rules that out: the fault is in how our player hands over normal video, most likely the untagged 16-bit surface added for HDR. That idea is dropped and HDR stays on.</p>
+<p data-read>The new thread looks for the real cause first. A plain gamma change is only the fallback, because a tagging fault would leave colours or shadows off even with brightness matched. Scroll for volume comes out in the same thread, since it&#39;s the same player code.</p>
+<p data-read>Not tested yet: nothing has been changed or measured so far.</p>
 
 </main>
 </body>
