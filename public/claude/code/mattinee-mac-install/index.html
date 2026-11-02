@@ -113,6 +113,9 @@ EOF # long-ok</p>
 <h2 id="2340-big-volume-jumps">23:40 Big volume jumps</h2>
 <p data-read>Built as <code>bin/Glass Player Smooth.app</code>, since a test was running. You still heard crackle on big jumps, because the glide took a quarter of the gap each tick, which is a big first step. Each tick now moves at most one volume point, about 60 points a second, so a full swing takes about 1.7 seconds to be heard. The pill still follows your hand at once. mpv changes volume in steps, so a pure tone may still show a trace; judge it on real film audio.
 EOF # long-ok</p>
+<h2 id="2350-crackle-fixed-pill-jump-narrowed">23:50 Crackle fixed, pill jump narrowed</h2>
+<p data-read>You confirmed the crackle is gone. The trace from the real app shows the pill&#39;s position never changes during a drag, so the jump is in how WebKit draws it while it grows, not in the code that places it. The pill was centred with a percentage shift; it&#39;s now centred by layout. This is my best explanation, not proven. If it still jumps, next look at <code>.hand-back</code> and the outline being redrawn at the new size.
+EOF # long-ok</p>
 
 </main>
 </body>
