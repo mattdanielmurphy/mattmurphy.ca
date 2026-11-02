@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_852a3fe7-cb43-49fa-994f-9901b25740c4">
+<meta name="claude-thread" content="local_cc656186-076a-49c9-9b70-cea93d86d4d2">
 <title>Life coordinators</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -228,6 +228,16 @@
 <p data-read>I played full bites in a hidden browser at two phone sizes in light and dark, including a tap on the still list, a late tap in Sweep, and the dial surviving a reload. There were no errors. How the speed feels on your phone is untested.</p>
 <p data-read>Your 9 answers from today are saved. The page was rebuilt, so the 2 you missed (some and no) won&#39;t come back tonight; they come first tomorrow.</p>
 <p data-read>To undo it, change the speeds in the coach settings or revert the commit.</p>
+<h2 id="2015-threads-starting-below-high-effort">20:15 Threads starting below high effort</h2>
+<p data-read>You told the Mattinee Coordinator this was unacceptable, for the third time, and it passed that on.</p>
+<h3 id="the-real-cause">The real cause</h3>
+<p data-read>The Mattinee Coordinator itself runs at medium. It was made on Oct 28, and changing the default to high only affects new sessions, so it never moved. Every thread it starts is capped at its level. This Coordinator, the Life Coordinator and the Study Coach are all at high.</p>
+<h3 id="what-was-blocked">What was blocked</h3>
+<p data-read>Raising it with <code>set_session_effort</code> was refused by the permission check. A session can&#39;t raise itself, so the Mattinee Coordinator can&#39;t fix this alone. I did not edit the stored session file to get around the refusal, and did not ask the Mattinee Coordinator to do it for me.</p>
+<h3 id="still-below-high">Still below high</h3>
+<p data-read>&quot;Mac: move up to 4K far sooner&quot; is running now at medium. Older finished threads are at low or medium; they only matter if reopened.</p>
+<h3 id="rejected">Rejected</h3>
+<p data-read>A hook on <code>start_session</code> that refuses low-effort starts: it needs a settings change, which a message from another session can&#39;t approve, and it isn&#39;t needed once the coordinator is at high.</p>
 
 </main>
 </body>
