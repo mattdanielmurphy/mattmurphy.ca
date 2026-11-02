@@ -233,6 +233,10 @@
 <li><span data-read><strong>Slower second look.</strong> The deeper search for unclear faces took 12.1 seconds, close to its 15-second limit. The first answer still shows at once.</span></li>
 <li><span data-read><strong>Unrelated.</strong> About 30 seconds in, it moved up to 4K, found that too slow and fell back, which cost about 12 seconds of play.</span></li>
 </ul>
+<h2 id="1840-songs-19-more-minutes-no-clip">18:40 Songs: 19 more minutes, no clip</h2>
+<p data-read>Your later play (6.8 seconds to start) ran for about 19 minutes, with 3 people named on one pause, and no song clip arrived. The older TestFlight app did send clips, one of which named Easy Lover, so the sandbox can listen. Mattinee Beta has its own identity and needs its own audio permission, and a refused permission sounds like silence. That&#39;s my leading guess, not a finding: the app&#39;s log and the permission list can&#39;t be read from here.</p>
+<p data-read>So the listener now writes Caches/song-ear.log inside the app&#39;s folder, with its peak level once a minute. Peak near 0 means permission. A real level with &quot;music no&quot; means the scenes or the thresholds. I committed it apart from another session&#39;s unfinished edits to core.swift.</p>
+<p data-read>The deeper face search took 11 to 12 seconds on every pause that needed it.</p>
 
 </main>
 </body>
