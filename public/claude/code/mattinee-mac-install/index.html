@@ -232,6 +232,11 @@ EOF # long-ok</p>
 <p data-read>Checked in a headless copy of the real page with fake app messages, in light and dark: posters, loading shapes, no-facts case, long songs, order, hold under the mouse, wheel scroll, X, reopen by row and by face. Sorting tested by <code>tests/xray-seen.test.ts</code>.</p>
 <p data-read>Not checked: a real pause in the app, real mouse feel, and the real sightings order, which needs the VPS update.</p>
 <p data-read>Undo: revert the X-ray commit. <code>sightings.json</code> is safe to leave or delete.</p>
+<hr>
+<h3 id="now-playing-line">Now playing line</h3>
+<p data-read>You asked for the source indicator to be tiny and plain, just for your own testing. It&#39;s now 13px white text at the very bottom centre, with a thin dark outline so it reads over a bright picture and no pill or box. It sits under the captions and the controls, and the bottom was chosen over the top so a MacBook notch can&#39;t hide it.</p>
+<p data-read>Only &quot;Now playing&quot; moved; the other big messages, including &quot;Switching to…&quot;, are unchanged. It&#39;s on in Beta and off everywhere else through one switch, <code>sourceNoteEnabled</code> in <code>app/player/core.swift</code>. Returning false retires it. How long it stays is <code>noteSeconds</code>, still 3 seconds.</p>
+<p data-read>The iPad has its own separate &quot;Now playing&quot; message, which I left alone.</p>
 
 </main>
 </body>
