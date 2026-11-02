@@ -158,6 +158,10 @@ EOF # long-ok</p>
 <hr>
 <h3 id="risks">Risks</h3>
 <p data-read>Dolby Vision-only files may still look wrong: this player path has no Dolby Vision support, which is a limit of mpv&#39;s older renderer. X-ray&#39;s paused frame is now PQ-tagged while HDR is on, and the server&#39;s face matcher may see it paler. Not tested on your TV: only your eyes can confirm that.</p>
+<h2 id="2205-correction-is-the-displays-setting-really-required">22:05 Correction: is the Displays setting really required?</h2>
+<p data-read>You asked if I was sure. I wasn&#39;t entitled to be. I measured that your Sony reports no HDR range with the setting off, then said no app could send HDR until it&#39;s on. That second part was my assumption.</p>
+<p data-read>Apple&#39;s page says a Mac &quot;might automatically enable HDR&quot; for a display, while a forum report says macOS doesn&#39;t switch. They disagree, so only a test on your TV settles it. My code also only asks for HDR when the screen already reports range, so it could never have triggered a switch. The test forces the request on a short visible clip and watches the TV&#39;s range. Your Netflix memory fits the laptop screen, which reports range 16 with no setting at all.</p>
+<p data-read>If the TV doesn&#39;t switch by itself, the Displays setting doesn&#39;t have to stay on: BetterDisplay has a command-line tool that could turn HDR on for an HDR film and off afterwards. I haven&#39;t confirmed its exact HDR command. The dim desktop in HDR mode looks real: reports say macOS has no balance slider for it.</p>
 
 </main>
 </body>
