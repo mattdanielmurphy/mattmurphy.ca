@@ -294,6 +294,16 @@
 <p data-read>The rule now says waking is fine and seeing it is not. The docs and the script&#39;s header say the same.</p>
 <h3 id="wake-left-off">Wake left off</h3>
 <p data-read>You asked only for a note, so I changed no behaviour. The wake stays off as a stopgap, because turning it back on would bring the visible turns back. To restore it, revert d7c2de93.</p>
+<h2 id="2155-sensiblesidebuttons-into-the-utils-suite">21:55 SensibleSideButtons into the Utils suite</h2>
+<p data-read>You told Mattinee Coordinator to send this here. Your &quot;SensibleMouseButtons&quot; is <code>/Applications/SensibleSideButtons.app</code>, version 1.0.6 from 2018, and &quot;Utils&quot; is the Hammerspoon suite in <code>~/.hammerspoon</code>.</p>
+<h3 id="what-the-app-sends">What the app sends</h3>
+<p data-read>It doesn&#39;t send ⌘[ or ⌘]. Text inside its program shows it fakes a trackpad swipe in either direction. I told Mattinee Coordinator, since Mattinee may see swipes rather than button presses while the app runs. I read the program&#39;s strings only and pressed nothing.</p>
+<h3 id="why-a-card-not-a-thread">Why a card, not a thread</h3>
+<p data-read>The app refuses to start a session on a turn another session began, so this one needs your click. The card is in this thread and expires in 7 days.</p>
+<h3 id="the-catch">The catch</h3>
+<p data-read>Hammerspoon can catch the buttons but has no built-in way to post a swipe. Sending ⌘[ and ⌘] instead would lose back and forward in apps that only take swipes, so the new thread checks that first.</p>
+<h3 id="saved">Saved</h3>
+<p data-read>The idea and take are in <code>~/.hammerspoon/IDEAS.md</code>.</p>
 
 </main>
 </body>
