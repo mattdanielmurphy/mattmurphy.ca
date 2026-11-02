@@ -26,7 +26,23 @@
 <li><span data-read>iPad: <code>PersonPicture</code>, grid in <code>WhoView</code>, toolbar picture, credit in Setup.</span></li>
 <li><span data-read>Android: <code>Person.picture</code>, <code>Badge</code> with <code>AsyncImage</code>, <code>TileRows</code> (5 per row; one row overflowed at 9 tiles), credit row in Settings.</span></li>
 </ul>
-<p data-read>To do: builds, simulator check, merge to master, ship server (when nobody is watching and Matt says it&#39;s fine), TestFlight, Android publish.</p>
+<p data-read>To do: server restart, once Matt says it is fine (see 23:15 below).</p>
+<hr>
+<h2 id="2315-status-after-shipping-to-master">23:15 Status after shipping to master</h2>
+<p data-read>You asked for Mike and Elisa as real profiles, and a picture for everyone. Then you asked for Kristy in big artsy glasses, Brandon clean shaven with a moustache and dressed as a firefighter, and Mike dressed as a cop.</p>
+<h3 id="whats-live">What&#39;s live</h3>
+<p data-read>Mike and Elisa are on the VPS and on the home Mac&#39;s list, so iPad and Android pick them up on their next start. Each has a Mac server (ports 4807 and 4808, started on boot), and all eight Mac servers list all eight people. Their Library and progress start empty and separate. Their taste record is a file created the first time they watch or rate something.</p>
+<p data-read>Master has commit 09a5099. Mattinee Beta was rebuilding from it at 23:15. TestFlight build 202611012309 is uploaded and processing. Android 0.3.103 is published, so each Streamer offers Update the next time Mattinee opens.</p>
+<h3 id="whats-waiting">What&#39;s waiting</h3>
+<p data-read>The pictures need new server code on the VPS and on each Mac server. Until then every app shows an initial in a blob, which is the fallback. Restarting needs your OK, so nothing has been deployed. To finish, from the worktree: <code>git fetch</code>, make sure it matches origin/master, then <code>deploy/vps.sh</code> and <code>deploy/mac-people.sh</code>. Check <code>bin/playlog</code> first. <code>mac-people.sh</code> skips anyone watching.</p>
+<h3 id="art-decisions">Art decisions</h3>
+<p data-read>The brief said not to redraw the art, but your newer message wins. Micah has no moustache, helmet, police cap, tie or big frames, so these are drawn in the same line weight in <code>family.py</code>, the way the caps were. Brandon&#39;s scruff is gone. Mike&#39;s shirt is navy with a dark collar. The frames are in the design&#39;s magenta with a lime detail. Kristy&#39;s eyelash brows became plain ones, because the lashes cluttered the lens. Brandon&#39;s crew neck stayed light grey under the coat; it reads like a T-shirt, so I left it.</p>
+<h3 id="how-to-undo">How to undo</h3>
+<p data-read>Revert 09a5099 for the art, or replace an SVG in <code>web/people/src</code> and deploy.</p>
+<h3 id="checked-and-not-checked">Checked and not checked</h3>
+<p data-read>Mac screens: headless Chrome, light and dark, with hover and the no-picture fallback, not WKWebView. iPad: Simulator against a test server. Android: compiles and builds as a release, but nobody has seen the picker on a screen, because the Streamer was asleep and waking it would turn on the TV. <code>bun test</code>: two failures, in the ratings sort and player memory tests, in code this work didn&#39;t touch.</p>
+<h3 id="worktree">Worktree</h3>
+<p data-read><code>ipad/Vendor</code> and <code>node_modules</code> there are symlinks to the main checkout&#39;s copies. Don&#39;t commit them.</p>
 
 </main>
 </body>
