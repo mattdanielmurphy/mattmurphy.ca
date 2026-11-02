@@ -56,6 +56,28 @@ EOF # long-ok</p>
 <p data-read>The last run was the build before the 120 Hz change: the new build landed at 20:37:08, while it was playing, and its trace has no <code>fps</code>. It ended in a crash at 20:37:36 with no crash report. My rebuild deleted and replaced the app while it ran, which may be why, but that isn&#39;t proven. If it crashes again without a rebuild, the fault is in the new code. I won&#39;t rebuild while a test may be running.</p>
 <h2 id="2150-the-120-hz-switch">21:50 The 120 Hz switch</h2>
 <p data-read>Your running test logged exactly 60 frames a second, so my first attempt did nothing: the setting I used doesn&#39;t exist on this macOS. It&#39;s listed as a WebKit feature, <code>PreferPageRenderingUpdatesNear60FPSEnabled</code>, with its own switch. <code>Face.turnOff</code> now uses that, and leaves things alone if the switch is ever missing. It&#39;s built as <code>bin/Glass Player Next.app</code> so your running test wasn&#39;t disturbed. Not yet confirmed at 120.</p>
+<h2 id="2155-120-hz-confirmed-and-whats-left">21:55 120 Hz confirmed, and what&#39;s left</h2>
+<p data-read>Your run logged 120 frames a second while the mouse was moving, with the mouse reaching the page in about 5 ms. Worst frames in those first seconds were 16 to 17 ms, so a frame still drops now and then. The video drawing on the main thread is the likely reason, and moving it to its own queue is the fix if you can still feel it.</p>
+<h3 id="next-steps-in-order">Next steps, in order</h3>
+<ol>
+<li><span data-read>Run the real Mattinee app from this branch on a real play, muted and with progress restored. Checks: X-ray with real faces, songs, sources, episodes, next episode, wait meter and slow-connection card, moving up to 4K. Build with a separate app path; <code>bin/Glass Player Next.app</code> shows how (<code>tmp/bp-next.sh</code>).</span></li>
+<li><span data-read>Watch for the crash on quit. One run segfaulted at its end with no report, possibly because a rebuild replaced the app.</span></li>
+<li><span data-read>Find every place the old native code is still reached, then delete it: <code>buildControls</code>, <code>Scrubber</code>, <code>VolumeBar</code>, <code>RecapPanel</code>, <code>TopBar</code>, <code>BackPill</code>, <code>EscHint</code>, the old <code>XRay.key</code>, and <code>Player.oldKeys</code>.</span></li>
+<li><span data-read>Light mode check of the player; so far only dark has been seen on the real app.</span></li>
+<li><span data-read>Bundle Caprasimo and Nunito instead of Google Fonts, so a slow connection can&#39;t change the font.</span></li>
+<li><span data-read>Merge to master in safe steps, so Beta picks it up. Tell you to quit with ⌘Q and reopen.</span></li>
+<li><span data-read>Home and detail: the real pages are <code>web/</code>, served by the server. Beta only rebuilds from <code>app/</code>, <code>mac/</code> and <code>iina-plugin/overlay.html</code>, and TestFlight uses the same server. So serve the new pages at a new path, or bundle them. Decide before building.</span></li>
+</ol>
+<h3 id="decisions-to-keep">Decisions to keep</h3>
+<ul>
+<li><span data-read>Up and Down stay the volume on the Mac, and Tab reaches the buttons (the Streamer&#39;s Down-picks-a-button stays in the design for later).</span></li>
+<li><span data-read>A click pauses at once; a double click undoes that and goes full screen, or skips at the far edges.</span></li>
+<li><span data-read>Captions are always drawn by the page; <code>sub-visibility</code> stays off in the video.</span></li>
+<li><span data-read>The Delay row in the panel is audio delay.</span></li>
+<li><span data-read>The X-ray card sits on the first person in frame; Tab or hover moves to the next.</span></li>
+<li><span data-read><code>app/ui/mattinee.html</code> is now the source of truth, and the mock in <code>~/projects/pages</code> is behind it.</span></li>
+<li><span data-read>Don&#39;t rebuild <code>bin/</code> while you may be testing. Hand tests over as one command.</span></li>
+</ul>
 
 </main>
 </body>
