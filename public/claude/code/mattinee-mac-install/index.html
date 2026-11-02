@@ -38,6 +38,16 @@
 <p data-read>You said the bars kept growing and folding during a volume drag, because the cursor still moves.</p>
 <p data-read>Now, from the moment a press becomes a volume drag until you let go, the rest of the player stays exactly as it was: nothing grows, folds, fades or wakes. On release it catches up with where your mouse really is. Tested headless: dragging from the middle to the bottom and top edges and holding 4 seconds left the bars unchanged, and they grew once released at the bottom. Not yet felt with your mouse.</p>
 <p data-read>The design&#39;s source of truth for the app is now <code>app/ui/mattinee.html</code>; this fix isn&#39;t in the mock in <code>~/projects/pages</code>.</p>
+<h2 id="2120-choppiness-and-low-power-mode">21:20 Choppiness and Low Power Mode</h2>
+<p data-read>Your run&#39;s numbers: the mouse reached the page about 5 ms late, so the first lag fix worked. But frames stalled about 35 ms even with the mouse still, which is a 30 frames a second cadence. WebKit limits web page animation to 30 frames a second in Low Power Mode, so your finding fits the numbers. It&#39;s untested until you run it with Low Power Mode off.</p>
+<p data-read>I left the setting alone: changing system settings is something you have to do yourself.</p>
+<h3 id="next-if-its-still-not-120-hz-with-low-power-mode-off">Next, if it&#39;s still not 120 Hz with Low Power Mode off</h3>
+<ul>
+<li><span data-read>WebKit also caps pages near 60 Hz by default. There is a private setting, <code>_preferPageRenderingUpdatesNear60FPSEnabled</code>, to lift that.</span></li>
+<li><span data-read>The video still draws on the main thread. Moving it to its own queue, as IINA does, frees that thread, but it touches code the move-up work depends on.</span></li>
+</ul>
+<h3 id="state-of-the-work">State of the work</h3>
+<p data-read>All on branch <code>claude/mac-design-live-becb43</code>, not on master. Done: player page, bridge, panels, X-ray, wait meter and card, keys, toolbar. Tested headless with stand-in data, and on a local 4K clip with no server. Not done: a real play in the Mattinee app, native control code removal, home and detail.</p>
 
 </main>
 </body>
