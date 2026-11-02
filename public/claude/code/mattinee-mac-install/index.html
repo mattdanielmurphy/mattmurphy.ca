@@ -34,6 +34,10 @@
 <h3 id="testing">Testing</h3>
 <p data-read>Headless page checks pass. Real mouse testing is yours. Run with <code>--glass-trace=1</code>, and the page writes how late the mouse arrives, once a second, to <code>tmp/gp.log</code>.</p>
 <p data-read>Earlier I closed the test window while rebuilding, which may have been while you were using it.</p>
+<h2 id="2105-volume-drag-holds-everything-still">21:05 Volume drag holds everything still</h2>
+<p data-read>You said the bars kept growing and folding during a volume drag, because the cursor still moves.</p>
+<p data-read>Now, from the moment a press becomes a volume drag until you let go, the rest of the player stays exactly as it was: nothing grows, folds, fades or wakes. On release it catches up with where your mouse really is. Tested headless: dragging from the middle to the bottom and top edges and holding 4 seconds left the bars unchanged, and they grew once released at the bottom. Not yet felt with your mouse.</p>
+<p data-read>The design&#39;s source of truth for the app is now <code>app/ui/mattinee.html</code>; this fix isn&#39;t in the mock in <code>~/projects/pages</code>.</p>
 
 </main>
 </body>
