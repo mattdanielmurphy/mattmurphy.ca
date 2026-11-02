@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude-thread" content="local_c800250b-ddd0-42b1-be4e-f1d0554e3596">
+<title>Mattinee taste data</title>
+<!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
+<script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
+</head>
+<body>
+<main id="text">
+<p class="label">Claude · code · mattinee-taste-data</p>
+<h1 id="mattinee-taste-data">Mattinee taste data</h1>
+<p data-read>&lt;!-- readthrough project=code --&gt;</p>
+<h2 id="2135-taste-data-server-side">21:35 Taste data, server side</h2>
+<p data-read>You asked for tracking now, with a Netflix-style love, like, dislike or hate question at the end, per profile, so a recommender has data later.</p>
+<p data-read>The server side is built, tested and pushed. It is not live yet, because someone was watching when it was ready.</p>
+<hr>
+<h3 id="what-is-built">What is built</h3>
+<ul>
+<li><span data-read><strong>A permanent record per person.</strong> It keeps what was started, when, how far it got, whether it finished, how many times, and the rating.</span></li>
+<li><span data-read><strong>It needs no app update.</strong> It is written from the reports the players already send.</span></li>
+<li><span data-read><strong>Ratings work.</strong> Love, like, dislike, hate, skip, change later, take back.</span></li>
+<li><span data-read><strong>The rule for asking.</strong> One server answer, so every screen behaves the same. No app asks yet.</span></li>
+<li><span data-read><strong>Seeing it.</strong> <code>bin/taste</code>, <code>bin/taste family</code>, and <code>/taste</code> in a browser.</span></li>
+</ul>
+<p data-read>The contract is in <code>docs/taste-contract.md</code> in glass-tv.</p>
+<hr>
+<h3 id="decisions-and-why">Decisions and why</h3>
+<ul>
+<li><span data-read><strong>Its own files, not <code>state.json</code>.</strong> <code>state.json</code> is rewritten every few seconds, moves between files when the Mac switches person, and isn&#39;t the same file on every server. <code>taste/&lt;profile&gt;.json</code> is one simple file per person.</span></li>
+<li><span data-read><strong>Capture at the server, not in the apps.</strong> Every client already reports progress, so old builds count from day one.</span></li>
+<li><span data-read><strong>Sittings worked out on the server.</strong> Three quiet hours starts a new one. Rejected: a play id from each app, which would need new builds everywhere.</span></li>
+<li><span data-read><strong>&quot;Gave up&quot; worked out on reading.</strong> Unfinished and untouched for 14 days. Stored, it would be wrong the moment someone came back.</span></li>
+<li><span data-read><strong>Time really played is kept.</strong> Skipping to the end flips the app&#39;s finished flag, so this is how a recommender can tell.</span></li>
+<li><span data-read><strong>Carried on the existing sync round.</strong> A merge only adds, and the newest rating wins, so a resend can&#39;t lose or double anything. Rejected: forwarding like the play log, because a rating made while the VPS is away would be lost.</span></li>
+<li><span data-read><strong>Stable id is the IMDb id.</strong> The existing progress key is only the title, so two films called Dune would collide.</span></li>
+<li><span data-read><strong>The rule for asking lives on the server.</strong> Tweaks are <code>taste.askStoppedMinutes</code> and <code>taste.askShowEpisodes</code>.</span></li>
+<li><span data-read><strong>Not built:</strong> Continue Watching removal, Library adds, and Trakt or Letterboxd history as signals. They are in <code>IDEAS.md</code>.</span></li>
+</ul>
+<hr>
+<h3 id="backup">Backup</h3>
+<p data-read>I found no backup of the VPS data folder: no cron job, no timer, nothing in the deploy scripts. The taste files are now copied whole to your Mac by the sync round, as long as the home Mac server runs the new code, and every server keeps 30 days of dated snapshots.</p>
+<p data-read>Everything else in that folder, such as progress and Libraries, still has no deliberate backup. It only survives through the sync copies on the Mac servers. That is outside this job.</p>
+<hr>
+<h3 id="what-was-tested">What was tested</h3>
+<ul>
+<li><span data-read><strong>21 taste tests pass.</strong> They cover sittings, ratings, the ask rule, merging, backfill and the endpoints.</span></li>
+<li><span data-read><strong>The full suite has one failure, <code>tests/addons.test.ts</code>, which also fails on the commit before this work.</strong></span></li>
+<li><span data-read><strong>Two real servers on a copy of your data.</strong> Backfill gave 19 titles for you, and 8 profiles in all. A rating made on a Mac-side server reached the main one and a change came back within one sync round. A second server backfilling the same records made no duplicates, and every record found its IMDb id.</span></li>
+<li><span data-read><strong>The test copies of the data were deleted afterwards.</strong></span></li>
+</ul>
+<p data-read>Not seen on a real play: Mac, iPad or the Streamer. The Mac line in <code>saveProgress</code> was type-checked but never run by a real player, because that needs the new code live.</p>
+<hr>
+<h3 id="deploying">Deploying</h3>
+<p data-read>Order doesn&#39;t matter: an old server ignores the new sync field. <code>deploy/mac-people.sh</code> skips anyone watching, so they stay on old code until the next run.</p>
+<p data-read>How to undo: put back the previous commit and redeploy. The taste files stay where they are and do nothing.</p>
+<hr>
+<h3 id="more">More</h3>
+<p data-read>The first run writes one backfill per person per server, recorded in <code>taste-sync.json</code> in the data dir. Sittings from backfill have the id <code>backfill:&lt;thing id&gt;</code>, the same on every server, which is why two servers can&#39;t double one.</p>
+
+</main>
+</body>
+</html>
