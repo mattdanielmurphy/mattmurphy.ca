@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_6073d90e-0b5d-4b68-a1a2-f3e9057190fd">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -267,6 +267,39 @@ EOF # long-ok</p>
 <p data-read>You asked for a sample sheet of Micah profiles in Mattinee colours, with one of you based on your photo.</p>
 <p data-read>I built it from DiceBear&#39;s Micah parts, without AI, on the moss palette with loose blob shapes. Yours has brown hair, a redder brown full beard, square glasses, a slight smirk and a dark crew neck. Micah has no slim wire frames, so square glasses are the nearest match. Quiff is the closest of its hair shapes. The other six people are made-up samples showing how a mix of people sits together.</p>
 <p data-read>Checked in light, dark and phone width, no sideways scrolling. At 48 pixels it still reads as a face. It&#39;s only a page, not in the app. Not public: I didn&#39;t run <code>pages deploy</code>.</p>
+<h2 id="2245-arrow-keys-detail-drag-strip-back-and-forward-whos-watching">22:45 Arrow keys, Detail, drag strip, back and forward, Who&#39;s watching</h2>
+<p data-read>Everything you listed is on master at c382e98. The design&#39;s copy has the same page changes.</p>
+<hr>
+<h3 id="arrow-keys">Arrow keys</h3>
+<p data-read>Up, down, left and right move a focus between cards, rows and buttons on Home, Detail, Episodes and Who&#39;s watching. Return or Space presses, Esc goes back. Cards get a ring, buttons get the design&#39;s blob. Moving the mouse hands back and the focus disappears. In the search box the arrows stay with the text; Return leaves the box and lands on the first result. Rejected: making the hero picture a stop, because a ring can&#39;t follow its shape and the same title is usually in the rows.</p>
+<hr>
+<h3 id="detail-text-and-buttons">Detail text and buttons</h3>
+<p data-read>Detail now runs top to bottom, so text and buttons can&#39;t overlap. Buttons sit at the bottom of the window. Long text steps down from 31 to 22 px to fit, and only then scrolls with a fade. Long titles get smaller too. A window wider than 19 by 10 puts the buttons on one row.</p>
+<p data-read>Tested with a description four times normal length at seven window sizes, from 800 by 600 and 1920 by 1080 down to 1920 by 700 and 1600 by 620. Buttons stayed on screen and never touched text. In the short windows very long text scrolls: the mouse wheel does it, arrow keys don&#39;t.</p>
+<hr>
+<h3 id="drag-strip">Drag strip</h3>
+<p data-read>38 points tall, a clear band in the palette&#39;s button colour, with three dots in the middle, brighter on hover. The leaf hands over to the system&#39;s open hand over it. The Home button and top buttons sit below it, the traffic lights are centred in it, and it disappears in full screen.</p>
+<hr>
+<h3 id="picture">Picture</h3>
+<p data-read>It hangs 80 design pixels lower. The crop grows the photo 10%, then sits at 62% across and 8% down. My first try cut heads off on Breaking Bad and Rooster, so I changed it. Checked on South Park, Rooster, Breaking Bad, Planet Earth and Ted Lasso, and the first try on Nathan for You.</p>
+<p data-read>The four values are <code>home.detailArtDrop</code>, <code>home.detailArtCropX</code>, <code>home.detailArtCropY</code> and <code>home.detailArtZoom</code>. The app has these defaults built in. They appear in the Tweaks panel and take effect once the Mac server is updated.</p>
+<p data-read>Rooster&#39;s picture has its title baked in, so a piece of the word shows. That&#39;s that artwork.</p>
+<hr>
+<h3 id="back-and-forward">Back and forward</h3>
+<p data-read>⌘[ and ⌘], ⌘← and ⌘→ outside a text field, the mouse&#39;s side buttons, and swipes. It walks Home, Detail, Episodes and X-ray, and into the server&#39;s pages such as Settings. The clean browser keeps its own history while it&#39;s up. The player is left alone.</p>
+<p data-read>SensibleSideButtons is installed but wasn&#39;t running when I looked. It fakes a two-way swipe, not ⌘[ or ⌘]. The app now takes real side buttons and those swipes, so it works either way. OpenLogi, Mouser and Karabiner are also installed, and any of them could be remapping the buttons; I didn&#39;t look at their settings.</p>
+<hr>
+<h3 id="whos-watching-1">Who&#39;s watching</h3>
+<p data-read>It&#39;s now a real screen in the design: big title, a bean for each person, the current one highlighted, &quot;Don&#39;t ask me again&quot; as a toggle bean. Six people split into two even rows. It&#39;s in the app, so no server update is needed.</p>
+<p data-read>Two things to know. &quot;Don&#39;t ask me again&quot; is now remembered by the app, so if you had ticked it before you&#39;d be asked once more. Settings&#39; &quot;switch person&quot; still opens the old screen until the Mac server is updated; the change is on master.</p>
+<hr>
+<h3 id="cursor-finished">Cursor, finished</h3>
+<p data-read>The leaf is within 1.5 px on Home, Detail and the player, at corners and edges, at five window sizes.</p>
+<hr>
+<h3 id="checked-and-not-checked-1">Checked and not checked</h3>
+<p data-read>Checked in real WebKit in an invisible window, in light and dark: real key presses, real mouse moves, back and forward through the page, layout, picture crops, and ⌘← left alone in the search box. Tests pass except the <code>categorize</code> one in <code>tests/addons.test.ts</code>, which already failed.</p>
+<p data-read>Not checked: real mouse side buttons, real swipes, ⌘[ through the menu, real dragging, the system&#39;s open-hand cursor on screen, picking a person end to end in the real app, HDR, moving between screens, full screen, and the Episodes and X-ray lists with arrow keys.</p>
+<p data-read>Undo: revert c382e98.</p>
 
 </main>
 </body>
