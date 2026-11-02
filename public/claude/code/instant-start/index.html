@@ -317,6 +317,15 @@
 <p data-read>Revert the commit in glass-tv. To turn moving up off for everyone without a build, set the <code>upgrade.on</code> tweak to 0.</p>
 <h2 id="1920-songs-after-the-permission-reset">19:20 Songs after the permission reset</h2>
 <p data-read>After you allowed audio, the listener&#39;s peak went from 0.0000 to 0.13 to 0.31, so it now hears the film. At 19:17 it sent its first clip from Mattinee Beta to the real server, at 2639 seconds near the end of the episode. SongRec answered &quot;nothing&quot; for that clip. Listening took 0.08 to 2 seconds to start, always after video was moving. The last three plays started in 6.4, 7.5 and 6.5 seconds, the same as the 6.5 baseline.</p>
+<h2 id="1925-music-you-could-hear-wasnt-sent">19:25 Music you could hear wasn&#39;t sent</h2>
+<p data-read>You said music was definitely playing and that the times looked insane against faces in about 200 ms.</p>
+<hr>
+<h3 id="face-times">Face times</h3>
+<p data-read>The 6.4 to 7.5 seconds are press-Play to video moving, and 0.08 to 2 seconds is the listener starting. Neither is a face time. Face answers took 0.15 to 0.44 seconds on the server, plus about 0.09 for the trip, with one at 3.9 seconds. That&#39;s near your 200 ms. The second look at unclear faces is the real slowdown: 11 to 12 seconds, where the Mac did that work on your machine.</p>
+<hr>
+<h3 id="songs">Songs</h3>
+<p data-read>Nothing was sent after 19:17. The test only passed sound where 90% of tenths of a second were close to the average loudness. Mastered dance music passes that 83% of the time, and film music is quieter and uneven, so it often fails. Speech scores 0.74 to 0.81. I lowered the bar to 0.6.</p>
+<p data-read>Trade-off: speech now passes too, so during talk it can send a clip every 45 seconds at most, about 80 lookups an hour through your home address to Shazam&#39;s unofficial service. I think that&#39;s fine, since SongRec&#39;s own listen mode asks more often than that, but it&#39;s the thing to back off if Shazam starts refusing. Undo: <code>git revert</code> the commit.</p>
 
 </main>
 </body>
