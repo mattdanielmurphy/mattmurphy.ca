@@ -25,6 +25,37 @@
 <li><span data-read>Sources live in <code>app/logo/moss/</code>, built by <code>build.py</code>.</span></li>
 <li><span data-read>Colours are Moss tokens only.</span></li>
 </ul>
+<h2 id="2350-four-takes-on-the-stub">23:50 Four takes on the stub</h2>
+<p data-read>You asked for a Moss logo and said to keep the M ticket stub. I drew four takes of it and put them on one page. Nothing is installed in any app.</p>
+<h3 id="my-pick-soft-stub">My pick: Soft stub</h3>
+<p data-read>It keeps the same M and the same two bites, but with soft corners and slightly uneven edges. That&#39;s the shape language of the poster tiles on Home, so it looks like part of the app and is still the logo you like.</p>
+<hr>
+<h3 id="the-four-takes">The four takes</h3>
+<ul>
+<li><span data-read><strong>A, Same stub:</strong> your logo exactly, in Moss colours. It&#39;s the safest, but it keeps the hard corners.</span></li>
+<li><span data-read><strong>B, Soft stub:</strong> the same M, cut softer. Light mode is lime with a dark M, dark mode the reverse.</span></li>
+<li><span data-read><strong>C, Caprasimo stub:</strong> the M from the app&#39;s title font, with the bites cut in. It reads as a letter first and a ticket second. Its wordmark also carries the bites.</span></li>
+<li><span data-read><strong>D, Selected stub:</strong> the soft M, tipped over, with a lime layer behind it, copying a selected poster on Home. It&#39;s the busiest of the four.</span></li>
+</ul>
+<hr>
+<h3 id="small-sizes">Small sizes</h3>
+<p data-read>Icons at 32 px and below are separate drawings: a bigger M and deeper bites, or the ticket vanishes. All four still read as an M at 16 px. D loses its lime layer at those sizes, and C is the first to blur.</p>
+<hr>
+<h3 id="decisions">Decisions</h3>
+<ul>
+<li><span data-read>One agent drew all four, because they&#39;re takes on one mark, so they didn&#39;t need separate agents to stay different.</span></li>
+<li><span data-read>The dark icon tile is the app&#39;s darkest page colour, and the page shows it on the lighter dark green so the tile stays visible.</span></li>
+<li><span data-read>C cuts its bites with an SVG mask. That&#39;s fine for PNG icons, but an Android vector version would need flattening.</span></li>
+</ul>
+<hr>
+<h3 id="what-failed">What failed</h3>
+<p data-read><code>pages deploy</code> was refused: Vercel&#39;s free plan allows 100 deployments a day and the account has used them. The page is published as a private Artifact instead, with the images embedded. Running <code>pages deploy</code> after the limit resets will put the same page on the Vercel link.</p>
+<hr>
+<h3 id="not-tested">Not tested</h3>
+<p data-read>These were only rendered here. None has been seen on a real Dock, iPad or Streamer.</p>
+<hr>
+<h3 id="how-to-undo">How to undo</h3>
+<p data-read>The sources are one commit in glass-tv under <code>app/logo/moss/</code>. Removing that folder undoes it, and no app uses it yet.</p>
 
 </main>
 </body>
