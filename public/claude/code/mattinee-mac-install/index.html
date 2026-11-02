@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_8bcdecd7-3f5b-42b6-a550-9d49accdb1c0">
+<meta name="claude-thread" content="local_5cd7f3ec-5c5e-4576-ad48-77e5d3454af6">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -209,6 +209,29 @@ EOF # long-ok</p>
 <hr>
 <h3 id="still-open">Still open</h3>
 <p data-read>Bundle the two fonts (needs your OK to download). Delete the old native controls once Beta has run a while. Paused and Muted overlap near the end of the string. X-ray on Detail has names, no faces. The taste ask has its place on Detail (<code>#realTaste</code>) and on Up next.</p>
+<hr>
+<h3 id="x-ray-fixes-what-changed">X-ray fixes: what changed</h3>
+<ul>
+<li><p data-read><strong>Posters:</strong> you asked why they never loaded. The server was fine: it sent all three on both your Mac and the VPS. The page could only refill slots it already had, and the app starts with none. It now always makes three, shows soft shapes while facts load, and hides the heading if someone has no credits.</p>
+</li>
+<li><p data-read><strong>Songs box:</strong> long songs wrap, the box grows, and second lines are indented so songs read apart. The list scrolls after 3.5 songs or 6.5 lines of text, whichever is shorter, so several long songs can&#39;t push the box into the controls. Rejected: cutting text off with dots, because you asked for no cut-offs.</p>
+</li>
+<li><p data-read><strong>Newest seen first:</strong> the server only kept a person&#39;s first sighting, so there was nothing to sort on. It now keeps a sighting every 5 seconds per episode in <code>sightings.json</code>, written at most every 30 seconds. After a seek back it uses the latest sighting before that point. Episodes watched earlier fall back on first seen. People in the paused frame go to the top on the page itself, so that part works before the server is updated. The list waits for the mouse to leave before it reorders.</p>
+</li>
+<li><p data-read><strong>List clipped at the bottom:</strong> left alone. The half row is the design&#39;s hint that there&#39;s more, and the mouse wheel scrolls the list in the test.</p>
+</li>
+<li><p data-read><strong>Card X:</strong> closes that card only; the ring and threads go with it. A click on that person&#39;s face or row brings it back, instead of opening IMDb, and the tooltip says so. Hovering another face opens theirs. Tab also brings it back. Pressing X on the keyboard still hides all of X-ray.</p>
+</li>
+<li><p data-read><strong>Also fixed:</strong> a better answer arriving while the Actors box was open used to snap its outline back to the small size.</p>
+</li>
+<li><p data-read><strong>Removed:</strong> the old hide message from the page and the app, since nothing sends it now.</p>
+</li>
+</ul>
+<hr>
+<h3 id="checked-and-not-checked">Checked and not checked</h3>
+<p data-read>Checked in a headless copy of the real page with fake app messages, in light and dark: posters, loading shapes, no-facts case, long songs, order, hold under the mouse, wheel scroll, X, reopen by row and by face. Sorting tested by <code>tests/xray-seen.test.ts</code>.</p>
+<p data-read>Not checked: a real pause in the app, real mouse feel, and the real sightings order, which needs the VPS update.</p>
+<p data-read>Undo: revert the X-ray commit. <code>sightings.json</code> is safe to leave or delete.</p>
 
 </main>
 </body>
