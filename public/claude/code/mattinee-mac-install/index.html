@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_329bffd6-4db4-454b-92c6-1af8b2b95c3d">
+<meta name="claude-thread" content="local_8bcdecd7-3f5b-42b6-a550-9d49accdb1c0">
 <title>Mattinee design: bringing it to life in the Mac app</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -145,6 +145,19 @@ EOF # long-ok</p>
 <p data-read>The design&#39;s Home and Detail are static mock-ups, and the real app has no Detail page at all: a card press plays at once.</p>
 <p data-read><code>web/</code> is safe to change: only the Mac app and a browser use it, since iPad and the Streamer are native. The rejected option was bundling the pages in the app: it would mean rebuilding search, settings, Who&#39;s watching and every limits screen, about 1,100 lines, in a page with no design for them.</p>
 <p data-read>The plan: keep <code>web/</code> as the working app and move the design&#39;s Home and Detail into it, behind a flag only new app builds set, so nobody on TestFlight changes until you upload. Every other screen keeps its logic and takes the design&#39;s fonts and colours. A card press opens Detail, and Resume there plays. The hero is the top of Recently watched. Popular is the first Explore row. The Search and Settings icons on Home open the real ones. Taste asks have a home at the end of a title: Up next, or a row on Detail.</p>
+<h2 id="2155-hdr-on-the-mac-and-your-sony-tv">21:55 HDR on the Mac and your Sony TV</h2>
+<p data-read>You said HDR looks like a dimmer normal stream, and asked whether the app needs a setting. Both of your suspicions were right.</p>
+<hr>
+<h3 id="what-was-wrong">What was wrong</h3>
+<p data-read>The player had no HDR output at all. It drew into an 8-bit surface with no HDR request, so mpv squeezed every HDR film down to normal range. That squeeze is the dim look. &quot;4K · HDR&quot; in the logs only describes the source file.</p>
+<p data-read>Your Sony also reports no HDR range to the Mac right now (<code>maximumPotentialExtendedDynamicRange</code> 1.0), because High Dynamic Range is off for it in Displays. The laptop screen reports 16. No app can send HDR to the TV until that setting is on, and an app can&#39;t turn it on.</p>
+<hr>
+<h3 id="what-changed">What changed</h3>
+<p data-read>On branch <code>claude/mac-hdr</code>, not yet on master. The player now uses a 16-bit float surface and, when the film is HDR and the screen can show it, sends the picture as PQ with BT.2020 and asks macOS for extended range. If the film is HDR and the screen can&#39;t, it says once: &quot;HDR film. Turn on HDR in Displays to see it&quot;. It rechecks when the setting changes or the window moves screens. <code>--glass-hdr=force</code> is a test switch.</p>
+<p data-read>Rejected: leaving HDR on all the time for the TV, because it dims the desktop as you saw. Auto-switching the TV&#39;s HDR for you would take a private system call or a tool like BetterDisplay, so it&#39;s a separate idea, not built.</p>
+<hr>
+<h3 id="risks">Risks</h3>
+<p data-read>Dolby Vision-only files may still look wrong: this player path has no Dolby Vision support, which is a limit of mpv&#39;s older renderer. X-ray&#39;s paused frame is now PQ-tagged while HDR is on, and the server&#39;s face matcher may see it paler. Not tested on your TV: only your eyes can confirm that.</p>
 
 </main>
 </body>
