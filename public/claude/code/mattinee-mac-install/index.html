@@ -78,6 +78,9 @@ EOF # long-ok</p>
 <li><span data-read><code>app/ui/mattinee.html</code> is now the source of truth, and the mock in <code>~/projects/pages</code> is behind it.</span></li>
 <li><span data-read>Don&#39;t rebuild <code>bin/</code> while you may be testing. Hand tests over as one command.</span></li>
 </ul>
+<h2 id="2205-paused-and-muted-on-shoots-steadier-seek-pill">22:05 Paused and Muted on shoots, steadier seek pill</h2>
+<p data-read>You didn&#39;t like Muted hanging off the screen. Paused and Muted now sit above the string, each on a green shoot like the Subtitles sprout, and pop up as the shoot grows. Muted&#39;s shoot is shorter, so it stops at the top of the time pill. A long caption during playback can sit near the Muted tag; not checked.</p>
+<p data-read>While dragging left or right, the seek pill follows sideways almost at once and up or down very slowly (<code>seekEaseX</code> 30 ms, <code>seekEaseY</code> 320 ms in <code>PLAYER.middle</code>). Headless, a 28 px shake moved it less than half a pixel. Not yet felt with your hand.</p>
 
 </main>
 </body>
