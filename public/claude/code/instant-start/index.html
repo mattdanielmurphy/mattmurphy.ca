@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="claude-thread" content="local_c51e3be5-9374-4758-ba29-ecf3461ed426">
+<meta name="claude-thread" content="local_e1c32198-b9e5-4ed5-9574-33f49029d9d6">
 <title>Mattinee: instant start, the play log and moving up</title>
 <!-- Published by `pages reel`. The player is loaded live, so it always matches scroll-read. -->
 <script src="https://matt-pages.vercel.app/5d527aa8-30be-40ad-bb89-2b80f82e1782/player/player.js"></script>
@@ -239,6 +239,84 @@
 <p data-read>The deeper face search took 11 to 12 seconds on every pause that needed it.</p>
 <h2 id="1850-why-songs-were-silent">18:50 Why songs were silent</h2>
 <p data-read>You said the prompt came up while you were typing, and the spacebar probably picked the default button, Deny. That fits the silence, so the listener was likely shut out. The fix is to clear that answer so macOS asks again. I&#39;m leaving that command to you because it changes a privacy permission on your Mac.</p>
+<h2 id="1925-moving-up-to-4k-without-the-picture-stopping">19:25 Moving up to 4K without the picture stopping</h2>
+<p data-read>You said the move up to 4K freezes with no warning, then says &quot;switching&quot; and &quot;finding a smoother stream&quot;. You asked for the sharper copy to load behind the current one and take over seamlessly once about 8 seconds are ready. That is built on the Mac and pushed. It needs no server restart.</p>
+<hr>
+<h3 id="what-your-last-play-showed">What your last play showed</h3>
+<p data-read>The play from 17:15 picked a 1080p copy and started in 6.8 seconds. At 27 seconds it asked for 4K, then threw away the 1080p copy that was playing and opened 4K in its place. That was the freeze, 8.3 seconds of it. The 4K copy managed 12.8 Mb/s against the 23.2 it needs, so it fell back and spent another 5 seconds on cards. The picture was fine until the app stopped it on purpose.</p>
+<hr>
+<h3 id="how-it-works-now">How it works now</h3>
+<ul>
+<li><span data-read><strong>A hidden second player opens the 4K copy</strong>, 15 seconds ahead of where you are, behind the picture. Nothing on screen changes.</span></li>
+<li><span data-read><strong>The copy on screen stops loading more</strong> once it has 40 seconds ahead, so the line goes to the new copy. This is what you described.</span></li>
+<li><span data-read><strong>It takes over only when it&#39;s proven.</strong> It needs 8 seconds loaded, and to be arriving at 1.15 times what it plays at, for at least 5 seconds.</span></li>
+<li><span data-read><strong>The two start together at that spot.</strong> The new one runs muted behind the picture for 0.6 seconds, then they cross-fade picture and sound over 0.15 seconds.</span></li>
+<li><span data-read><strong>If it can&#39;t keep up, you never know.</strong> After 60 seconds it gives up quietly, the copy on screen goes back to loading normally, and there are no more tries for 15 minutes.</span></li>
+</ul>
+<p data-read>Seeking, pausing or stalling while it loads are all handled: seeking and pausing just move or delay the swap, and a stall on the copy on screen cancels it.</p>
+<hr>
+<h3 id="what-i-tested">What I tested</h3>
+<p data-read>A stand-in server with two copies of a test film, 720p and real 4K HEVC at 22 Mb/s, played silently with no window on screen. Nothing touched Real-Debrid.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Plenty of line</td>
+<td>Swapped, the two players 42 ms apart, one frame</td>
+</tr>
+<tr>
+<td>Line only just enough, 30 Mb/s</td>
+<td>Swapped</td>
+</tr>
+<tr>
+<td>Too slow, 10 Mb/s</td>
+<td>Stayed on the copy, no card, gave up at 69 s</td>
+</tr>
+<tr>
+<td>4K link dead</td>
+<td>Stayed on the copy, gave up in a second</td>
+</tr>
+<tr>
+<td>Seek while it loads</td>
+<td>Swapped later, at the new spot</td>
+</tr>
+<tr>
+<td>Pause while it loads</td>
+<td>Swapped after you resumed</td>
+</tr>
+</tbody></table>
+<p data-read>The test also found and I fixed things that would have hurt:</p>
+<ul>
+<li><span data-read><strong>A crash.</strong> Letting go of the hidden player crashed on some runs, once or twice in seven, because its graphics context was destroyed at the same moment. Ten runs after the fix, and six more on the final code, had none.</span></li>
+<li><span data-read><strong>Drawing got in the way.</strong> Both players drawing on one thread held the picture for up to 314 ms. They no longer wait for each other, and nothing asks the hidden player for its time.</span></li>
+<li><span data-read><strong>4K starts slowly.</strong> It ran at half rate for its first half second, which is why it now settles behind the picture before showing.</span></li>
+</ul>
+<hr>
+<h3 id="whats-still-not-perfect">What&#39;s still not perfect</h3>
+<ul>
+<li><span data-read><strong>Small holds remain.</strong> On the final code the picture on screen held for about 0.1 seconds at each of two or three moments: when the 4K copy first opens, when it starts, and at the takeover. In two of the six runs, the opening hold was 0.2 seconds. That&#39;s a skipped frame or a few, not a freeze, but it isn&#39;t zero. I don&#39;t know how much of it comes from the test running off screen.</span></li>
+<li><span data-read><strong>Not tried on real 4K, a real screen or real sound.</strong> The audio fade has never been heard. That&#39;s your test.</span></li>
+<li><span data-read><strong>Two copies can be timed differently.</strong> Different releases can be a second or so apart, and the only guard is refusing a copy whose length is off by more than 5 seconds. A small jump in the story is possible, same as before.</span></li>
+<li><span data-read><strong>Two Real-Debrid streams run at once for a while.</strong> The first one stops reading once it&#39;s 40 seconds ahead, and it&#39;s one extra real stream through the same relay, nothing like bulk testing. I judged that safe, but it is new.</span></li>
+</ul>
+<hr>
+<h3 id="decisions-and-what-i-rejected">Decisions and what I rejected</h3>
+<ul>
+<li><span data-read><strong>A second player, not one reopening faster.</strong> Reopening always costs a moment of black or a frozen frame. Only two players can give no stop at all.</span></li>
+<li><span data-read><strong>No server change.</strong> The server only polls the player, so its link can simply be pointed at the new player. That means this goes live with the app alone.</span></li>
+<li><span data-read><strong>Local builds stop moving up.</strong> A server on the same Mac holds the player&#39;s socket directly and can&#39;t follow a swap, so that older kind stays on its first copy. TestFlight and Beta aren&#39;t affected.</span></li>
+<li><span data-read><strong>iPad and the Streamer are unchanged.</strong> They still pause to move up.</span></li>
+<li><span data-read><strong>The &quot;Now playing: 4K&quot; note stays,</strong> so you can tell it happened. It&#39;s the small corner one, not the card.</span></li>
+</ul>
+<hr>
+<h3 id="how-to-undo">How to undo</h3>
+<p data-read>Revert the commit in glass-tv. To turn moving up off for everyone without a build, set the <code>upgrade.on</code> tweak to 0.</p>
+<h2 id="1920-songs-after-the-permission-reset">19:20 Songs after the permission reset</h2>
+<p data-read>After you allowed audio, the listener&#39;s peak went from 0.0000 to 0.13 to 0.31, so it now hears the film. At 19:17 it sent its first clip from Mattinee Beta to the real server, at 2639 seconds near the end of the episode. SongRec answered &quot;nothing&quot; for that clip. Listening took 0.08 to 2 seconds to start, always after video was moving. The last three plays started in 6.4, 7.5 and 6.5 seconds, the same as the 6.5 baseline.</p>
 
 </main>
 </body>
