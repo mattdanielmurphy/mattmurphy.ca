@@ -104,6 +104,8 @@ EOF # long-ok</p>
 <h2 id="2310-crackle-during-a-volume-drag">23:10 Crackle during a volume drag</h2>
 <p data-read>The drag sent about 80 volume levels a second, and each jump in level makes a tiny click in the sound. A pure test tone shows this far more than a film would, but it&#39;s a real effect. The real volume now glides to the newest level in small steps, about 60 a second. Built as <code>bin/Glass Player Glide.app</code>. I can&#39;t hear it, so whether the crackle is gone is yours to judge.
 EOF # long-ok</p>
+<h2 id="2320-volume-pill-jumping-to-the-centre-not-reproduced">23:20 Volume pill jumping to the centre: not reproduced</h2>
+<p data-read>You reported the volume pill moving with the cursor, then jumping to the centre of the window. A headless drag kept the pill exactly where the press began, and your log shows no scroll-wheel volume, so the centre &quot;Volume&quot; flash isn&#39;t the cause. One suspect is the tank, which sits in the centre and could show during a drag if a seek&#39;s wait was still open, so I blocked it during volume drags. That&#39;s a guess, not a confirmed fix. Headless ran in Chrome, not the app&#39;s WebKit, so a WebKit-only cause is still possible.</p>
 
 </main>
 </body>
