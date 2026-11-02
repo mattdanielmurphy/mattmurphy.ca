@@ -110,6 +110,9 @@ EOF # long-ok</p>
 <p data-read>You wanted the tank to learn from past loads and always fill. Each seek&#39;s real time now feeds one learned number (<code>mattinee-load-seconds</code>, 40% new, 60% old). The tank then fills so half that time is half full, slows near the top if it runs long, and when the load ends it runs up to 100% in 0.22 seconds before leaving. The first seek guesses 1.5 seconds. Slow-connection waits also finish by filling up. Their level still comes from the app&#39;s own gate, not from this learned number.</p>
 <p data-read>The learned number lives in this web view&#39;s local storage, for seeks only. Starts aren&#39;t learned yet. Sharing it with the telemetry that picks streams is recorded in <code>IDEAS.md</code>, not built.
 EOF # long-ok</p>
+<h2 id="2340-big-volume-jumps">23:40 Big volume jumps</h2>
+<p data-read>Built as <code>bin/Glass Player Smooth.app</code>, since a test was running. You still heard crackle on big jumps, because the glide took a quarter of the gap each tick, which is a big first step. Each tick now moves at most one volume point, about 60 points a second, so a full swing takes about 1.7 seconds to be heard. The pill still follows your hand at once. mpv changes volume in steps, so a pure tone may still show a trace; judge it on real film audio.
+EOF # long-ok</p>
 
 </main>
 </body>
