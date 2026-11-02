@@ -25,6 +25,15 @@
 <li><span data-read>Decisions so far: Up/Down stay volume on the Mac (existing feature); Tab picks a button instead of Down. A click pauses at once; a double-click undoes that and goes full screen. Window drag from the top band only, because press and slide on the picture now seeks.</span></li>
 <li><span data-read>Hook quirk: any Bash command containing playback-ish words gets blocked by the hang guard; add <code># long-ok</code> or run in the background.</span></li>
 </ul>
+<h2 id="2050-cursor-lag-and-window-dragging">20:50 Cursor lag and window dragging</h2>
+<p data-read>You said the cursor was remarkably laggy, and that dragging in the middle still moved the window.</p>
+<h3 id="why-the-cursor-lagged">Why the cursor lagged</h3>
+<p data-read>The video draws on the app&#39;s main thread and slept there until each frame&#39;s moment. Mouse events reach the page through that same thread, so they arrived in bursts at the film&#39;s frame rate. Fix: the video no longer sleeps there (<code>video-timing-offset=0</code>, no blocking in the render call). The page&#39;s check of what&#39;s near the mouse also forced a full layout on every move; it now refreshes every 120 ms (<code>PLAYER.middle.fieldEvery</code>). Neither fix has been felt yet, and the first is a likely cause, not a measured one. If some lag remains, the fallback is a real system cursor drawn from the leaf.</p>
+<h3 id="window-dragging">Window dragging</h3>
+<p data-read>Dragging the picture no longer moves the window; the setting and the old drag code are gone. Windowed, a toolbar strip runs along the top: it shows when the mouse reaches it, moves the window, and a double click zooms. Full screen has no toolbar.</p>
+<h3 id="testing">Testing</h3>
+<p data-read>Headless page checks pass. Real mouse testing is yours. Run with <code>--glass-trace=1</code>, and the page writes how late the mouse arrives, once a second, to <code>tmp/gp.log</code>.</p>
+<p data-read>Earlier I closed the test window while rebuilding, which may have been while you were using it.</p>
 
 </main>
 </body>
