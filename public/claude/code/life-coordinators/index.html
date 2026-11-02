@@ -270,6 +270,22 @@
 <p data-read>Anthropic&#39;s legal page bars third-party apps from offering Claude login or routing plan credentials. It allows a person signing in to the unmodified <code>claude</code> program with their own plan. Running it inside a paid product has its own conditions, so confirm before selling. <a href="https://code.claude.com/docs/en/legal-and-compliance">https://code.claude.com/docs/en/legal-and-compliance</a></p>
 <h3 id="think-alone-first">Think alone first</h3>
 <p data-read>Your portal design has room for new ideas, so write yours down before trying these clients. Two independent takes merge better.</p>
+<h2 id="2130-worker-messages-no-longer-wake-a-coordinator">21:30 Worker messages no longer wake a coordinator</h2>
+<p data-read>You said the out-of-scope wake should be invisible to you. A Haiku check had woken this Coordinator to judge a trivia question you typed in Life Coordinator, and the prompt plus its one-line verdict both showed up here.</p>
+<h3 id="what-changed">What changed</h3>
+<p data-read>Nothing wakes a coordinator for a worker message any more. <code>scripts/hooks/worker_feed.py</code> only queues what you type, and the coordinator reads the queue on the next turn you type to it. The Haiku check and the <code>workerFeed.minWords</code> tweak are gone, since nothing uses them now.</p>
+<h3 id="why-not-just-tune-the-check">Why not just tune the check</h3>
+<p data-read>The app refuses a silent turn, so any wake shows, even a correct one that ends in &quot;nothing to do&quot;. The check also broke its own instruction: it was told questions are in scope and flagged one anyway. A better classifier would still cost you a visible turn each time it fired.</p>
+<h3 id="what-you-give-up">What you give up</h3>
+<p data-read>A new task typed into the wrong worker now gets routed only when you next talk to its coordinator, not within 30 seconds. The worker still sees it and can answer it.</p>
+<h3 id="rule-saved-1">Rule saved</h3>
+<p data-read>Added to &quot;No Filler Replies&quot; in <code>.rules/core_safety.md</code>: never wake an agent just to decide whether something matters. It is global and syncs to Tyler through slub-hq.</p>
+<h3 id="tested-1">Tested</h3>
+<p data-read>Ran the feed with a stubbed registry: the message queued, the wake call never fired, and the next turn drained it. Not yet seen on a real message from you.</p>
+<h3 id="same-problem-elsewhere">Same problem elsewhere</h3>
+<p data-read>The daily custodian (<code>scripts/coordinator_custodian.py</code>, 08:41) still wakes this Coordinator with &quot;stay silent if nothing needs Matt&quot;, and the app can&#39;t stay silent. Left unchanged.</p>
+<h3 id="undo">Undo</h3>
+<p data-read>Revert this commit in ai-os.</p>
 
 </main>
 </body>
