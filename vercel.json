@@ -13,12 +13,12 @@
 		},
 		{
 			"source": "/xime",
-			"destination": "https://vps.mattmurphy.ca/xime/",
+			"destination": "https://xime.mattmurphy.ca/",
 			"permanent": false
 		},
 		{
 			"source": "/xime/:path*",
-			"destination": "https://vps.mattmurphy.ca/xime/:path*",
+			"destination": "https://xime.mattmurphy.ca/:path*",
 			"permanent": false
 		}
 	],
