@@ -10,6 +10,16 @@
 			"source": "/subtitles",
 			"destination": "https://netflix-subtitle-display.vercel.app",
 			"permanent": true
+		},
+		{
+			"source": "/xime",
+			"destination": "https://vps.mattmurphy.ca/xime/",
+			"permanent": false
+		},
+		{
+			"source": "/xime/:path*",
+			"destination": "https://vps.mattmurphy.ca/xime/:path*",
+			"permanent": false
 		}
 	],
 	"rewrites": [
