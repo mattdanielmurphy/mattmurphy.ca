@@ -42,6 +42,8 @@
 <main>
 <h1>Paste this into your Claude: build apps on Matt&#39;s component kit&nbsp;(hud-kit)</h1>
 <p>You now have write access to the private GitHub repo <code>mattdanielmurphy/hud-kit</code>. Build your Mac apps on it directly instead of copying its conventions by hand. Read it before you design or write any UI.</p>
+<p><strong>What it&#39;s for.</strong> Your app can be complex inside (audio analysis, sorting, building drum kits) while its frontend stays simple: a window, menus, lists, a search picker, a few settings. hud-kit makes that simple UI polished and consistent with Matt&#39;s apps, in light and dark, so you spend your effort on the engine, not on window chrome.</p>
+<p><strong>Heads up.</strong> hud-kit is young and changes often: <code>git pull</code> it at the start of every session, and re-sync components into your app after. Some parts assume Matt&#39;s Mac: <code>Tweaks.swift</code> and the HUD slots read Hammerspoon paths (<code>~/.hammerspoon/…</code>), and his web previews use <code>.test</code> domains. Those are optional; skip them if you don&#39;t have them, and ask before you rely on one.</p>
 <h2>1. Get it and read&nbsp;it</h2>
 <pre><code class="language-bash">gh repo clone mattdanielmurphy/hud-kit ~/projects/hud-kit
 </code></pre>
@@ -73,7 +75,14 @@
 <li><strong>Self-update with a build stamp.</strong> <code>Sources/SelfUpdate.swift</code>, <code>selfupdate/</code> and <code>web/selfupdate/</code> show the version and build and offer Update, never mid-playback or mid-task. Read <code>selfupdate/README.md</code> before wiring it.</li>
 <li><strong>Light and dark, always.</strong> Light is the default; dark follows the system. Check both, in the studio and in your app.</li>
 </ul>
-<h2>6. Working in the&nbsp;repo</h2>
+<h2>6. How to design it: X-or-Y&nbsp;rounds</h2>
+<p>Design in small decisions, not finished mockups. Never make three or four full designs to&nbsp;compare.</p>
+<ol>
+<li><strong>Decide one thing at a time.</strong> Each round is about five decisions, each with two options (X or Y) that differ in one thing only. Earlier picks carry into later rounds.</li>
+<li><strong>Low-detail layout first.</strong> Start with plain wireframes (where the list, search and detail go), then behaviour, and leave the look (skin, colour, type) for last.</li>
+<li><strong>Designer, then builder.</strong> One agent writes the decision round and a short <code>spec.md</code> once you&#39;ve picked; a second builds from the spec out of hud-kit components; a reviewer checks the result in light and dark. Show the options before any app code.</li>
+</ol>
+<h2>7. Working in the&nbsp;repo</h2>
 <ul>
 <li>Run <code>tests/run.sh</code> after any change, and <code>bin/catalog</code> after adding or editing a component (<code>--check</code> tells you if the index is stale).</li>
 <li>Stage and commit only your own files, and pull before you push: Matt&#39;s Claude edits the same&nbsp;repo.</li>
