@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>App compatibility instruction</title>
+<title>Paste this into your Claude: build apps on Matt's component kit (hud-kit)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -40,25 +40,45 @@
 </head>
 <body>
 <main>
-<h1>Paste this into your Claude: building apps compatible with Matt&#39;s app&nbsp;system</h1>
-<p>Build every app so it follows these conventions. They are the cheap part of Matt&#39;s system; the shared code kit (hud-kit) is not available to you&nbsp;yet.</p>
-<ol>
-<li><strong>Components, base plus skin.</strong> Each UI piece is a &quot;base&quot; (geometry, layers, behaviour) and a separate &quot;skin&quot; (looks). Bases meet five points:<ul>
-<li>Knobs declared in code: <code>{v, min, max, step, note}</code> per knob, keyed <code>&lt;component&gt;.&lt;knob&gt;</code>. Every size, gap, width and timing is a knob; no magic numbers.</li>
-<li>Tuned live: changing a knob applies within a second, no&nbsp;reload.</li>
-<li>Registers itself as an &quot;Edit mode piece&quot; (name plus its knobs), as a harmless no-op when no edit mode&nbsp;exists.</li>
-<li>Skinned, not styled: base CSS uses only <code>--&lt;name&gt;-*</code> variables.</li>
-<li>Catalogued: one README line per component, plus a light and dark preview and a&nbsp;test.</li>
+<h1>Paste this into your Claude: build apps on Matt&#39;s component kit&nbsp;(hud-kit)</h1>
+<p>You now have write access to the private GitHub repo <code>mattdanielmurphy/hud-kit</code>. Build your Mac apps on it directly instead of copying its conventions by hand. Read it before you design or write any UI.</p>
+<h2>1. Get it and read&nbsp;it</h2>
+<pre><code class="language-bash">gh repo clone mattdanielmurphy/hud-kit ~/projects/hud-kit
+</code></pre>
+<p>Read in this order: <code>README.md</code> (the catalog of every component, built by <code>bin/catalog</code>; never edit it by hand), <code>CONTRACT.md</code> (the rules every component follows), <code>PLATFORMS.md</code> (why web code plus a thin native shell per platform), <code>AG_CONTEXT.md</code> (recent decisions). Use <code>bun</code>, not npm.</p>
+<h2>2. The&nbsp;stack</h2>
+<ul>
+<li><strong>Swift shell.</strong> A Mac app is a small native shell around a web page. <code>Sources/AppWindow.swift</code> is the window (one web view that draws its own toolbar, with the stoplights kept inside it), <code>WebWindowBar.swift</code> makes the toolbar strip drag the window, <code>NoZoom.swift</code> stops page zoom. <code>AppCommands.swift</code> holds every command in one list and builds the menu bar from it, each with its shortcut, so Help-menu search finds them. <code>HUDWindow</code>, <code>FloatingPanel</code>, <code>GlassPanel</code>, <code>MenuBarCard</code> and <code>NativeMenu</code> cover floating windows, menu bar cards and menus.</li>
+<li><strong>Web UI inside the shell.</strong> The visible parts (lists, settings, sheets, toasts, sliders, shelves, player bars) are plain JS and CSS in <code>web/&lt;name&gt;/</code>, loaded in the app&#39;s web view. No framework. Pieces that must be native (borderless windows, system volume, video) stay in <code>Sources/</code>.</li>
+<li><strong>Compile Swift in directly:</strong> <code>swiftc … ~/projects/hud-kit/Sources/*.swift</code>, no package needed. Copy web components into your app with <code>bin/sync-into &lt;app-dir&gt; &lt;components…&gt;</code>, which adds a &quot;Copied from&quot; header to each file. Never edit a copied file in the app; fix it in hud-kit and sync again.</li>
+<li><strong>Look for an existing component first.</strong> If the README has what you need, use it. If not, add it to hud-kit, not to your app.</li>
 </ul>
-</li>
-<li><strong>Colour by role, never hard-coded.</strong> Define role tokens (surface, text, accent, danger) once; skins map them to the <code>--&lt;name&gt;-*</code> variables.</li>
-<li><strong>Feel knobs in one <code>tweaks.json</code>.</strong> Timings, fades, sizes and colours live there, each with default, min, max, step and a one-line note.</li>
-<li><strong>Light and dark always.</strong> Light default; dark follows system appearance. Check both.</li>
-<li><strong>Self-update with a build stamp.</strong> The app shows its version and build, and offers Update (never mid-playback or mid-task).</li>
-<li><strong>Good macOS citizen.</strong> List every command in one place and build the menu bar from it, each with its shortcut, so Help-menu search finds it.</li>
-<li><strong>Edit-mode-ready.</strong> Expose sidebar widths, gaps and card sizes as knobs, so a drag-handle mode can later write the same <code>tweaks.json</code>.</li>
+<h2>3. The contract: base plus skin, five&nbsp;points</h2>
+<p>A component is a <strong>base</strong> (structure, behaviour, knobs, no colours or fonts) dressed by a <strong>skin</strong> (<code>skins/moss</code>, <code>plain</code>, <code>synth</code>, <code>party</code>). One base, many skins, never a fork: a new look is a new skin. Every component meets all five:</p>
+<ol>
+<li><strong>Knobs declared in code.</strong> Every size, gap, width and timing is <code>{v, min, max, step, note}</code>, keyed <code>&lt;prefix&gt;.&lt;knob&gt;</code>. Web: <code>NAME.KNOBS</code>. Swift: <code>knobs(prefix:)</code>. No magic numbers.</li>
+<li><strong>Tuned live.</strong> Web: <code>NAME.tune(tweaks, prefix)</code>. Swift: read the value each time you use it. A change shows within a second, with no reload or restart.</li>
+<li><strong>Registers with Edit mode.</strong> <code>EDIT.piece(el, {name, knobs})</code>, skipped quietly if Edit mode isn&#39;t loaded.</li>
+<li><strong>Skinned, not styled.</strong> Base CSS holds only geometry and layers and reads <code>--&lt;name&gt;-*</code> variables; the skin fills them.</li>
+<li><strong>Catalogued, storied, tested.</strong> A <code>web/&lt;name&gt;/README.md</code> or a <code>/// Catalog:</code> line, a story, and a <code>tests/&lt;name&gt;_test.*</code>. <code>tests/run.sh</code> runs them all.</li>
 </ol>
-<p>Keep it plain Markdown and model-neutral; nothing here needs Matt&#39;s&nbsp;Mac.</p>
+<h2>4. Colour, Tweaks, Edit&nbsp;mode</h2>
+<ul>
+<li><strong>Colour by role, never hard-coded.</strong> <code>tokens/tokens.json</code> → <code>bun tokens/build.ts</code> writes each skin&#39;s CSS, plus Swift (<code>tokens/out/Skins.swift</code>) and Lua constants. Roles: <code>--c-bg</code>, <code>--c-surface</code>, <code>--c-ink</code>, <code>--c-muted</code>, <code>--c-line</code>, <code>--c-accent</code>, <code>--c-danger</code>, and <code>--t-display</code> / <code>--t-body</code> for type. Don&#39;t invent a colour: add a token that cites where it came from.</li>
+<li><strong>Tweaks.</strong> An app&#39;s feel (timings, fades, sizes) lives in one <code>tweaks.json</code>. <code>Sources/Tweaks.swift</code> seeds it from declared knobs and hot-reloads it, so tuning needs no rebuild.</li>
+<li><strong>Edit mode</strong> (<code>web/editmode</code>). A switch that turns an app&#39;s layout into drag handles (a sidebar width, a gap, a card size). Each handle writes the same <code>tweaks.json</code> knob, so the change persists. A web-view app with no server uses <code>Sources/TweaksBridge.swift</code>. Expose sizes and gaps as knobs so they can be dragged.</li>
+</ul>
+<h2>5. Self-update, light and&nbsp;dark</h2>
+<ul>
+<li><strong>Self-update with a build stamp.</strong> <code>Sources/SelfUpdate.swift</code>, <code>selfupdate/</code> and <code>web/selfupdate/</code> show the version and build and offer Update, never mid-playback or mid-task. Read <code>selfupdate/README.md</code> before wiring it.</li>
+<li><strong>Light and dark, always.</strong> Light is the default; dark follows the system. Check both, in the studio and in your app.</li>
+</ul>
+<h2>6. Working in the&nbsp;repo</h2>
+<ul>
+<li>Run <code>tests/run.sh</code> after any change, and <code>bin/catalog</code> after adding or editing a component (<code>--check</code> tells you if the index is stale).</li>
+<li>Stage and commit only your own files, and pull before you push: Matt&#39;s Claude edits the same&nbsp;repo.</li>
+<li>Keep it plain Markdown and model-neutral. If you add a component other Slub apps could use, add a line to <code>IDEAS.md</code> in slub-hq.</li>
+</ul>
 
 </main>
 </body>
