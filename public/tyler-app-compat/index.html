@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App compatibility instruction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light dark;
+    --bg: #f8f8f7; --text: #35322b; --muted: #686359; --rule: #d6d4d0; --accent: #1251b4; --mark: #e5eefb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1a1916; --text: #d7d5d1; --muted: #969187; --rule: #36322c; --accent: #6192e1; --mark: #001c5c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.6 "Atkinson Hyperlegible", system-ui, sans-serif; text-wrap: pretty; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem 5rem; }
+  h1, h2, h3 { font-family: "Familjen Grotesk", system-ui, sans-serif; line-height: 1.2; text-wrap: balance; letter-spacing: -0.01em; }
+  h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);
+    margin: 2.75rem 0 0.75rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+  h1 + p { color: var(--muted); }
+  a { color: var(--accent); }
+  strong { font-weight: 700; }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: 0.4rem 0; }
+  li::marker { color: var(--accent); }
+  code { font-size: 0.9em; background: var(--mark); padding: 0.1em 0.3em; border-radius: 3px; }
+  pre { overflow-x: auto; background: var(--mark); padding: 0.75rem; border-radius: 4px; }
+  pre code { background: none; padding: 0; }
+  blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 3px solid var(--accent); color: var(--muted); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+  table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+  th, td { border-bottom: 1px solid var(--rule); padding: 0.4rem 0.6rem; text-align: left; }
+</style>
+</head>
+<body>
+<main>
+<h1>Paste this into your Claude: building apps compatible with Matt&#39;s app&nbsp;system</h1>
+<p>Build every app so it follows these conventions. They are the cheap part of Matt&#39;s system; the shared code kit (hud-kit) is not available to you&nbsp;yet.</p>
+<ol>
+<li><strong>Components, base plus skin.</strong> Each UI piece is a &quot;base&quot; (geometry, layers, behaviour) and a separate &quot;skin&quot; (looks). Bases meet five points:<ul>
+<li>Knobs declared in code: <code>{v, min, max, step, note}</code> per knob, keyed <code>&lt;component&gt;.&lt;knob&gt;</code>. Every size, gap, width and timing is a knob; no magic numbers.</li>
+<li>Tuned live: changing a knob applies within a second, no&nbsp;reload.</li>
+<li>Registers itself as an &quot;Edit mode piece&quot; (name plus its knobs), as a harmless no-op when no edit mode&nbsp;exists.</li>
+<li>Skinned, not styled: base CSS uses only <code>--&lt;name&gt;-*</code> variables.</li>
+<li>Catalogued: one README line per component, plus a light and dark preview and a&nbsp;test.</li>
+</ul>
+</li>
+<li><strong>Colour by role, never hard-coded.</strong> Define role tokens (surface, text, accent, danger) once; skins map them to the <code>--&lt;name&gt;-*</code> variables.</li>
+<li><strong>Feel knobs in one <code>tweaks.json</code>.</strong> Timings, fades, sizes and colours live there, each with default, min, max, step and a one-line note.</li>
+<li><strong>Light and dark always.</strong> Light default; dark follows system appearance. Check both.</li>
+<li><strong>Self-update with a build stamp.</strong> The app shows its version and build, and offers Update (never mid-playback or mid-task).</li>
+<li><strong>Good macOS citizen.</strong> List every command in one place and build the menu bar from it, each with its shortcut, so Help-menu search finds it.</li>
+<li><strong>Edit-mode-ready.</strong> Expose sidebar widths, gaps and card sizes as knobs, so a drag-handle mode can later write the same <code>tweaks.json</code>.</li>
+</ol>
+<p>Keep it plain Markdown and model-neutral; nothing here needs Matt&#39;s&nbsp;Mac.</p>
+
+</main>
+</body>
+</html>

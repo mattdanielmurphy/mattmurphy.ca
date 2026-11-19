@@ -42,6 +42,10 @@
 		{
 			"source": "/agent-brief-2026-w44",
 			"destination": "/agent-brief-2026-w44/index.html"
+		},
+		{
+			"source": "/tyler-app-compat",
+			"destination": "/tyler-app-compat/index.html"
 		}
 	],
 	"headers": [
