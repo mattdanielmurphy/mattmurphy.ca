@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" data-pal="synth">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Slub logo</title>
+<link rel="preload" href="/slub-logo/assets/DynaPuff-var-latin-BHdZ5rXB.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  /* DynaPuff by Toshi Omagari / Google, SIL Open Font License 1.1. Variable: wght 400-700, wdth 75-100. */
+  @font-face {
+    font-family: "DynaPuff";
+    src: url("/slub-logo/assets/DynaPuff-var-latin-BHdZ5rXB.woff2") format("woff2");
+    font-weight: 400 700;
+    font-stretch: 75% 100%;
+    font-display: block;
+  }
+  :root { color-scheme: light dark; --fb-bg: var(--bg); --fb-ink: var(--ink); --fb-muted: var(--soft); --fb-line: var(--line); --fb-soft: var(--chip); --fb-accent: var(--ink); --fb-accent-ink: var(--bg); --fb-font: "DynaPuff", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "DynaPuff", system-ui, sans-serif; font-variation-settings: "wght" 450, "wdth" 82;
+    display: grid; grid-template-rows: auto 1fr auto; min-height: 100dvh; overflow: hidden;
+    -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  header { padding: 14px 18px 0; font-size: 13px; color: var(--soft); letter-spacing: .02em; display: flex; justify-content: space-between; gap: 12px; }
+  #stage { display: grid; place-items: center; min-height: 0; padding: 0 4vw; touch-action: none; cursor: crosshair; }
+  #logo { width: min(100%, 1080px); max-height: 100%; aspect-ratio: 1000 / 480; overflow: visible; opacity: 0; transition: opacity .5s ease; }
+  #logo.ready { opacity: 1; }
+  #logo text {
+    font-family: "DynaPuff"; font-size: 300px; text-anchor: middle;
+    stroke-linejoin: round; stroke-linecap: round; paint-order: stroke fill;
+    pointer-events: none;
+  }
+  footer { padding: 0 16px calc(16px + env(safe-area-inset-bottom)); display: grid; justify-items: center; gap: 12px; }
+  #axes { display: grid; grid-template-columns: repeat(4, 74px); gap: 4px; font-size: 12px; color: var(--soft); text-align: center; }
+  #axes b { display: block; font-size: 17px; color: var(--ink); font-weight: normal; }
+  #axes span { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #hint { margin: 0; font-size: 14px; color: var(--soft); text-align: center; text-wrap: balance; }
+  #pals { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  #pals button {
+    font: inherit; font-size: 13px; color: var(--ink); background: transparent; border: 1.5px solid var(--line);
+    border-radius: 999px; padding: 6px 12px 6px 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    transition: transform .08s ease, background-color .12s ease;
+  }
+  #pals button:active { transform: scale(.94); }
+  #pals button[aria-pressed="true"] { background: var(--chip); border-color: var(--ink); }
+  #pals button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #pals i { display: inline-flex; }
+  #pals i s { width: 10px; height: 10px; border-radius: 50%; margin-left: -3px; }
+  #pals i s:first-child { margin-left: 0; }
+  #fbslot { display: flex; }
+  #measure { position: absolute; left: -9999px; top: 0; font-family: "DynaPuff"; font-size: 300px; line-height: 1; white-space: nowrap; visibility: hidden; }
+</style>
+  <script type="module" crossorigin src="/slub-logo/assets/index-Eg1wSbq6.js"></script>
+  <link rel="stylesheet" crossorigin href="/slub-logo/assets/index-ptmVTESv.css">
+</head>
+<body>
+<header><span>Slub, living wordmark test</span><span>DynaPuff variable</span></header>
+
+<main id="stage" aria-label="Slub">
+  <svg id="logo" viewBox="0 0 1000 480" role="img" aria-label="Slub"></svg>
+</main>
+
+<footer>
+  <div id="axes" aria-hidden="true"></div>
+  <p id="hint">Move your cursor over&nbsp;it.</p>
+  <div id="pals" role="group" aria-label="Palette"></div>
+  <div id="fbslot"></div>
+</footer>
+<span id="measure" aria-hidden="true"></span>
+
+</body>
+</html>

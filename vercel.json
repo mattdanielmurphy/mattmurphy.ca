@@ -46,6 +46,10 @@
 		{
 			"source": "/tyler-app-compat",
 			"destination": "/tyler-app-compat/index.html"
+		},
+		{
+			"source": "/slub-logo",
+			"destination": "/slub-logo/index.html"
 		}
 	],
 	"headers": [
