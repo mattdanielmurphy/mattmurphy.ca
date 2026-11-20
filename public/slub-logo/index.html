@@ -29,14 +29,16 @@
   #app > #panel { grid-area: 1 / 2 / 4 / 3; }
   header { padding: 14px 18px 0; font-size: 13px; color: var(--soft); letter-spacing: .02em; display: flex; justify-content: space-between; gap: 12px; }
   #stage { position: relative; min-height: 0; min-width: 0; touch-action: none; cursor: crosshair; }
-  /* Size is explicit: a viewport-unit default here, then exact pixels from fit() (font load, resize, Size slider). */
-  #logo {
+  /* The id is deliberately not "logo": the RemNote Clipper extension styles #logo as 16 x 16 px on every page,
+     which is what once shrank this wordmark to a dot. Keep ids on this page specific to it.
+     Size is explicit: a viewport-unit default here, then exact pixels from fit() (font load, resize, Size slider). */
+  #slubmark {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block;
     width: min(52vw, calc((100dvh - 260px) * 1.3)); height: min(21.8vw, calc((100dvh - 260px) * .55));
     min-width: 120px; min-height: 50px; overflow: visible; pointer-events: none; opacity: 0; transition: opacity .5s ease;
   }
-  #logo.ready { opacity: 1; }
-  #logo text {
+  #slubmark.ready { opacity: 1; }
+  #slubmark text {
     font-family: "DynaPuff"; font-size: 300px; text-anchor: middle;
     stroke-linejoin: round; stroke-linecap: round; paint-order: stroke fill;
     pointer-events: none;
@@ -84,7 +86,7 @@
     footer { gap: 8px; padding-bottom: 10px; }
   }
 </style>
-  <script type="module" crossorigin src="/slub-logo/assets/index-Cto_20zA.js"></script>
+  <script type="module" crossorigin src="/slub-logo/assets/index-C_RIXB5r.js"></script>
   <link rel="stylesheet" crossorigin href="/slub-logo/assets/index-AfHH4R-m.css">
 </head>
 <body>
@@ -92,7 +94,7 @@
 <header><span>Slub, living wordmark test</span><span>DynaPuff variable font</span></header>
 
 <main id="stage" aria-label="Slub">
-  <svg id="logo" viewBox="100 62 800 336" role="img" aria-label="Slub"></svg>
+  <svg id="slubmark" viewBox="100 62 800 336" role="img" aria-label="Slub"></svg>
 </main>
 
 <footer>
