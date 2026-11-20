@@ -19,14 +19,21 @@
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
+    margin: 0; background: var(--bg); color: var(--ink); overflow: hidden;
     font-family: "DynaPuff", system-ui, sans-serif; font-variation-settings: "wght" 450, "wdth" 82;
-    display: grid; grid-template-rows: auto 1fr auto; min-height: 100dvh; overflow: hidden;
     -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
   }
+  /* One fixed shell with named rows: nothing added to <body> from outside can move the logo's row. */
+  #app { position: fixed; inset: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); }
+  #app > header { grid-row: 1; } #app > #stage { grid-row: 2; } #app > footer { grid-row: 3; }
   header { padding: 14px 18px 0; font-size: 13px; color: var(--soft); letter-spacing: .02em; display: flex; justify-content: space-between; gap: 12px; }
-  #stage { display: grid; place-items: center; min-height: 0; padding: 0 4vw; touch-action: none; cursor: crosshair; }
-  #logo { width: min(100%, 1080px); max-height: 100%; aspect-ratio: 1000 / 480; overflow: visible; opacity: 0; transition: opacity .5s ease; }
+  #stage { position: relative; min-height: 0; min-width: 0; touch-action: none; cursor: crosshair; }
+  /* Size is explicit: a viewport-unit default here, then exact pixels from fit() (font load, resize). No percentages. */
+  #logo {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block;
+    width: min(92vw, calc((100dvh - 250px) * 2.0833)); height: min(44.16vw, calc(100dvh - 250px));
+    min-width: 200px; min-height: 96px; overflow: visible; opacity: 0; transition: opacity .5s ease;
+  }
   #logo.ready { opacity: 1; }
   #logo text {
     font-family: "DynaPuff"; font-size: 300px; text-anchor: middle;
@@ -53,10 +60,11 @@
   #fbslot { display: flex; }
   #measure { position: absolute; left: -9999px; top: 0; font-family: "DynaPuff"; font-size: 300px; line-height: 1; white-space: nowrap; visibility: hidden; }
 </style>
-  <script type="module" crossorigin src="/slub-logo/assets/index-Eg1wSbq6.js"></script>
+  <script type="module" crossorigin src="/slub-logo/assets/index-Bo6bsfKg.js"></script>
   <link rel="stylesheet" crossorigin href="/slub-logo/assets/index-ptmVTESv.css">
 </head>
 <body>
+<div id="app">
 <header><span>Slub, living wordmark test</span><span>DynaPuff variable</span></header>
 
 <main id="stage" aria-label="Slub">
@@ -69,6 +77,7 @@
   <div id="pals" role="group" aria-label="Palette"></div>
   <div id="fbslot"></div>
 </footer>
+</div>
 <span id="measure" aria-hidden="true"></span>
 
 </body>
