@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muzak privacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light dark;
+    --bg: #f8f8f7; --text: #35322b; --muted: #686359; --rule: #d6d4d0; --accent: #1251b4; --mark: #e5eefb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1a1916; --text: #d7d5d1; --muted: #969187; --rule: #36322c; --accent: #6192e1; --mark: #001c5c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.6 "Atkinson Hyperlegible", system-ui, sans-serif; text-wrap: pretty; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem 5rem; }
+  h1, h2, h3 { font-family: "Familjen Grotesk", system-ui, sans-serif; line-height: 1.2; text-wrap: balance; letter-spacing: -0.01em; }
+  h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);
+    margin: 2.75rem 0 0.75rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+  h1 + p { color: var(--muted); }
+  a { color: var(--accent); }
+  strong { font-weight: 700; }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: 0.4rem 0; }
+  li::marker { color: var(--accent); }
+  code { font-size: 0.9em; background: var(--mark); padding: 0.1em 0.3em; border-radius: 3px; }
+  pre { overflow-x: auto; background: var(--mark); padding: 0.75rem; border-radius: 4px; }
+  pre code { background: none; padding: 0; }
+  blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 3px solid var(--accent); color: var(--muted); }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+  table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+  th, td { border-bottom: 1px solid var(--rule); padding: 0.4rem 0.6rem; text-align: left; }
+</style>
+</head>
+<body>
+<main>
+<h1>Muzak&nbsp;privacy</h1>
+<p>Muzak is a music player for Apple Music on iPhone. It has no accounts, no ads and no analytics, and it doesn&#39;t sell or share data with&nbsp;anyone.</p>
+<h2>What stays on your&nbsp;phone</h2>
+<p>Your Apple Music library, play history, ratings and settings stay on your iPhone. Some of them sync through your own iCloud account (Apple&#39;s private iCloud database), which only you can&nbsp;read.</p>
+<h2>What leaves your phone, and&nbsp;why</h2>
+<ul>
+<li><strong>Apple Music:</strong> searching and playing goes through Apple&#39;s MusicKit, under <a href="https://www.apple.com/legal/privacy/">Apple&#39;s privacy policy</a>.</li>
+<li><strong>Album art:</strong> when Apple has no cover for an album, Muzak asks its art finder server for one. The server gets the album&#39;s title and artist, plus your IP address as any web request does. It keeps no log tied to you.</li>
+<li><strong>Share links:</strong> when you tap Share, Muzak makes a link to that song or album. Only the song or album goes into the link.</li>
+<li><strong>Muzak on a Mac (optional):</strong> if you pair the phone with Muzak on your own Mac, the two talk to each other on your home network, or away from home through a relay server over HTTPS, protected by a key only your phone and Mac share. The relay passes messages along and doesn&#39;t keep them.</li>
+</ul>
+<h2>Microphone</h2>
+<p>The microphone is used only if you calibrate speakers with a Mac, to time the sound. Nothing is recorded or&nbsp;sent.</p>
+<h2>Contact</h2>
+<p>Questions or deletion requests: <a href="mailto:apps@slub.cc">apps@slub.cc</a></p>
+
+</main>
+</body>
+</html>

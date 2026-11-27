@@ -54,6 +54,10 @@
 		{
 			"source": "/don-blocko-privacy",
 			"destination": "/don-blocko-privacy/index.html"
+		},
+		{
+			"source": "/muzak-privacy",
+			"destination": "/muzak-privacy/index.html"
 		}
 	],
 	"headers": [
