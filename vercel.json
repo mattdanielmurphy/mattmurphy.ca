@@ -50,6 +50,10 @@
 		{
 			"source": "/slub-logo",
 			"destination": "/slub-logo/index.html"
+		},
+		{
+			"source": "/don-blocko-privacy",
+			"destination": "/don-blocko-privacy/index.html"
 		}
 	],
 	"headers": [
